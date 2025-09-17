@@ -1,0 +1,107 @@
+/**
+ * Sorts the parameters object by its keys in alphabetical order.
+ *
+ * @param {Object} params - An object containing key-value pairs to be sorted.
+ * @return {Array<Array<string | number>>} - An array of key-value pairs sorted by keys.
+ */
+export const sortParams = (params: { [key: string]: string | number }) => {
+  return Object.entries(params).sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
+};
+
+export const formatYmd = (date: Date): string => {
+  const year = date.getFullYear();
+  // Adding 1 because getMonth() returns month from 0-11
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  // Ensuring month and day are in 'MM' and 'DD' format
+  const monthFormatted = month < 10 ? `0${month}` : month.toString();
+  const dayFormatted = day < 10 ? `0${day}` : day.toString();
+
+  return `${year}${monthFormatted}${dayFormatted}`;
+};
+
+//TODO: extract to http client file
+export const encodeQueryParams = (params: any) => {
+  return Object.entries(params)
+    .filter(([_, value]) => value !== undefined)
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as any)}`)
+    .join("&");
+};
+//TODO: extract to http client file
+export enum WithingsResponseStatus {
+  Success,
+  AuthenticationFailed,
+  InvalidParamsError,
+  UnauthorizedError,
+  Error,
+  Timeout,
+  BadState,
+  TooManyRequests,
+  NotImplemented,
+}
+
+const isBetween = (val: number, min: number, max: number) => {
+  return val >= min && val <= max;
+};
+
+//TODO: extract to http client file
+export const ErrorCodeHandler = (code: number) => {
+  if (code === 0) {
+    return WithingsResponseStatus.Success;
+  }
+
+  if (isBetween(code, 100, 102) || [200, 401].includes(code)) return WithingsResponseStatus.AuthenticationFailed;
+
+  if (
+    isBetween(code, 201, 213) ||
+    isBetween(code, 216, 218) ||
+    isBetween(code, 220, 221) ||
+    isBetween(code, 227, 230) ||
+    isBetween(code, 234, 236) ||
+    isBetween(code, 240, 252) ||
+    isBetween(code, 260, 267) ||
+    isBetween(code, 271, 272) ||
+    isBetween(code, 275, 276) ||
+    isBetween(code, 283, 288) ||
+    isBetween(code, 293, 295) ||
+    isBetween(code, 300, 304) ||
+    isBetween(code, 323, 353) ||
+    isBetween(code, 380, 382) ||
+    isBetween(code, 501, 511) ||
+    isBetween(code, 3017, 3019) ||
+    [223, 225, 238, 254, 290, 297, 321, 400, 523, 532].includes(code)
+  ) {
+    return WithingsResponseStatus.InvalidParamsError;
+  }
+
+  if ([214, 277, 2553, 2555].includes(code)) return WithingsResponseStatus.UnauthorizedError;
+
+  if (
+    isBetween(code, 231, 233) ||
+    isBetween(code, 255, 259) ||
+    isBetween(code, 268, 270) ||
+    isBetween(code, 273, 274) ||
+    isBetween(code, 278, 282) ||
+    isBetween(code, 291, 292) ||
+    isBetween(code, 305, 320) ||
+    isBetween(code, 370, 375) ||
+    isBetween(code, 516, 521) ||
+    isBetween(code, 525, 531) ||
+    isBetween(code, 1051, 1054) ||
+    isBetween(code, 2551, 2552) ||
+    isBetween(code, 2556, 2559) ||
+    isBetween(code, 3000, 3016) ||
+    isBetween(code, 3020, 3024) ||
+    isBetween(code, 5000, 5006) ||
+    isBetween(code, 6010, 6011) ||
+    [215, 219, 222, 224, 226, 237, 253, 289, 296, 298, 322, 383, 391, 402, 533, 602, 700, 6000, 9000, 10000].includes(
+      code
+    )
+  )
+    return WithingsResponseStatus.Error;
+
+  if (code === 522) return WithingsResponseStatus.Timeout;
+  if (code === 524) return WithingsResponseStatus.BadState;
+  if (code === 601) return WithingsResponseStatus.TooManyRequests;
+};
