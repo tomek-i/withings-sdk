@@ -55,6 +55,7 @@
     "format:check": "biome ci .",
     "test": "jest",
     "test:e2e": "jest --config jest.e2e.config.ts --runInBand",
+    "authorize": "tsx scripts/authorize.ts",
     "commitlint": "commitlint --from origin/main --to HEAD --verbose",
     "prepublishOnly": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build"
   },
@@ -87,6 +88,7 @@
     "ts-jest": "^29.1.4",
     "ts-node": "^10.9.2",
     "tsup": "^8.2.4",
+    "tsx": "^4.23.13",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.1.0",
     "zod": "^3.23.8"
