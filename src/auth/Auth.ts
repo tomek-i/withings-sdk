@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
-import { sortParams } from "../util";
+import { WithingsApiError } from "../errors/WithingsApiError";
+import { ErrorCodeHandler, WithingsResponseStatus, sortParams } from "../util";
 import { IHttpClient } from "../http";
 import { WithingsConfig } from "../types";
 import { RequestTokenResponse } from "./types/http/responses/RequestTokenResponse";
@@ -69,8 +70,14 @@ export class Auth {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    //TODO: include zod validation
     const data = (await response.json()) as RequestTokenResponse;
+
+    // The API reports failures in the body with HTTP 200. Without this guard an
+    // error response reaches the line below and fails as a TypeError on the
+    // missing body, hiding what actually went wrong.
+    if (ErrorCodeHandler(data.status) !== WithingsResponseStatus.Success) {
+      throw new WithingsApiError(data);
+    }
 
     this.access_token = data.body.access_token;
     // Withings rotates the refresh token; keep the previous one if it is omitted.
@@ -106,8 +113,14 @@ export class Auth {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    //TODO: include zod validation
     const data = (await response.json()) as RequestTokenResponse;
+
+    // The API reports failures in the body with HTTP 200. Without this guard an
+    // error response reaches the line below and fails as a TypeError on the
+    // missing body, hiding what actually went wrong.
+    if (ErrorCodeHandler(data.status) !== WithingsResponseStatus.Success) {
+      throw new WithingsApiError(data);
+    }
 
     this.access_token = data.body.access_token;
     // Withings rotates the refresh token; keep the previous one if it is omitted.

@@ -9,12 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `WithingsApiError`, thrown when the API reports a failure. It carries the raw
+  `status`, the mapped `WithingsResponseStatus` as `type`, and the response
+  `body`, so callers can react to a specific failure such as rate limiting
+  without matching on message strings.
+- `WithingsResponseStatus.Unknown`, for status codes this SDK does not
+  recognise. Appended to the enum, so existing member values are unchanged.
+
 - Response bodies for the Measure endpoints are modelled: `Activity`, `Workout`,
   `WorkoutData` and `IntradayActivityEntry`, with field-level documentation of
   the units the API returns.
 
 ### Fixed
 
+- `ErrorCodeHandler` returned `undefined` for any status code outside its
+  if-chain, and the transport then threw `new Error(data.error)` with an
+  optional field, so an unmapped or message-less failure surfaced as
+  `Error: undefined`.
+- `Auth.fetchAccessToken` and `Auth.refreshAccessToken` read `data.body`
+  without checking the status first. Because the API reports failures with
+  HTTP 200, a rejected code or refresh token failed as
+  `Cannot read properties of undefined (reading 'access_token')` instead of
+  reporting what went wrong.
 - `ActivityDataFields`, `IntraDayActivityDataFields` and `GetWorkoutDataFields`
   were value-less numeric enums, so `data_fields` was serialised as enum
   ordinals (`data_fields=0,7`) instead of the field names the API expects

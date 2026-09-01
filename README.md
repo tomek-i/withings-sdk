@@ -97,6 +97,31 @@ const activity = await client.measures.getActivity({
 const workouts = await client.measures.getWorkouts();
 ```
 
+## Error handling
+
+The Withings API answers with HTTP 200 even when a call fails, putting the
+outcome in the response body. Failures are raised as a `WithingsApiError`
+carrying the raw status code and the category it maps to, so you can branch on
+a specific failure without matching on message strings:
+
+```typescript
+import { WithingsApiError, WithingsResponseStatus } from "withings-sdk";
+
+try {
+  await client.measures.getMeasurement();
+} catch (error) {
+  if (error instanceof WithingsApiError) {
+    if (error.type === WithingsResponseStatus.TooManyRequests) {
+      // rate limited - back off and retry later
+    }
+    console.error(error.status, error.message);
+  }
+}
+```
+
+An expired access token is handled for you: the client renews it and retries
+once before throwing.
+
 ## API surface
 
 | Export                                  | Description                                                     |
@@ -105,6 +130,7 @@ const workouts = await client.measures.getWorkouts();
 | `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, signatures.   |
 | `Measures`                              | `getMeasurement`, `getActivity`, `getIntradayActivity`, `getWorkouts`, `confirmUser`. |
 | `WithingsResponseStatus`                | Maps a Withings `status` code onto a coarse result category.     |
+| `WithingsApiError`                      | Thrown when the API reports a failure. Carries `status`, `type` and `body`. |
 | `HttpClient` / `WithingsHttpClient`     | The transport, exported so you can substitute or mock it.        |
 | `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields` | Enums for request parameters. |
 

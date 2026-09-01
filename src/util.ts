@@ -73,6 +73,14 @@ export enum WithingsResponseStatus {
   TooManyRequests,
   /** The requested operation is not implemented. */
   NotImplemented,
+  /**
+   * The API returned a status this SDK does not recognise.
+   *
+   * Withings documents a large and changing set of codes, so a new one is
+   * always possible. Treat this as a failure and read the raw `status` on the
+   * thrown {@link WithingsApiError} to see what actually came back.
+   */
+  Unknown,
 }
 
 const isBetween = (val: number, min: number, max: number) => {
@@ -83,10 +91,11 @@ const isBetween = (val: number, min: number, max: number) => {
  * Maps a raw Withings status code onto a {@link WithingsResponseStatus}.
  *
  * @param code The `status` field from a Withings response.
- * @returns The matching category, or `undefined` if the code is unmapped.
+ * @returns The matching category, or {@link WithingsResponseStatus.Unknown}
+ *   when the code is not one this SDK knows about.
  * @see https://developer.withings.com/api-reference/#tag/response_status
  */
-export const ErrorCodeHandler = (code: number) => {
+export const ErrorCodeHandler = (code: number): WithingsResponseStatus => {
   if (code === 0) {
     return WithingsResponseStatus.Success;
   }
@@ -144,4 +153,8 @@ export const ErrorCodeHandler = (code: number) => {
   if (code === 522) return WithingsResponseStatus.Timeout;
   if (code === 524) return WithingsResponseStatus.BadState;
   if (code === 601) return WithingsResponseStatus.TooManyRequests;
+
+  // Never fall through to undefined: an unmapped code is still a failure, and
+  // callers switching on the result must be able to rely on getting a value.
+  return WithingsResponseStatus.Unknown;
 };
