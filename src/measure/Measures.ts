@@ -1,4 +1,9 @@
 import { encodeQueryParams, formatYmd } from "../util";
+import { ConfirmUser } from "./models/ConfirmUser";
+import { GetActivity } from "./models/GetActivity";
+import { GetIntradayActivity } from "./models/GetIntradayActivity";
+import { GetMeasurements } from "./models/GetMeasurements";
+import { GetWorkouts } from "./models/GetWorkouts";
 import { GetActivityRequest } from "./types/http/requests/GetActivityRequest";
 import { GetIntradayActivityRequest } from "./types/http/requests/GetIntradayActivityRequest";
 import { ConfirmUserRequest } from "./types/http/requests/ConfirmUserRequest";
@@ -26,7 +31,7 @@ export class Measures {
       ...options,
     };
     const queryString = encodeQueryParams(params);
-    return this.httpClient.get(`${Measures.APIv2_URL}?${queryString}`, {
+    return this.httpClient.get<ConfirmUser>(`${Measures.APIv2_URL}?${queryString}`, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
   }
@@ -61,7 +66,7 @@ export class Measures {
     };
 
     const queryString = encodeQueryParams(params);
-    return this.httpClient.get(`${Measures.APIv2_URL}?${queryString}`, {
+    return this.httpClient.get<GetActivity>(`${Measures.APIv2_URL}?${queryString}`, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
   }
@@ -79,7 +84,7 @@ export class Measures {
       startdateymd: formatYmd(new Date(new Date().setDate(new Date().getDate() - 7))),
     };
     const queryString = encodeQueryParams(params);
-    return this.httpClient.get(`${Measures.APIv2_URL}?${queryString}`, {
+    return this.httpClient.get<GetWorkouts>(`${Measures.APIv2_URL}?${queryString}`, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
   }
@@ -95,7 +100,7 @@ export class Measures {
       action: "getintradayactivity",
     };
     const queryString = encodeQueryParams(params);
-    return this.httpClient.get(`${Measures.APIv2_URL}?${queryString}`, {
+    return this.httpClient.get<GetIntradayActivity>(`${Measures.APIv2_URL}?${queryString}`, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
   }
@@ -125,7 +130,7 @@ export class Measures {
     };
     const queryString = encodeQueryParams(params);
 
-    return this.httpClient.get(`${Measures.API_URL}?${queryString}`, {
+    return this.httpClient.get<GetMeasurements>(`${Measures.API_URL}?${queryString}`, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
   }
