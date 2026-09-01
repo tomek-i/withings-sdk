@@ -22,15 +22,15 @@ describe("Measures query building", () => {
   const requestedUrl = () => new URL(fetchMock.mock.calls[0][0] as string);
 
   describe("getActivity", () => {
-    it("sends start/end dates as YYYYMMDD and omits lastupdate", async () => {
+    it("sends start/end dates as YYYY-MM-DD and omits lastupdate", async () => {
       await client().measures.getActivity({
         startDate: new Date(2024, 0, 5),
         endDate: new Date(2024, 10, 23),
       });
 
       const params = requestedUrl().searchParams;
-      expect(params.get("startdateymd")).toEqual("20240105");
-      expect(params.get("enddateymd")).toEqual("20241123");
+      expect(params.get("startdateymd")).toEqual("2024-01-05");
+      expect(params.get("enddateymd")).toEqual("2024-11-23");
       expect(params.has("lastupdate")).toBe(false);
     });
 
