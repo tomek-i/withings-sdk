@@ -80,4 +80,20 @@ export enum GetWorkoutDataFields {
   pool_laps = "pool_laps",
   strokes = "strokes",
   pool_length = "pool_length",
+  /**
+   * Average core body temperature.
+   */
+  core_body_temperature_avg = "core_body_temperature_avg",
+  /**
+   * Maximum core body temperature.
+   */
+  core_body_temperature_max = "core_body_temperature_max",
+  /**
+   * Minimum core body temperature.
+   */
+  core_body_temperature_min = "core_body_temperature_min",
+  /**
+   * Status of the core body temperature measurement.
+   */
+  core_body_temperature_status = "core_body_temperature_status",
 }

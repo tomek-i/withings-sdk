@@ -20,15 +20,20 @@ export interface MeasureGroup {
   /** Whether these are real measurements or user objectives. */
   category: number;
   /** Identifier of the device that took the measurement. */
-  deviceid?: string | null;
+  deviceid?: string;
   /** Hashed device identifier, returned instead of `deviceid` for some apps. */
-  hash_deviceid?: string | null;
+  hash_deviceid?: string;
   /** The individual measurements in this group. */
   measures: Measure[];
-  /** Numeric identifier of the device model. */
-  modelid?: number | null;
-  /** Name of the device model. */
-  model?: string | null;
-  /** Comment attached to the group by the user. */
-  comment?: string | null;
+  /** Name of the device model, e.g. `Body+`. */
+  model?: string;
+  /**
+   * Numeric identifier of the device model.
+   *
+   * Note the spelling: `getmeas` returns `model_id`, while `getactivity`
+   * returns the same concept as `modelid`. That inconsistency is in the API.
+   */
+  model_id?: number;
+  /** @deprecated The API always returns this empty. */
+  comment?: string;
 }

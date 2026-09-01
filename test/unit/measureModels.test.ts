@@ -42,7 +42,7 @@ describe("getMeasurement response", () => {
     respondWith({
       updatetime: 1704412800,
       timezone: "Europe/Berlin",
-      more: true,
+      more: 1,
       offset: 100,
       measuregrps: [
         {
@@ -54,7 +54,7 @@ describe("getMeasurement response", () => {
           category: 1,
           deviceid: "abc",
           hash_deviceid: "def",
-          modelid: 45,
+          model_id: 45,
           model: "Body+",
           comment: null,
           measures: [{ value: 74250, type: 1, unit: -3, algo: 0, fm: 3, apppfmid: 0, appliver: 0 }],
@@ -66,12 +66,13 @@ describe("getMeasurement response", () => {
     const body: GetMeasurements = response.body;
 
     expect(body.timezone).toEqual("Europe/Berlin");
-    expect(body.more).toBe(true);
+    // getmeas reports `more` as a number, unlike getactivity/getworkouts.
+    expect(body.more).toEqual(1);
     expect(body.offset).toEqual(100);
 
     const group = body.measuregrps[0];
     expect(group.model).toEqual("Body+");
-    expect(group.modelid).toEqual(45);
+    expect(group.model_id).toEqual(45);
     // value * 10^unit is the documented way to reconstitute the real figure.
     expect(group.measures[0].value * 10 ** group.measures[0].unit).toBeCloseTo(74.25);
   });
@@ -142,7 +143,7 @@ describe("getWorkouts response", () => {
           date: "2024-01-05",
           modified: 1704416500,
           deviceid: "abc",
-          data: { calories: 300.5, effduration: 3500, steps: 5200, hr_average: 132 },
+          data: { calories: 300.5, steps: 5200, hr_average: 132, core_body_temperature_avg: 37 },
         },
       ],
       more: false,
@@ -154,9 +155,10 @@ describe("getWorkouts response", () => {
 
     const workout: Workout = body.series[0];
     expect(workout.id).toEqual(9911);
-    expect(workout.enddate - workout.startdate).toEqual(3600);
-    expect(workout.data.calories).toBeCloseTo(300.5);
-    expect(workout.data.pool_laps).toBeUndefined();
+    expect(workout.enddate).toEqual(1704416400);
+    expect(workout.startdate).toEqual(1704412800);
+    expect(workout.data?.calories).toBeCloseTo(300.5);
+    expect(workout.data?.pool_laps).toBeUndefined();
   });
 });
 

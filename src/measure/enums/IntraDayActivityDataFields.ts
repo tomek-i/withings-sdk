@@ -37,4 +37,12 @@ export enum IntraDayActivityDataFields {
   duration = "duration",
   heart_rate = "heart_rate",
   spo2_auto = "spo2_auto",
+  /**
+   * Respiration rate, in breaths per minute.
+   */
+  rr = "rr",
+  /**
+   * Chest movement rate, in events per minute.
+   */
+  chest_movement_rate = "chest_movement_rate",
 }
