@@ -36,18 +36,19 @@ export class Measures {
    * @see https://developer.withings.com/api-reference/#tag/measure/operation/measure-getmeas
    */
   public async getActivity(options: GetActivityOptions) {
-    //TODO: there needs to be a better way for mutually exclusive properties
-    //TODO: throw some bad request error if both startdate and enddate are set and lastupdate is also set
-    let startdateymd: string = undefined!,
-      enddateymd: string = undefined!,
-      lastupdate: number = undefined!;
+    // The GetActivityOptions union makes the two forms mutually exclusive, so
+    // only one of these pairs is ever populated.
+    let startdateymd: string | undefined;
+    let enddateymd: string | undefined;
+    let lastupdate: number | undefined;
 
-    if (options.startDate && options.endDate) {
-      //the format is ymd
+    if (options.startDate !== undefined && options.endDate !== undefined) {
+      // The API expects these as YYYYMMDD rather than a timestamp.
       startdateymd = formatYmd(options.startDate);
       enddateymd = formatYmd(options.endDate);
     } else {
-      lastupdate = (options.lastUpdate as any) === 0 ? 0 : options.lastUpdate.getTime() / 1000;
+      // new Date(0) is meaningful: it asks for everything Withings still holds.
+      lastupdate = Math.floor(options.lastUpdate.getTime() / 1000);
     }
 
     const params: GetActivityRequest = {

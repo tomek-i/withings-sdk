@@ -30,7 +30,7 @@ describe("MEASUREMENT TESTS", () => {
   });
 
   it("should call getActivity with lastUpdate successfully", async () => {
-    const options = { lastUpdate: new Date(0) } as unknown as GetActivityOptions;
+    const options: GetActivityOptions = { lastUpdate: new Date(0) };
     const response = await client.measures.getActivity(options);
     expect(response.status).toEqual(0);
   });

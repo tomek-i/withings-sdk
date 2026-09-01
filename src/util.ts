@@ -21,11 +21,18 @@ export const formatYmd = (date: Date): string => {
   return `${year}${monthFormatted}${dayFormatted}`;
 };
 
-//TODO: extract to http client file
-export const encodeQueryParams = (params: any) => {
+/**
+ * Serialises a request-parameter object into a query string, dropping any
+ * parameter that was not set.
+ *
+ * Typed as `object` rather than `Record<string, unknown>` on purpose: the
+ * request types are interfaces, and interfaces are not assignable to an index
+ * signature in TypeScript.
+ */
+export const encodeQueryParams = (params: object): string => {
   return Object.entries(params)
-    .filter(([_, value]) => value !== undefined)
-    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as any)}`)
+    .filter(([, value]) => value !== undefined && value !== null)
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
     .join("&");
 };
 //TODO: extract to http client file

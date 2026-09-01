@@ -27,6 +27,10 @@ describe("encodeQueryParams", () => {
     );
   });
 
+  it("omits null values", () => {
+    expect(encodeQueryParams({ action: "getmeas", category: null })).toEqual("action=getmeas");
+  });
+
   it("percent-encodes keys and values", () => {
     expect(encodeQueryParams({ "data fields": "a,b" })).toEqual("data%20fields=a%2Cb");
   });

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `ActivityDataFields`, `IntraDayActivityDataFields` and `GetWorkoutDataFields`
+  were value-less numeric enums, so `data_fields` was serialised as enum
+  ordinals (`data_fields=0,7`) instead of the field names the API expects
+  (`data_fields=steps,calories`). They are string enums now.
+
+### Changed
+
+- `getActivity` no longer routes an epoch-zero `lastUpdate` through an `any`
+  cast, and `lastupdate` is now floored to whole seconds like the other
+  endpoints.
+- The mutually exclusive `startdateymd`/`enddateymd`/`lastupdate` request
+  params are optional, which is what the `GetActivityOptions` union already
+  implied.
+- `encodeQueryParams` is typed instead of taking `any`, and drops `null` as
+  well as `undefined`.
+
 ## [0.1.1] - 2026-09-01
 
 No changes to the published code. Release infrastructure only.

@@ -28,13 +28,13 @@
  * */
 
 export enum IntraDayActivityDataFields {
-  steps,
-  elevation,
-  calories,
-  distance,
-  stroke,
-  pool_lap,
-  duration,
-  heart_rate,
-  spo2_auto,
+  steps = "steps",
+  elevation = "elevation",
+  calories = "calories",
+  distance = "distance",
+  stroke = "stroke",
+  pool_lap = "pool_lap",
+  duration = "duration",
+  heart_rate = "heart_rate",
+  spo2_auto = "spo2_auto",
 }
