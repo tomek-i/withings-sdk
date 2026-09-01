@@ -188,7 +188,11 @@ before 1.0. Issues and pull requests are welcome.
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup and workflow, and
+[AGENTS.md](./AGENTS.md) for the conventions this repository follows.
+
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/);
+releases are cut automatically from them.
 
 ## License
 

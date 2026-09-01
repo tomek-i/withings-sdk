@@ -1,27 +1,56 @@
 name: Release
 
-# Publishes to npm when a v* tag is pushed:
-#   pnpm version patch && git push --follow-tags
+# Release automation, driven by conventional commits.
 #
-# Authentication is via npm trusted publishing (OIDC) — there is no NPM_TOKEN.
-# The matching trusted publisher must be registered on npmjs.com against this
-# repository AND this workflow filename (release.yml); renaming this file will
-# break publishing until the trusted publisher is updated to match.
+# On every push to main, release-please opens or updates a Release PR that
+# bumps the version in package.json and writes CHANGELOG.md. Merging that PR is
+# the release decision: release-please then tags the commit, creates the GitHub
+# release, and the publish job below pushes the package to npm.
 #
-# `id-token: write` is what lets GitHub mint the OIDC token npm verifies.
-# Provenance is attached automatically on an OIDC publish.
+# The publish step lives in THIS file on purpose. npm trusted publishing is
+# pinned to a repository AND a workflow filename, so renaming this file, or
+# moving the publish into a workflow of its own, breaks publishing until the
+# trusted publisher on npmjs.com is updated to match.
+#
+# It also has to share a workflow with release-please rather than being
+# triggered by the tag it creates: a tag pushed using the default GITHUB_TOKEN
+# does not start another workflow run, which GitHub does deliberately so that
+# workflows cannot trigger themselves.
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: read
-  id-token: write
+  contents: write
+  pull-requests: write
 
 jobs:
-  publish:
+  release-please:
+    name: Prepare release
     runs-on: ubuntu-latest
+
+    outputs:
+      released: ${{ steps.release.outputs.releases_created }}
+
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  publish:
+    name: Publish to npm
+    needs: release-please
+    if: needs.release-please.outputs.released == 'true'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      # `id-token: write` is what lets GitHub mint the OIDC token npm verifies.
+      # Provenance is attached automatically on an OIDC publish.
+      id-token: write
 
     steps:
       - uses: actions/checkout@v7
