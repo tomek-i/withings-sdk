@@ -12,6 +12,8 @@ import { GetMeasurementRequest } from "./types/http/requests/GetMeasurementReque
 import { GetWorkoutsRequest } from "./types/http/requests/GetWorkoutsRequest";
 import { GetMeasurementOptions } from "./types/GetMeasurementOptions";
 import { GetActivityOptions } from "./types/GetActivityOptions";
+import { GetIntradayActivityOptions } from "./types/GetIntradayActivityOptions";
+import { GetWorkoutsOptions } from "./types/GetWorkoutsOptions";
 
 import { WithingsHttpClient } from "../http/WithingsHttpClient";
 import { GetConfirmUserOptions } from "./types/GetConfirmUserOptions";
@@ -81,14 +83,35 @@ export class Measures {
   /**
    * Returns workout summaries, which are an aggregation all data that was captured during that workout.
    * Use the Measure v2 - getIntradayActivity service to get the high frequency data used to build this summary.
+   *
+   * @param options Either a date range or a `lastUpdate` watermark, plus the
+   *   metrics to include.
+   * @returns The workouts in the requested period.
    * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-getworkouts
    */
-  public async getWorkouts() {
+  public async getWorkouts(options: GetWorkoutsOptions) {
+    // The GetWorkoutsOptions union makes the two forms mutually exclusive, so
+    // only one of these pairs is ever populated. Sending both, as this method
+    // used to, produces a request the API documents as invalid.
+    let startdateymd: string | undefined;
+    let enddateymd: string | undefined;
+    let lastupdate: number | undefined;
+
+    if (options.startDate !== undefined && options.endDate !== undefined) {
+      startdateymd = formatYmd(options.startDate);
+      enddateymd = formatYmd(options.endDate);
+    } else {
+      // new Date(0) is meaningful: it asks for everything Withings still holds.
+      lastupdate = Math.floor(options.lastUpdate.getTime() / 1000);
+    }
+
     const params: GetWorkoutsRequest = {
       action: "getworkouts",
-      enddateymd: formatYmd(new Date()),
-      lastupdate: Math.floor(new Date().getTime() / 1000),
-      startdateymd: formatYmd(new Date(new Date().setDate(new Date().getDate() - 7))),
+      startdateymd,
+      enddateymd,
+      lastupdate,
+      offset: options.offset ?? undefined,
+      data_fields: options.data_fields?.join(",") ?? undefined,
     };
     const queryString = encodeQueryParams(params);
     return this.httpClient.get<GetWorkouts>(`${Measures.APIv2_URL}?${queryString}`, {
@@ -100,11 +123,18 @@ export class Measures {
    * Notes:
    * If your input startdate and enddate are separated by more than 24h, only the first 24h after startdate will be returned.
    * If no startdate and enddate are passed as parameters, the most recent activity data will be returned.
+   *
+   * @param options The period to read and the metrics to include. The response
+   *   carries no measurements unless `data_fields` names them.
+   * @returns The activity slices, keyed by unix timestamp.
    * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-getintradayactivity
    */
-  public async getIntradayActivity() {
+  public async getIntradayActivity(options: GetIntradayActivityOptions = {}) {
     const params: GetIntradayActivityRequest = {
       action: "getintradayactivity",
+      startdate: options.startdate !== undefined ? Math.floor(options.startdate.getTime() / 1000) : undefined,
+      enddate: options.enddate !== undefined ? Math.floor(options.enddate.getTime() / 1000) : undefined,
+      data_fields: options.data_fields?.join(",") ?? undefined,
     };
     const queryString = encodeQueryParams(params);
     return this.httpClient.get<GetIntradayActivity>(`${Measures.APIv2_URL}?${queryString}`, {
@@ -164,6 +194,18 @@ export class Measures {
    */
   public getMeasurementPages(options: GetMeasurementOptions = {} as GetMeasurementOptions) {
     return paginate((offset) => this.getMeasurement({ ...options, offset }));
+  }
+
+  /**
+   * Walks {@link getWorkouts} one page at a time.
+   *
+   * Any `offset` on `options` is ignored: the walk manages it.
+   *
+   * @param options The same options {@link getWorkouts} accepts.
+   * @returns An async iterator over the response bodies, one per page.
+   */
+  public getWorkoutsPages(options: GetWorkoutsOptions) {
+    return paginate((offset) => this.getWorkouts({ ...options, offset }));
   }
 
   /**

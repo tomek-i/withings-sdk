@@ -61,10 +61,18 @@ export enum MeasurementType {
   IntraCellularWater = 169,
   /** Visceral fat, unitless. */
   VisceralFat = 170,
+  /** Fat free mass for segments. */
+  FatFreeMassSegments = 173,
   /** Fat mass for segments, in mass units. */
   FatMass = 174,
   /** Muscle mass for segments. */
   MuscleMassSegments = 175,
   /** Nerve response score (NRS). */
   ElectrodermalActivity = 196,
+  /** Basal metabolic rate (BMR). */
+  BasalMetabolicRate = 226,
+  /** Metabolic age. */
+  MetabolicAge = 227,
+  /** Electrochemical skin conductance (ESC). */
+  ElectrochemicalSkinConductance = 229,
 }

@@ -150,7 +150,7 @@ describe("getWorkouts response", () => {
       offset: 0,
     });
 
-    const response = await client().measures.getWorkouts();
+    const response = await client().measures.getWorkouts({ lastUpdate: new Date(0) });
     const body: GetWorkouts = response.body;
 
     const workout: Workout = body.series[0];

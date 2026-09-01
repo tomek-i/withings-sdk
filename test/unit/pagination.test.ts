@@ -153,3 +153,26 @@ describe("Measures page walkers", () => {
     expect(new URL(fetchMock.mock.calls[0][0] as string).searchParams.has("offset")).toBe(false);
   });
 });
+
+describe("getWorkoutsPages", () => {
+  let fetchMock: jest.Mock;
+
+  beforeEach(() => {
+    fetchMock = jest.fn();
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+  });
+
+  const respond = (body: unknown) =>
+    ({ ok: true, status: 200, json: async () => ({ status: 0, body }) }) as unknown as Response;
+
+  it("walks workouts across pages, following the offset", async () => {
+    fetchMock
+      .mockResolvedValueOnce(respond({ series: [{ id: 1 }], more: true, offset: 30 }))
+      .mockResolvedValueOnce(respond({ series: [{ id: 2 }], more: false }));
+
+    const pages = await collect(client().measures.getWorkoutsPages({ lastUpdate: new Date(0) }));
+
+    expect(pages.flatMap((p) => p.series.map((w) => w.id))).toEqual([1, 2]);
+    expect(new URL(fetchMock.mock.calls[1][0] as string).searchParams.get("offset")).toEqual("30");
+  });
+});
