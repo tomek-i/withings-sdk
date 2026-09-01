@@ -24,7 +24,9 @@ Node.js 18 or newer is required.
 | `pnpm run format`    | Formats with Biome.                                                |
 | `pnpm run format:check` | Verifies formatting (used by CI).                               |
 | `pnpm run build`     | Produces the ESM + CJS bundles and type declarations in `dist/`.   |
-| `pnpm run test:e2e`  | Live API tests. Requires credentials — see below.                  |
+| `pnpm run test:e2e`  | Live API contract tests. Unattended. Requires credentials — see below. |
+| `pnpm run test:e2e:consent` | The OAuth consent flow. Opens a browser and needs a human. |
+| `pnpm run probe`     | Prints the shape of live responses, to check models against reality. |
 | `pnpm run commitlint` | Checks your commit messages against the convention.               |
 
 Formatting is handled by [Biome](https://biomejs.dev/); linting by ESLint. Run
@@ -48,9 +50,21 @@ and CI checks every commit in a pull request.
 
 ## End-to-end tests
 
-`pnpm run test:e2e` talks to the real Withings API, and the auth suite opens a
-browser window for the consent screen. It is deliberately excluded from
-`pnpm test` and from CI.
+`pnpm run test:e2e` talks to the real Withings API. It is deliberately excluded
+from `pnpm test` and from CI, but it runs unattended: the only test needing a
+browser and a human is the consent flow, which lives in `test/e2e/interactive/`
+and runs separately via `pnpm run test:e2e:consent`.
+
+The contract suite checks the **shape** of every response against the types the
+SDK claims, never the values — those are the account holder's health data, and
+they differ per account. It fails in two directions:
+
+- a field of an unexpected type, meaning our types are wrong
+- a field the SDK does not model at all, meaning the API grew something
+
+A field that is simply **absent** does not fail. Absence is expected: the API
+returns only what `data_fields` requested, what your API plan includes, and what
+the user's devices measure. Absent fields are logged rather than asserted.
 
 To run it, copy `.env.example` to `.env` and fill in the client ID, secret and
 redirect URI from your

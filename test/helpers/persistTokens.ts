@@ -26,4 +26,9 @@ export const persistTokens = (accessToken: string | null, refreshToken: string |
   env = upsert(env, "WITHINGS_ACCESS_TOKEN", accessToken);
   env = upsert(env, "WITHINGS_REFRESH_TOKEN", refreshToken);
   fs.writeFileSync(ENV_PATH, env, "utf8");
+
+  // dotenv only reads the file once per process, so a later suite in the same
+  // run would otherwise pick up the pair this one just invalidated.
+  process.env.WITHINGS_ACCESS_TOKEN = accessToken;
+  process.env.WITHINGS_REFRESH_TOKEN = refreshToken;
 };
