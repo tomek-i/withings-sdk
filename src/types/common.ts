@@ -1,3 +1,5 @@
+import { WithingsRetryOptions } from "../http/retry";
+
 /**
  * Everything {@link WithingsClient} needs to talk to the API on a user's
  * behalf. Create an application in the Withings developer dashboard to obtain
@@ -27,6 +29,16 @@ export interface WithingsConfig {
    * access token automatically.
    */
   refreshToken?: string;
+
+  /**
+   * How to behave when the API rate limits a request.
+   *
+   * Withings allows roughly 120 requests per minute by default. By default the
+   * client backs off and retries such a request up to 3 times in total. Pass
+   * `false` to disable that and have the rate limit surface immediately as a
+   * {@link WithingsApiError}.
+   */
+  retry?: WithingsRetryOptions | false;
 }
 
 /**

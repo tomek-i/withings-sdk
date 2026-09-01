@@ -46,7 +46,8 @@ export class WithingsClient {
       () => this.auth.getCurrentAccessToken(),
       async () => {
         await this.auth.refreshAccessToken();
-      }
+      },
+      config.retry
     );
 
     this.measures = new Measures(this.httpClient);

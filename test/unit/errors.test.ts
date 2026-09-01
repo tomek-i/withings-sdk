@@ -4,6 +4,9 @@ import { ErrorCodeHandler } from "../../src/util";
 const jsonResponse = (payload: unknown) =>
   ({ ok: true, status: 200, json: async () => payload }) as unknown as Response;
 
+// Retrying is off here: this suite is about how failures surface, and the
+// backoff would otherwise swallow the single mocked rate limit response.
+// The retry behaviour itself is covered in retry.test.ts.
 const client = (accessToken = "token") =>
   new WithingsClient({
     clientId: "id",
@@ -11,6 +14,7 @@ const client = (accessToken = "token") =>
     redirectUri: "https://example.com/cb",
     accessToken,
     refreshToken: "refresh",
+    retry: false,
   });
 
 describe("ErrorCodeHandler", () => {
