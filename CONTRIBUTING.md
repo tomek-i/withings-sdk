@@ -55,5 +55,11 @@ git push --follow-tags
 ```
 
 The `Release` workflow runs `prepublishOnly` (typecheck, lint, tests, build) and
-then publishes to npm with provenance. It needs an `NPM_TOKEN` repository
-secret. Update `CHANGELOG.md` as part of the release commit.
+then publishes to npm with provenance. Update `CHANGELOG.md` as part of the
+release commit.
+
+Authentication uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers)
+over OIDC, so there is no publish token to store or rotate. The trusted
+publisher registered on npmjs.com is pinned to this repository *and* to the
+workflow filename `release.yml` — if you rename that file, update the trusted
+publisher to match or releases will start failing with a 404.

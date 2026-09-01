@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-01
+
+No changes to the published code. Release infrastructure only.
+
+### Changed
+
+- Releases now authenticate to npm with trusted publishing (OIDC) instead of a
+  long-lived access token. There is no publish credential stored in the
+  repository any more.
+
 ## [0.1.0] - 2026-09-01
 
 First publishable release.
@@ -47,5 +57,6 @@ First publishable release.
   the test helpers.
 - Requires Node.js 18 or newer (declared via `engines`).
 
-[unreleased]: https://github.com/tomek-i/withings-sdk/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/tomek-i/withings-sdk/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/tomek-i/withings-sdk/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/tomek-i/withings-sdk/releases/tag/v0.1.0

@@ -1,11 +1,15 @@
 name: Release
 
-# Publishes to npm when a v* tag is pushed, e.g.:
-#   pnpm version minor && git push --follow-tags
+# Publishes to npm when a v* tag is pushed:
+#   pnpm version patch && git push --follow-tags
 #
-# Requires an automation token stored as the NPM_TOKEN repository secret.
-# `id-token: write` lets npm attach a signed provenance statement to the
-# release, so consumers can verify it was built from this repository.
+# Authentication is via npm trusted publishing (OIDC) — there is no NPM_TOKEN.
+# The matching trusted publisher must be registered on npmjs.com against this
+# repository AND this workflow filename (release.yml); renaming this file will
+# break publishing until the trusted publisher is updated to match.
+#
+# `id-token: write` is what lets GitHub mint the OIDC token npm verifies.
+# Provenance is attached automatically on an OIDC publish.
 on:
   push:
     tags: ["v*"]
@@ -24,18 +28,22 @@ jobs:
 
       - uses: pnpm/action-setup@v4
 
+      # Trusted publishing needs Node >= 22.14.0 and npm >= 11.5.1.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
           registry-url: https://registry.npmjs.org
+
+      # Node 22 still bundles npm 10, which predates OIDC publishing.
+      - name: Upgrade npm
+        run: npm install -g npm@latest
 
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      # `prepublishOnly` runs typecheck, lint, tests and the build before the
-      # tarball is created, so a broken commit cannot reach the registry.
+      # Published with npm rather than pnpm: pnpm's OIDC support has known
+      # regressions (pnpm/pnpm#11513). npm still honours the `files` field and
+      # runs `prepublishOnly` (typecheck, lint, tests, build) before packing.
       - name: Publish
-        run: pnpm publish --provenance --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance
