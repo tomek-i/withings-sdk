@@ -1,0 +1,115 @@
+- generic [ref=f4e2]:
+  - heading "Choose the Right Plan for Your Need" [level=1] [ref=f4e3]
+  - paragraph [ref=f4e4]: Unlock the power of health data with Withings' API plans. Tailored for developers, consumer health, healthcare providers, and researchers, our solutions offer seamless integration to accelerate your innovation and AI projects. Find the perfect fit below.
+  - generic [ref=f4e5]:
+    - generic [ref=f4e6]:
+      - heading "Start Developing for Free 🚀" [level=4] [ref=f4e7]
+      - paragraph [ref=f4e8]:
+        - text: Ideal for innovators & startups. Basic biomarkers availability and 1000 active users limitation
+        - link "Learn more" [ref=f4e9] [cursor=pointer]:
+          - /url: https://developer.withings.com/developer-guide/v3/data-api/all-available-health-data/
+        - text: .
+    - link "Start now" [ref=f4e11] [cursor=pointer]:
+      - /url: https://developer.withings.com/developer-guide/v3/integration-guide/public-health-data-api/public-health-data-api-overview/
+  - generic [ref=f4e12]:
+    - generic [ref=f4e13]:
+      - generic [ref=f4e14]:
+        - text: Enterprise
+        - generic [ref=f4e15]: For Scalable Consumer Health
+      - generic [ref=f4e16]: Build engaging consumer apps, corporate wellness programs, with withings devices performances and dedicated support.
+      - link "Contact Us" [ref=f4e19] [cursor=pointer]:
+        - /url: https://www.withings.com/us/en/health-solutions/contact-us#enterprise
+      - list [ref=f4e20]:
+        - listitem [ref=f4e21]:
+          - generic [ref=f4e22]: Basic Biomarkers Show more ▼
+        - listitem [ref=f4e24]:
+          - strong [ref=f4e25]: Unlimited
+          - text: users
+        - listitem [ref=f4e26]:
+          - strong [ref=f4e27]: 1,500+
+          - text: requests/minute
+        - listitem [ref=f4e28]: Faster data sync via dedicated instances
+        - listitem [ref=f4e29]: HIPAA/HDS/GDPR compliant
+        - listitem [ref=f4e30]:
+          - generic [ref=f4e31]:
+            - generic [ref=f4e32]: Support & Logistics Show more ▼
+            - text: ✅ 💡 💡 💡
+        - listitem [ref=f4e33]:
+          - generic [ref=f4e34]:
+            - generic [ref=f4e35]: Strategic Partnerships
+            - generic [ref=f4e36]: "Reach out for opportunities to:"
+            - generic [ref=f4e37]: 🤝 Be referenced inside Withings app
+            - generic [ref=f4e38]: 🤝 Benefit from custom workflows
+            - generic [ref=f4e39]: 🤝 Run emailing cross sell campaigns
+            - link "Contact Partnerships" [ref=f4e41] [cursor=pointer]:
+              - /url: mailto:partnerships@withings.com?subject=Strategic Partnership Inquiry
+        - listitem
+      - link "Contact Us" [ref=f4e42] [cursor=pointer]:
+        - /url: https://www.withings.com/us/en/health-solutions/contact-us#enterprise
+    - generic [ref=f4e43]:
+      - text: AI Ready
+      - generic [ref=f4e44]:
+        - text: Healthcare
+        - generic [ref=f4e45]: For Clinical & Health Programs
+      - generic [ref=f4e46]: Transform care with remote monitoring. Drive better outcomes and reduce costs with our industry-leading connected health platform and logistics services.
+      - link "Contact Us" [ref=f4e49] [cursor=pointer]:
+        - /url: https://www.withings.com/us/en/health-solutions/contact-us#healthcare
+      - list [ref=f4e50]:
+        - listitem [ref=f4e51]:
+          - generic [ref=f4e52]:
+            - generic [ref=f4e53]: Custom Biomarkers Show more ▼
+            - text: 💡 💡 💡 💡 💡
+        - listitem [ref=f4e54]:
+          - strong [ref=f4e55]: Unlimited
+          - text: users
+        - listitem [ref=f4e56]:
+          - strong [ref=f4e57]: 1,500+
+          - text: requests/minute
+        - listitem [ref=f4e58]:
+          - link "Largest selection of cellular-enabled medical devices" [ref=f4e59] [cursor=pointer]:
+            - /url: https://www.withings.com/us/en/health-solutions/solutions
+        - listitem [ref=f4e60]: Streamlined EHR workflows
+        - listitem [ref=f4e61]: HIPAA/HDS/GDPR compliant
+        - listitem [ref=f4e62]:
+          - generic [ref=f4e63]:
+            - generic [ref=f4e64]: Support & Logistics Show more ▼
+            - text: ✅ ✅ ✅ ✅ 💡
+        - listitem [ref=f4e65]:
+          - link "🖥️ Withings RPM Platform" [ref=f4e66] [cursor=pointer]:
+            - /url: https://www.withings.com/us/en/health-solutions/remote-patient-monitoring
+      - link "Schedule Demo" [ref=f4e67] [cursor=pointer]:
+        - /url: https://www.withings.com/us/en/health-solutions/contact-us#healthcare
+    - generic [ref=f4e68]:
+      - text: AI Ready
+      - generic [ref=f4e69]:
+        - text: Research
+        - generic [ref=f4e70]: For Studies & AI Innovation
+      - generic [ref=f4e71]: Accelerate health breakthroughs. Access high-fidelity and higher frequency data + expert support to train cutting-edge AI models.
+      - link "Contact Us" [ref=f4e74] [cursor=pointer]:
+        - /url: https://www.withings.com/us/en/health-solutions/contact-us#research
+      - list [ref=f4e75]:
+        - listitem [ref=f4e76]:
+          - generic [ref=f4e77]: Advanced Biomarkers Show more ▼
+        - listitem [ref=f4e79]:
+          - strong [ref=f4e80]: Unlimited
+          - text: users
+        - listitem [ref=f4e81]:
+          - text: Trusted by
+          - strong [ref=f4e82]: 100+
+          - link "research labs" [ref=f4e83] [cursor=pointer]:
+            - /url: https://withings.com/research
+        - listitem [ref=f4e84]:
+          - link "Largest selection of cellular-enabled medical devices" [ref=f4e85] [cursor=pointer]:
+            - /url: https://www.withings.com/us/en/health-solutions/solutions
+        - listitem [ref=f4e86]: HIPAA/HDS/GDPR compliant
+        - listitem [ref=f4e87]:
+          - generic [ref=f4e88]:
+            - generic [ref=f4e89]: Support & Logistics Show more ▼
+            - text: ✅ ✅ ✅ 💡
+        - listitem [ref=f4e90]: Data anonymization services
+        - listitem [ref=f4e91]: Regulatory compliance assistance
+        - listitem [ref=f4e92]:
+          - link "🖥️ Withings RPM Platform" [ref=f4e93] [cursor=pointer]:
+            - /url: https://www.withings.com/us/en/health-solutions/remote-patient-monitoring
+      - link "Contact Us" [ref=f4e94] [cursor=pointer]:
+        - /url: https://www.withings.com/us/en/health-solutions/contact-us#research

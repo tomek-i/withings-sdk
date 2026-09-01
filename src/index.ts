@@ -4,6 +4,7 @@ export * from "./auth";
 export * from "./errors";
 export * from "./measure";
 export * from "./pagination";
+export * from "./plans";
 export * from "./sleep";
 export * from "./types";
 

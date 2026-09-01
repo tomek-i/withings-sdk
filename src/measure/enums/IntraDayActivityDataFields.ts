@@ -40,14 +40,20 @@ export enum IntraDayActivityDataFields {
   heart_rate = "heart_rate",
   /**
    * SpO2 measurement automatically tracked by a device, as a percentage.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   spo2_auto = "spo2_auto",
   /**
    * Respiration rate, in breaths per minute.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   rr = "rr",
   /**
    * Chest movement rate, in events per minute.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   chest_movement_rate = "chest_movement_rate",
 }
