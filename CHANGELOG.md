@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0](https://github.com/tomek-i/withings-sdk/compare/v0.2.0...v0.3.0) (2026-09-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* getWorkouts now requires an options argument. The previous no-argument form returned an arbitrary 7-day window and built a request the API documents as invalid, so there is no behaviour worth preserving. Callers should pass either { startDate, endDate } or { lastUpdate }.
+
+### Added
+
+* give getWorkouts and getIntradayActivity their request options ([20adbbc](https://github.com/tomek-i/withings-sdk/commit/20adbbc15af48a5def2898a063438dbd8ac5b3a9))
+
 ## [0.2.0](https://github.com/tomek-i/withings-sdk/compare/v0.1.1...v0.2.0) (2026-09-01)
 
 ### Added
