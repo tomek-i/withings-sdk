@@ -1,7 +1,7 @@
-import crypto from "crypto";
-import { sortParams } from "@/util";
-import { IHttpClient } from "@/http";
-import { WithingsConfig } from "..";
+import crypto from "node:crypto";
+import { sortParams } from "../util";
+import { IHttpClient } from "../http";
+import { WithingsConfig } from "../types";
 import { RequestTokenResponse } from "./types/http/responses/RequestTokenResponse";
 import { AuthCodeUrlParams } from "./types/http/params/AuthCodeUrlParams";
 
@@ -17,10 +17,28 @@ export class Auth {
   getCurrentAccessToken() {
     return this.access_token;
   }
-  constructor(private readonly config: WithingsConfig, private readonly httpClient: IHttpClient) {}
+
+  /**
+   * Seeds the token pair from a previous authorization, so an already
+   * authorized user does not have to go through the consent screen again.
+   */
+  public setTokens(tokens: { accessToken: string; refreshToken?: string }) {
+    this.access_token = tokens.accessToken;
+    if (tokens.refreshToken !== undefined) {
+      this.refresh_token = tokens.refreshToken;
+    }
+  }
+
+  constructor(
+    private readonly config: WithingsConfig,
+    private readonly httpClient: IHttpClient
+  ) {
+    this.access_token = config.accessToken ?? null;
+    this.refresh_token = config.refreshToken ?? null;
+  }
 
   public async refreshAccessToken(): Promise<RequestTokenResponse> {
-    if (this.refreshAccessToken === null) {
+    if (this.refresh_token === null) {
       throw new Error("Refresh token is not set. Please call auth.fetchAccessToken() first.");
     }
 
@@ -47,7 +65,8 @@ export class Auth {
     const data = (await response.json()) as RequestTokenResponse;
 
     this.access_token = data.body.access_token;
-    this.refresh_token = data.body.access_token;
+    // Withings rotates the refresh token; keep the previous one if it is omitted.
+    this.refresh_token = data.body.refresh_token ?? this.refresh_token;
 
     return data;
   }
@@ -83,7 +102,8 @@ export class Auth {
     const data = (await response.json()) as RequestTokenResponse;
 
     this.access_token = data.body.access_token;
-    this.refresh_token = data.body.access_token;
+    // Withings rotates the refresh token; keep the previous one if it is omitted.
+    this.refresh_token = data.body.refresh_token ?? this.refresh_token;
 
     return data;
   }

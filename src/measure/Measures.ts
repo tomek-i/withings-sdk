@@ -1,4 +1,4 @@
-import { encodeQueryParams, formatYmd } from "@/util";
+import { encodeQueryParams, formatYmd } from "../util";
 import { GetActivityRequest } from "./types/http/requests/GetActivityRequest";
 import { GetIntradayActivityRequest } from "./types/http/requests/GetIntradayActivityRequest";
 import { ConfirmUserRequest } from "./types/http/requests/ConfirmUserRequest";
@@ -7,7 +7,7 @@ import { GetWorkoutsRequest } from "./types/http/requests/GetWorkoutsRequest";
 import { GetMeasurementOptions } from "./types/GetMeasurementOptions";
 import { GetActivityOptions } from "./types/GetActivityOptions";
 
-import { WithingsHttpClient } from "@/http/WithingsHttpClient";
+import { WithingsHttpClient } from "../http/WithingsHttpClient";
 import { GetConfirmUserOptions } from "./types/GetConfirmUserOptions";
 
 //TODO should inherit from an abstract http client class or pass

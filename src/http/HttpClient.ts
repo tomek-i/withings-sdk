@@ -61,7 +61,7 @@ export class HttpClient implements IHttpClient {
       requestOptions.body = JSON.stringify(body);
     }
 
-    let response = await fetch(fullEndpoint, requestOptions);
+    const response = await fetch(fullEndpoint, requestOptions);
 
     if (!response.ok) {
       //TODO: better error messaging

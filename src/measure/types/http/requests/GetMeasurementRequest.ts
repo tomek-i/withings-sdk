@@ -1,4 +1,4 @@
-import { WithingsRequest } from "@/types";
+import { WithingsRequest } from "../../../../types";
 import { GetMeasurementParams } from "../params/GetMeasurementParams";
 
 /**

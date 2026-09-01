@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20, 22]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm run format:check
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm run build
+
+      # Catches the class of packaging bug where the tarball ships no build
+      # output, or main/types point at files that do not exist.
+      - name: Verify the published package resolves
+        run: |
+          pnpm pack
+          mkdir -p /tmp/consumer && cd /tmp/consumer
+          npm init -y >/dev/null
+          npm install "$GITHUB_WORKSPACE"/withings-sdk-*.tgz
+          node --input-type=module -e "
+            import { WithingsClient } from 'withings-sdk';
+            if (typeof WithingsClient !== 'function') throw new Error('ESM entry point is broken');
+            console.log('ESM entry point OK');
+          "
+          node --input-type=commonjs -e "
+            const { WithingsClient } = require('withings-sdk');
+            if (typeof WithingsClient !== 'function') throw new Error('CJS entry point is broken');
+            console.log('CJS entry point OK');
+          "
+          test -f node_modules/withings-sdk/dist/index.d.ts || { echo 'missing type declarations'; exit 1; }

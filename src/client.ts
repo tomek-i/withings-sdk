@@ -36,17 +36,17 @@ export class WithingsClient {
 
     this.auth = new Auth(this.config, client);
 
+    // Both callbacks are arrow functions so `this` stays bound to the client,
+    // and the token is read lazily on every request rather than snapshotted at
+    // construction time (when it is usually still null).
     this.httpClient = new WithingsHttpClient(
       client,
-      String(this.auth.getCurrentAccessToken()),
-      this.refreshAccessToken
+      () => this.auth.getCurrentAccessToken(),
+      async () => {
+        await this.auth.refreshAccessToken();
+      }
     );
 
     this.measures = new Measures(this.httpClient);
-  }
-
-  private async refreshAccessToken() {
-    await this.auth.refreshAccessToken();
-    this.httpClient.setAccessToken(String(this.auth.getCurrentAccessToken()));
   }
 }

@@ -1,16 +1,17 @@
 import type { Config } from "jest";
 
+/** Unit tests: no network, no credentials. This is what CI runs. */
 const config: Config = {
   preset: "ts-jest",
   testEnvironment: "node",
+  roots: ["<rootDir>/test/unit"],
   transform: {
     "^.+\\.tsx?$": "ts-jest",
   },
-  transformIgnorePatterns: ["/node_modules/(?!@t3-oss/env-core)"],
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
-    "^@/(.*)$": "<rootDir>/src/$1", // Assuming '@' alias points to the 'src' directory
   },
+  collectCoverageFrom: ["src/**/*.ts", "!src/**/index.ts"],
 };
 
 export default config;

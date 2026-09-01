@@ -1,0 +1,41 @@
+name: Release
+
+# Publishes to npm when a v* tag is pushed, e.g.:
+#   pnpm version minor && git push --follow-tags
+#
+# Requires an automation token stored as the NPM_TOKEN repository secret.
+# `id-token: write` lets npm attach a signed provenance statement to the
+# release, so consumers can verify it was built from this repository.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # `prepublishOnly` runs typecheck, lint, tests and the build before the
+      # tarball is created, so a broken commit cannot reach the registry.
+      - name: Publish
+        run: pnpm publish --provenance --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

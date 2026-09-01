@@ -1,7 +1,7 @@
 import express from "express";
 import * as http from "http";
 import { WithingsClient } from "../../src";
-import { env } from "../../src/env";
+import { env } from "../helpers/env";
 import { exec } from "child_process";
 import { RequestTokenResponse } from "../../src/auth/types/http/responses/RequestTokenResponse";
 
@@ -13,12 +13,14 @@ describe("WITHINGS CLIENT AUTHORIZATION TESTS", () => {
   let resolveServerReady: (value: RequestTokenResponse | PromiseLike<RequestTokenResponse>) => void;
 
   beforeAll(() => {
-    const config = {
-      clientId: env.WHITININGS_CLIENT_ID,
-      clientSecret: env.WHITININGS_SECRET,
-      redirectUri: env.WHITININGS_REDIRECT_URI!,
-    };
-    client = new WithingsClient(config);
+    client = new WithingsClient({
+      clientId: env.WITHINGS_CLIENT_ID,
+      clientSecret: env.WITHINGS_CLIENT_SECRET,
+      redirectUri: env.WITHINGS_REDIRECT_URI,
+      // Seeded so the refresh test can run without going through consent first.
+      accessToken: env.WITHINGS_ACCESS_TOKEN,
+      refreshToken: env.WITHINGS_REFRESH_TOKEN,
+    });
 
     // Start up server
     serverReady = new Promise<RequestTokenResponse>((resolve) => {

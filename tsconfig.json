@@ -1,35 +1,31 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    /* Base Options: */
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "target": "ES2020",
-    "allowJs": true,
-    "resolveJsonModule": true,
+    /* Emit is handled by tsup (see tsup.config.ts); tsc is used for type checking only. */
+    "noEmit": true,
+    "declaration": true,
+    "outDir": "./dist",
+
+    /* Environment: a Node library. No DOM. */
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "moduleDetection": "force",
+    "types": ["node", "jest"],
+
+    /* Interop */
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
     "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
 
     /* Strictness */
     "strict": true,
-    // "noUncheckedIndexedAccess": true,
-    "checkJs": true,
-
-    /* Bundled projects */
-    "lib": ["dom", "dom.iterable", "ES2022"],
-    "noEmit": true,
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "jsx": "preserve",
-    "incremental": true,
-    "baseUrl": "./src",
-    "types": ["node", "jest"],
-    "paths": {
-      "@/*": ["./*"]
-    },
-
-    "outDir": "./dist"
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*", "*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*", "test/**/*", "*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

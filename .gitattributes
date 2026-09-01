@@ -1,2 +1,5 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Normalize to LF in the repository and in the working tree, so Biome's
+# formatter and Git agree on every platform.
+* text=auto eol=lf
+
+pnpm-lock.yaml -diff linguist-generated

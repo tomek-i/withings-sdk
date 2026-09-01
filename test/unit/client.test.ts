@@ -1,4 +1,4 @@
-import { WithingsClient } from "../src/client";
+import { WithingsClient } from "../../src/client";
 
 describe("WithingsClient", () => {
   describe("constructor", () => {

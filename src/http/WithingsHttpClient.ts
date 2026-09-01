@@ -1,5 +1,5 @@
-import { WithingsResponse } from "@/types";
-import { ErrorCodeHandler, WithingsResponseStatus } from "@/util";
+import { WithingsResponse } from "../types";
+import { ErrorCodeHandler, WithingsResponseStatus } from "../util";
 import { IHttpClient } from "./HttpClient";
 
 /**
@@ -10,15 +10,18 @@ import { IHttpClient } from "./HttpClient";
 export class WithingsHttpClient {
   public static readonly API_BASE_URL = "https://wbsapi.withings.net";
 
+  /**
+   * @param httpClient  The underlying transport.
+   * @param getAccessToken  Reads the *current* access token. This is a getter
+   *   rather than a value so the client always sees tokens acquired after
+   *   construction (e.g. by `auth.fetchAccessToken()`).
+   * @param refreshAccessToken  Renews an expired access token.
+   */
   constructor(
     private readonly httpClient: IHttpClient,
-    private access_token: string,
-    private readonly refreshAccessToken: () => any
+    private readonly getAccessToken: () => string | null,
+    private readonly refreshAccessToken: () => Promise<void>
   ) {}
-
-  public setAccessToken(accessToken: string) {
-    this.access_token = accessToken;
-  }
 
   /**
    * Sends a GET request to the specified endpoint with the provided options.
@@ -39,26 +42,34 @@ export class WithingsHttpClient {
    * @param {RequestInit} [options={}] - Additional options for the request.
    * @return {Promise<Response>} A Promise that resolves to the response of the POST request.
    */
-  public async post<T>(endpoint: string, body: BodyInit, options: RequestInit = {}): Promise<WithingsResponse<T>> {
+  public async post<T>(
+    endpoint: string,
+    body: RequestInit["body"],
+    options: RequestInit = {}
+  ): Promise<WithingsResponse<T>> {
     //TODO: dont like the "as" convert of body
     return this.fetchWithAuth<T>(endpoint, body, { ...options, method: "POST" });
   }
 
   private async fetchWithAuth<T>(
     endpoint: string,
-    body?: BodyInit,
+    body?: RequestInit["body"],
     options?: RequestInit,
     retry: boolean = true
   ): Promise<WithingsResponse<T>> {
-    if (this.access_token === null) {
-      throw new Error("Access token is not set. Please call auth.fetchAccessToken() first.");
+    const accessToken = this.getAccessToken();
+
+    if (!accessToken) {
+      throw new Error(
+        "Access token is not set. Call auth.fetchAccessToken(code) first, or pass accessToken in the client config."
+      );
     }
 
-    let response = await this.httpClient.send(endpoint, body, {
+    const response = await this.httpClient.send(endpoint, body, {
       ...options,
       headers: {
         ...options?.headers,
-        Authorization: `Bearer ${this.access_token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
