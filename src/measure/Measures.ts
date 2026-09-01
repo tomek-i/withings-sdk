@@ -1,3 +1,4 @@
+import { paginate } from "../pagination/paginate";
 import { encodeQueryParams, formatYmd } from "../util";
 import { ConfirmUser } from "./models/ConfirmUser";
 import { GetActivity } from "./models/GetActivity";
@@ -139,5 +140,41 @@ export class Measures {
     return this.httpClient.get<GetMeasurements>(`${Measures.API_URL}?${queryString}`, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
+  }
+
+  /**
+   * Walks {@link getMeasurement} one page at a time.
+   *
+   * The API caps how many rows a single call returns; this follows the
+   * `offset` it hands back until there are none left. Pages are fetched
+   * lazily, so nothing is requested until the iterator is advanced.
+   *
+   * ```typescript
+   * for await (const page of client.measures.getMeasurementPages(options)) {
+   *   for (const group of page.measuregrps) {
+   *     // ...
+   *   }
+   * }
+   * ```
+   *
+   * Any `offset` on `options` is ignored: the walk manages it.
+   *
+   * @param options The same options {@link getMeasurement} accepts.
+   * @returns An async iterator over the response bodies, one per page.
+   */
+  public getMeasurementPages(options: GetMeasurementOptions = {} as GetMeasurementOptions) {
+    return paginate((offset) => this.getMeasurement({ ...options, offset }));
+  }
+
+  /**
+   * Walks {@link getActivity} one page at a time.
+   *
+   * Any `offset` on `options` is ignored: the walk manages it.
+   *
+   * @param options The same options {@link getActivity} accepts.
+   * @returns An async iterator over the response bodies, one per page.
+   */
+  public getActivityPages(options: GetActivityOptions) {
+    return paginate((offset) => this.getActivity({ ...options, offset }));
   }
 }

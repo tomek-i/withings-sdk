@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Pagination. `paginate` walks any endpoint that reports `more` and `offset`,
+  and `Measures` exposes `getMeasurementPages` and `getActivityPages` built on
+  it. Pages are fetched lazily, so breaking out of the loop early issues no
+  further requests.
+- `PaginatedBody` and `hasMorePages`, which absorb the API returning `more` as
+  a number from `getmeas` and a boolean from `getactivity`/`getworkouts`.
 - `WithingsApiError`, thrown when the API reports a failure. It carries the raw
   `status`, the mapped `WithingsResponseStatus` as `type`, and the response
   `body`, so callers can react to a specific failure such as rate limiting

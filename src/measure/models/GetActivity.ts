@@ -1,3 +1,4 @@
+import { PaginatedBody } from "../../pagination/paginate";
 import { Activity } from "./Activity";
 
 /**
@@ -5,11 +6,7 @@ import { Activity } from "./Activity";
  *
  * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-getactivity
  */
-export interface GetActivity {
+export interface GetActivity extends PaginatedBody {
   /** One entry per day in the requested range. */
   activities: Activity[];
-  /** True when more rows are available; request them with `offset`. */
-  more?: boolean;
-  /** Offset to pass on the next call to continue reading. */
-  offset?: number;
 }

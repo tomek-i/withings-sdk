@@ -1,3 +1,4 @@
+import { PaginatedBody } from "../../pagination/paginate";
 import { Workout } from "./Workout";
 
 /**
@@ -5,11 +6,7 @@ import { Workout } from "./Workout";
  *
  * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-getworkouts
  */
-export interface GetWorkouts {
+export interface GetWorkouts extends PaginatedBody {
   /** One entry per workout in the requested range. */
   series: Workout[];
-  /** True when more rows are available; request them with `offset`. */
-  more?: boolean;
-  /** Offset to pass on the next call to continue reading. */
-  offset?: number;
 }

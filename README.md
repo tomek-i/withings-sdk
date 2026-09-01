@@ -97,6 +97,27 @@ const activity = await client.measures.getActivity({
 const workouts = await client.measures.getWorkouts();
 ```
 
+## Pagination
+
+List endpoints cap how many rows one call returns, reporting `more` and an
+`offset` to resume from. The `*Pages` methods follow that for you:
+
+```typescript
+for await (const page of client.measures.getMeasurementPages({ meastype: MeasurementType.Weight })) {
+  for (const group of page.measuregrps) {
+    // ...
+  }
+}
+```
+
+Pages are fetched lazily, so nothing is requested until the loop asks for it
+and no further call is made if you `break` early — which matters against a
+rate-limited API. Collect everything with `Array.fromAsync` if you need it all
+at once, but be aware that issues every request up front.
+
+`paginate` is exported too, so the same walk works over any endpoint that
+reports `more` and `offset`.
+
 ## Error handling
 
 The Withings API answers with HTTP 200 even when a call fails, putting the
@@ -128,9 +149,10 @@ once before throwing.
 | --------------------------------------- | --------------------------------------------------------------- |
 | `WithingsClient`                        | Entry point. Exposes `.auth` and `.measures`.                    |
 | `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, signatures.   |
-| `Measures`                              | `getMeasurement`, `getActivity`, `getIntradayActivity`, `getWorkouts`, `confirmUser`. |
+| `Measures`                              | `getMeasurement`, `getActivity`, `getIntradayActivity`, `getWorkouts`, `confirmUser`, plus `getMeasurementPages` / `getActivityPages`. |
 | `WithingsResponseStatus`                | Maps a Withings `status` code onto a coarse result category.     |
 | `WithingsApiError`                      | Thrown when the API reports a failure. Carries `status`, `type` and `body`. |
+| `paginate` / `hasMorePages`             | Walk any paginated endpoint one page at a time.                  |
 | `HttpClient` / `WithingsHttpClient`     | The transport, exported so you can substitute or mock it.        |
 | `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields` | Enums for request parameters. |
 
