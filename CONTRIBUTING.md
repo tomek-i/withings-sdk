@@ -25,9 +25,26 @@ Node.js 18 or newer is required.
 | `pnpm run format:check` | Verifies formatting (used by CI).                               |
 | `pnpm run build`     | Produces the ESM + CJS bundles and type declarations in `dist/`.   |
 | `pnpm run test:e2e`  | Live API tests. Requires credentials — see below.                  |
+| `pnpm run commitlint` | Checks your commit messages against the convention.               |
 
 Formatting is handled by [Biome](https://biomejs.dev/); linting by ESLint. Run
 `pnpm run format` before committing.
+
+## Commit messages
+
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/).
+This is not a style preference: release-please reads the commit type to decide
+the next version number, so the wrong type produces the wrong release.
+
+```
+feat: add the sleep service          -> minor bump
+fix: send ymd dates with dashes      -> patch bump
+docs: document the error type        -> no release
+feat!: rename the client options     -> minor bump while pre-1.0
+```
+
+A `commit-msg` hook checks this locally as soon as you have run `pnpm install`,
+and CI checks every commit in a pull request.
 
 ## End-to-end tests
 
@@ -47,16 +64,18 @@ pnpm run test:e2e
 
 ## Releasing
 
-Releases are published by CI when a `v*` tag is pushed:
+Releases are automated. Do not bump the version or edit the changelog by hand.
 
-```bash
-pnpm version minor      # or patch / major — updates package.json and tags
-git push --follow-tags
-```
+1. Merge your PR to `main` with conventional commits.
+2. [release-please](https://github.com/googleapis/release-please) opens and
+   maintains a **Release PR** that bumps `package.json` and writes
+   `CHANGELOG.md` from the commits since the last release.
+3. Merging that Release PR is the release decision. It tags the commit, creates
+   the GitHub release, and publishes to npm with provenance.
 
-The `Release` workflow runs `prepublishOnly` (typecheck, lint, tests, build) and
-then publishes to npm with provenance. Update `CHANGELOG.md` as part of the
-release commit.
+To hold a release back, simply leave the Release PR open; it keeps updating as
+more commits land. To force a particular version, add a `Release-As: 1.2.3`
+footer to a commit.
 
 Authentication uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers)
 over OIDC, so there is no publish token to store or rotate. The trusted

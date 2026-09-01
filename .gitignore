@@ -135,3 +135,6 @@ dist
 # Withings API specification, kept locally as a reference for modelling.
 # Not committed: it is Withings documentation, not ours to redistribute.
 openapi.json
+
+# husky generated files
+.husky/_
