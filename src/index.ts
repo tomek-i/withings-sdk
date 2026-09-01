@@ -15,3 +15,4 @@ export { WithingsResponseStatus } from "./util";
 export type { IHttpClient } from "./http/HttpClient";
 export { HttpClient } from "./http/HttpClient";
 export { WithingsHttpClient } from "./http/WithingsHttpClient";
+export * from "./http/retry";

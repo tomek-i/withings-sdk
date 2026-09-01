@@ -191,6 +191,42 @@ Beyond your plan, a metric can also be absent because the device does not
 measure it, the user did not grant the OAuth scope, or it is restricted in the
 region the device was bought in. `WithingsApiError` spells those out when the
 API returns an authorization failure.
+## Rate limits
+
+Withings allows roughly **120 requests per minute** by default, and more on a
+paid plan. Exceeding it is reported as status `601` — in the response body, not
+as an HTTP error.
+
+The client backs off and retries a rate limited request automatically, up to
+three attempts in total, with exponential delays and full jitter:
+
+```typescript
+const client = new WithingsClient({
+  ...credentials,
+  retry: {
+    maxAttempts: 3,        // default; 1 disables retrying
+    initialDelayMs: 1000,  // doubles each attempt
+    maxDelayMs: 30000,
+    jitter: true,          // spreads retries so clients do not sync up
+    onRetry: ({ attempt, delayMs }) => console.warn(`rate limited, retry ${attempt} in ${delayMs}ms`),
+  },
+});
+
+// Or opt out entirely and handle 601 yourself:
+const strict = new WithingsClient({ ...credentials, retry: false });
+```
+
+Once the attempts are exhausted the rate limit surfaces as a
+`WithingsApiError` with `type === WithingsResponseStatus.TooManyRequests`.
+
+Withings also rejects a **repeated request with identical arguments inside ten
+seconds**, reporting it with the same `601`. The client recognises that case
+and waits out the full window instead of retrying inside it, where every
+attempt would be rejected again.
+
+Retrying only smooths over bursts. If you are polling regularly, subscribe to
+notifications instead — Withings recommends it precisely to keep you under the
+limit.
 
 ## Error handling
 
@@ -229,6 +265,7 @@ once before throwing.
 | `WithingsApiError`                      | Thrown when the API reports a failure. Carries `status`, `type` and `body`. |
 | `paginate` / `hasMorePages`             | Walk any paginated endpoint one page at a time.                  |
 | `requiredPack` / `requiresPaidPlan` / `missingDataFields` / `BiomarkerPack` | Explain metrics your API plan does not include. |
+| `WithingsRetryOptions`                  | Tunes the automatic backoff for rate limited requests.           |
 | `HttpClient` / `WithingsHttpClient`     | The transport, exported so you can substitute or mock it.        |
 | `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields`, `SleepDataFields`, `SleepSummaryDataFields`, `SleepState` | Enums for request parameters. |
 
