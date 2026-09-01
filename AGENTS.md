@@ -18,6 +18,7 @@ Keeping it dependency-free is deliberate. Do not add a runtime dependency withou
 | `pnpm run format` | Formats with Biome. |
 | `pnpm run build` | ESM + CJS bundles and type declarations into `dist/`. |
 | `pnpm run test:e2e` | Live API tests. Needs real credentials in `.env`; excluded from CI. |
+| `pnpm run authorize` | Opens the Withings consent screen and writes fresh tokens into `.env`. |
 
 pnpm is the package manager, pinned via `packageManager`. Use `corepack enable` to get the right version.
 
@@ -85,3 +86,5 @@ Do not run `pnpm version`, edit the `version` field, or hand-write `CHANGELOG.md
 - npm surfaces trusted-publishing misconfiguration as `ENEEDAUTH` or `404`, never as a useful message. `--loglevel verbose` shows the real OIDC exchange error.
 - The `*ymd` parameters take a dashed `YYYY-MM-DD` date, not `YYYYMMDD`.
 - pnpm 10 blocks dependency build scripts by default; `esbuild` is allowlisted in `pnpm.onlyBuiltDependencies` because tsup needs it.
+- Withings rejects a repeated request with identical arguments inside 10 seconds, reporting it as `601` — the same code as a genuine rate limit. Two e2e tests firing the same call back to back will trip it.
+- Refresh tokens rotate on every renewal, so a stale `.env` fails as `503 invalid refresh_token` and then cascades into misleading `601`s. `pnpm run authorize` is the fix.

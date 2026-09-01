@@ -52,13 +52,26 @@ and CI checks every commit in a pull request.
 browser window for the consent screen. It is deliberately excluded from
 `pnpm test` and from CI.
 
-To run it, copy `.env.example` to `.env` and fill in credentials from your
-[Withings developer dashboard](https://developer.withings.com/dashboard/):
+To run it, copy `.env.example` to `.env` and fill in the client ID, secret and
+redirect URI from your
+[Withings developer dashboard](https://developer.withings.com/dashboard/), then
+authorize once:
 
 ```bash
 cp .env.example .env
+pnpm run authorize   # opens the consent screen, writes the tokens to .env
 pnpm run test:e2e
 ```
+
+`pnpm run authorize` serves your redirect URI locally, opens the Withings
+consent screen and writes the resulting token pair back into `.env`.
+
+Re-run it whenever the suite starts failing with `invalid refresh_token`.
+Access tokens last about three hours and **the refresh token is rotated on
+every renewal**, so a `.env` that has sat unused goes stale. The symptom is
+easy to misread: the first call fails with `503 invalid refresh_token`, and
+every call after it fails with `601 Same arguments in less than 10 seconds`,
+because each one retries the same doomed refresh.
 
 `.env` is gitignored. Never commit real credentials.
 
