@@ -4,6 +4,7 @@ export * from "./auth";
 export * from "./errors";
 export * from "./measure";
 export * from "./pagination";
+export * from "./sleep";
 export * from "./types";
 
 // Useful for interpreting the `status` field the Withings API returns.

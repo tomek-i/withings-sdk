@@ -97,6 +97,26 @@ const activity = await client.measures.getActivity({
 const workouts = await client.measures.getWorkouts();
 ```
 
+### 5. Read sleep data
+
+```typescript
+import { SleepDataFields, SleepSummaryDataFields } from "withings-sdk";
+
+// Night-level summaries
+const nights = await client.sleep.getSummary({
+  startDate: new Date("2024-01-01"),
+  endDate: new Date("2024-02-01"),
+  data_fields: [SleepSummaryDataFields.total_sleep_time, SleepSummaryDataFields.sleep_score],
+});
+
+// High frequency data for one night (max 7 days per call)
+const detail = await client.sleep.get({
+  startdate: new Date("2024-01-05T20:00:00Z"),
+  enddate: new Date("2024-01-06T10:00:00Z"),
+  data_fields: [SleepDataFields.hr, SleepDataFields.rr],
+});
+```
+
 ## Pagination
 
 List endpoints cap how many rows one call returns, reporting `more` and an
@@ -147,22 +167,23 @@ once before throwing.
 
 | Export                                  | Description                                                     |
 | --------------------------------------- | --------------------------------------------------------------- |
-| `WithingsClient`                        | Entry point. Exposes `.auth` and `.measures`.                    |
+| `WithingsClient`                        | Entry point. Exposes `.auth`, `.measures` and `.sleep`.          |
 | `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, signatures.   |
+| `Sleep`                                 | `get`, `getSummary`, plus `getSummaryPages`.                     |
 | `Measures`                              | `getMeasurement`, `getActivity`, `getIntradayActivity`, `getWorkouts`, `confirmUser`, plus `getMeasurementPages` / `getActivityPages`. |
 | `WithingsResponseStatus`                | Maps a Withings `status` code onto a coarse result category.     |
 | `WithingsApiError`                      | Thrown when the API reports a failure. Carries `status`, `type` and `body`. |
 | `paginate` / `hasMorePages`             | Walk any paginated endpoint one page at a time.                  |
 | `HttpClient` / `WithingsHttpClient`     | The transport, exported so you can substitute or mock it.        |
-| `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields` | Enums for request parameters. |
+| `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields`, `SleepDataFields`, `SleepSummaryDataFields`, `SleepState` | Enums for request parameters. |
 
 Request/response and option types (`WithingsConfig`, `WithingsResponse<T>`,
 `GetMeasurementOptions`, `GetActivityOptions`, …) are exported as well.
 
 ## Status
 
-Early and incomplete — the `measure` and `oauth2` endpoints are covered; the
-other Withings services are not implemented yet. The public API may still change
+Early and incomplete — the `measure`, `sleep` and `oauth2` endpoints are
+covered; the other Withings services are not implemented yet. The public API may still change
 before 1.0. Issues and pull requests are welcome.
 
 ## Contributing

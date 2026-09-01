@@ -11,12 +11,14 @@ describe("sortParams", () => {
 });
 
 describe("formatYmd", () => {
+  // The API's own code samples pass '2020-07-01', so the *ymd parameters take
+  // a dashed date rather than a bare YYYYMMDD run of digits.
   it("zero-pads month and day", () => {
-    expect(formatYmd(new Date(2024, 0, 5))).toEqual("20240105");
+    expect(formatYmd(new Date(2024, 0, 5))).toEqual("2024-01-05");
   });
 
   it("handles two-digit month and day", () => {
-    expect(formatYmd(new Date(2024, 10, 23))).toEqual("20241123");
+    expect(formatYmd(new Date(2024, 10, 23))).toEqual("2024-11-23");
   });
 });
 

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- The Sleep service, as `client.sleep`. `get` returns high frequency sleep
+  states with their heart rate, respiration and movement measurements;
+  `getSummary` returns night-level summaries, with `getSummaryPages` to walk
+  them. Includes `SleepState` and the two `data_fields` enums.
 - Pagination. `paginate` walks any endpoint that reports `more` and `offset`,
   and `Measures` exposes `getMeasurementPages` and `getActivityPages` built on
   it. Pages are fetched lazily, so breaking out of the loop early issues no
@@ -28,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `formatYmd` produced `20240105`, but the `*ymd` parameters take a dashed
+  `YYYY-MM-DD` date, as the API's own code samples show. Every `getActivity`
+  and `getWorkouts` call using a date range was therefore sending a malformed
+  date.
 - `ErrorCodeHandler` returned `undefined` for any status code outside its
   if-chain, and the transport then threw `new Error(data.error)` with an
   optional field, so an unmapped or message-less failure surfaced as

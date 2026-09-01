@@ -11,12 +11,13 @@ export const sortParams = (params: { [key: string]: string | number }) => {
 };
 
 /**
- * Formats a date as the `YYYYMMDD` string several Withings parameters expect.
+ * Formats a date as the `YYYY-MM-DD` string the `*ymd` Withings parameters
+ * expect, e.g. `startdateymd`.
  *
  * Uses the local date parts, so the result matches the caller's timezone.
  *
  * @param date The date to format.
- * @returns The date as `YYYYMMDD`.
+ * @returns The date as `YYYY-MM-DD`.
  */
 export const formatYmd = (date: Date): string => {
   const year = date.getFullYear();
@@ -28,7 +29,7 @@ export const formatYmd = (date: Date): string => {
   const monthFormatted = month < 10 ? `0${month}` : month.toString();
   const dayFormatted = day < 10 ? `0${day}` : day.toString();
 
-  return `${year}${monthFormatted}${dayFormatted}`;
+  return `${year}-${monthFormatted}-${dayFormatted}`;
 };
 
 /**
