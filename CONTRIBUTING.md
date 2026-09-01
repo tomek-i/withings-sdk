@@ -66,7 +66,10 @@ pnpm run test:e2e
 `pnpm run authorize` serves your redirect URI locally, opens the Withings
 consent screen and writes the resulting token pair back into `.env`.
 
-Re-run it whenever the suite starts failing with `invalid refresh_token`.
+The suite writes rotated tokens back to `.env` when it finishes, so running it
+does not invalidate your own credentials.
+
+Re-run `authorize` whenever the suite starts failing with `invalid refresh_token`.
 Access tokens last about three hours and **the refresh token is rotated on
 every renewal**, so a `.env` that has sat unused goes stale. The symptom is
 easy to misread: the first call fails with `503 invalid refresh_token`, and

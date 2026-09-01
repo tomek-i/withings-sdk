@@ -56,6 +56,7 @@
     "test": "jest",
     "test:e2e": "jest --config jest.e2e.config.ts --runInBand",
     "authorize": "tsx scripts/authorize.ts",
+    "probe": "tsx scripts/probe.ts",
     "commitlint": "commitlint --from origin/main --to HEAD --verbose",
     "prepublishOnly": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build"
   },

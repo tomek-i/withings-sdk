@@ -19,6 +19,7 @@ Keeping it dependency-free is deliberate. Do not add a runtime dependency withou
 | `pnpm run build` | ESM + CJS bundles and type declarations into `dist/`. |
 | `pnpm run test:e2e` | Live API tests. Needs real credentials in `.env`; excluded from CI. |
 | `pnpm run authorize` | Opens the Withings consent screen and writes fresh tokens into `.env`. |
+| `pnpm run probe` | Prints the shape of live API responses, to check the models against reality. |
 
 pnpm is the package manager, pinned via `packageManager`. Use `corepack enable` to get the right version.
 
@@ -37,7 +38,17 @@ Write the body as prose explaining *why*, not a restatement of the diff.
 
 **Verify against the OpenAPI specification, not against other clients.** Withings publishes one; earlier work in this repo modelled fields from third-party clients and got several wrong (a field that does not exist, a misspelled key, missing fields). The spec is not committed — it is Withings' documentation, not ours to redistribute — so download it when you need it and keep it gitignored as `openapi.json`.
 
-The spec is not infallible. Where it and observed responses disagree, model reality and say so in a comment. Known cases: `updatetime` is declared a string but arrives as a number; the sleep `get` series is declared an object but returns an array.
+The spec is not infallible, and **every disagreement found so far has been a real bug in the models**. Run `pnpm run probe` before trusting a field you have not seen in a response. Where the spec and reality differ, model reality and say so in a comment.
+
+Confirmed against the live API:
+
+- `updatetime` is declared a string, arrives as a number.
+- `measuregrps` returns `modelid`; the spec calls it `model_id`, which never appears.
+- `deviceid`, `hash_deviceid`, `model`, `modelid` and `comment` arrive as `null` on manually entered data, though the spec does not mark them nullable.
+- `measuregrps` entries carry a `timezone` the spec omits.
+- `userid` is a string from the authorization_code exchange and a number from a refresh. Same field, same endpoint.
+
+Still unverified: the sleep `get` series, declared an object but modelled as an array.
 
 **Mirror the existing module layout** when adding a service:
 

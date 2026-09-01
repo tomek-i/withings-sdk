@@ -2,6 +2,7 @@ import express from "express";
 import * as http from "http";
 import { WithingsClient } from "../../src";
 import { env } from "../helpers/env";
+import { persistTokens } from "../helpers/persistTokens";
 import { exec } from "child_process";
 import { RequestTokenResponse } from "../../src/auth/types/http/responses/RequestTokenResponse";
 
@@ -32,10 +33,11 @@ describe("WITHINGS CLIENT AUTHORIZATION TESTS", () => {
       const { code } = req.query;
       if (typeof code === "string") {
         const response = await client.auth.fetchAccessToken(code);
-        // Here you might want to do something with the response
-        // For example, resolve a promise that your test is waiting on
         resolveServerReady(response);
-        res.json(response);
+        // Deliberately not res.json(response): that renders the access and
+        // refresh tokens into the browser window, and into anything that logs
+        // the page.
+        res.status(200).send("Authorized. You can close this tab.");
       } else {
         res.status(400).send("Code is required");
       }
@@ -48,21 +50,26 @@ describe("WITHINGS CLIENT AUTHORIZATION TESTS", () => {
 
   afterAll(() => {
     server.close();
+    // Refreshing rotates the refresh token, so the credentials this suite was
+    // handed are dead by the time it finishes. Write the new pair back, or the
+    // next run fails with invalid_refresh_token.
+    persistTokens(client.auth.getCurrentAccessToken(), client.auth.getCurrentRefreshToken());
   });
+
+  const tokenBody = {
+    // Observed: a string from the authorization_code exchange, a number from a
+    // refresh. Same field, same endpoint, different type.
+    userid: expect.anything(),
+    access_token: expect.any(String),
+    refresh_token: expect.any(String),
+    scope: expect.any(String),
+    expires_in: expect.any(Number),
+    token_type: expect.any(String),
+  };
 
   it("should be able to refresh the access token", async () => {
     const response = await client.auth.refreshAccessToken();
-    expect(response).toEqual({
-      status: 0,
-      body: {
-        userid: expect.any(String),
-        access_token: expect.any(String),
-        refresh_token: expect.any(String),
-        scope: expect.any(String),
-        expires_in: expect.any(Number),
-        token_type: expect.any(String),
-      },
-    });
+    expect(response).toEqual({ status: 0, body: tokenBody });
   });
 
   it("should get an access token", async () => {
@@ -79,16 +86,6 @@ describe("WITHINGS CLIENT AUTHORIZATION TESTS", () => {
 
     // Wait for the server to close
 
-    expect(response).toEqual({
-      status: 0,
-      body: {
-        userid: expect.any(String),
-        access_token: expect.any(String),
-        refresh_token: expect.any(String),
-        scope: expect.any(String),
-        expires_in: expect.any(Number),
-        token_type: expect.any(String),
-      },
-    });
+    expect(response).toEqual({ status: 0, body: tokenBody });
   }, 30000);
 });

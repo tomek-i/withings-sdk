@@ -52,11 +52,13 @@ describe("getMeasurement response", () => {
           created: 1704412801,
           modified: 1704412802,
           category: 1,
-          deviceid: "abc",
-          hash_deviceid: "def",
-          model_id: 45,
-          model: "Body+",
+          // Real responses return null for these on manually entered data.
+          deviceid: null,
+          hash_deviceid: null,
+          modelid: null,
+          model: null,
           comment: null,
+          timezone: "Europe/Berlin",
           measures: [{ value: 74250, type: 1, unit: -3, algo: 0, fm: 3, apppfmid: 0, appliver: 0 }],
         },
       ],
@@ -66,13 +68,16 @@ describe("getMeasurement response", () => {
     const body: GetMeasurements = response.body;
 
     expect(body.timezone).toEqual("Europe/Berlin");
+    // The live API returns a number here, though the specification says string.
+    expect(typeof body.updatetime).toEqual("number");
     // getmeas reports `more` as a number, unlike getactivity/getworkouts.
     expect(body.more).toEqual(1);
     expect(body.offset).toEqual(100);
 
     const group = body.measuregrps[0];
-    expect(group.model).toEqual("Body+");
-    expect(group.model_id).toEqual(45);
+    expect(group.model).toBeNull();
+    expect(group.modelid).toBeNull();
+    expect(group.timezone).toEqual("Europe/Berlin");
     // value * 10^unit is the documented way to reconstitute the real figure.
     expect(group.measures[0].value * 10 ** group.measures[0].unit).toBeCloseTo(74.25);
   });
