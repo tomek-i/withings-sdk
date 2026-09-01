@@ -2,7 +2,7 @@ import { WithingsApiError } from "../errors/WithingsApiError";
 import { WithingsResponse } from "../types";
 import { ErrorCodeHandler, WithingsResponseStatus } from "../util";
 import { IHttpClient } from "./HttpClient";
-import { backoffDelay, delay, resolveRetryOptions, WithingsRetryOptions } from "./retry";
+import { backoffDelay, delay, isDuplicateRequest, resolveRetryOptions, WithingsRetryOptions } from "./retry";
 
 /**
  * The WithingsHttpClient class provides methods for making HTTP requests to the Withings API.
@@ -106,7 +106,7 @@ export class WithingsHttpClient {
       const error = new WithingsApiError(data);
 
       if (err === WithingsResponseStatus.TooManyRequests && attempt < this.retry.maxAttempts) {
-        const delayMs = backoffDelay(attempt, this.retry);
+        const delayMs = backoffDelay(attempt, this.retry, Math.random, isDuplicateRequest(error));
         this.retry.onRetry?.({ attempt, delayMs, error });
         await delay(delayMs);
         return this.fetchWithAuth(endpoint, body, options, mayRefresh, attempt + 1);

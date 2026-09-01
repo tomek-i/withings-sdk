@@ -219,6 +219,11 @@ const strict = new WithingsClient({ ...credentials, retry: false });
 Once the attempts are exhausted the rate limit surfaces as a
 `WithingsApiError` with `type === WithingsResponseStatus.TooManyRequests`.
 
+Withings also rejects a **repeated request with identical arguments inside ten
+seconds**, reporting it with the same `601`. The client recognises that case
+and waits out the full window instead of retrying inside it, where every
+attempt would be rejected again.
+
 Retrying only smooths over bursts. If you are polling regularly, subscribe to
 notifications instead — Withings recommends it precisely to keep you under the
 limit.

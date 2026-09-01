@@ -1,6 +1,12 @@
 import { WithingsApiError, WithingsClient, WithingsResponseStatus } from "../../src";
 import type { WithingsConfig } from "../../src";
-import { backoffDelay, DEFAULT_RETRY_OPTIONS, resolveRetryOptions } from "../../src/http/retry";
+import {
+  backoffDelay,
+  DEFAULT_RETRY_OPTIONS,
+  DUPLICATE_REQUEST_WINDOW_MS,
+  isDuplicateRequest,
+  resolveRetryOptions,
+} from "../../src/http/retry";
 
 const rateLimited = () =>
   ({ ok: true, status: 200, json: async () => ({ status: 601, error: "too many requests" }) }) as unknown as Response;
@@ -40,6 +46,46 @@ describe("backoffDelay", () => {
     expect(backoffDelay(3, jittered, () => 0)).toEqual(0);
     expect(backoffDelay(3, jittered, () => 0.5)).toEqual(2000);
     expect(backoffDelay(3, jittered, () => 0.999)).toBeLessThanOrEqual(4000);
+  });
+});
+
+describe("the duplicate-request guard", () => {
+  // Observed on live traffic: Withings rejects a repeated request with
+  // identical arguments inside 10 seconds, using the same 601 as a real rate
+  // limit. The default 1s/2s backoff sits entirely inside that window, so
+  // every attempt was being burned on a rejection that could not succeed yet.
+  const duplicate = new WithingsApiError({ status: 601, body: {}, error: "Same arguments in less than 10 seconds" });
+  const genuine = new WithingsApiError({ status: 601, body: {}, error: "too many requests" });
+
+  it("recognises the guard from the message", () => {
+    expect(isDuplicateRequest(duplicate)).toBe(true);
+    expect(isDuplicateRequest(genuine)).toBe(false);
+  });
+
+  it("treats a message-less rate limit as a genuine one", () => {
+    expect(isDuplicateRequest(new WithingsApiError({ status: 601, body: {} }))).toBe(false);
+  });
+
+  it("waits out the whole window rather than retrying inside it", () => {
+    const opts = { initialDelayMs: 1000, maxDelayMs: 30000, jitter: true };
+    expect(backoffDelay(1, opts, () => 0, true)).toEqual(DUPLICATE_REQUEST_WINDOW_MS);
+    // Jitter is skipped here: a shorter random delay would just burn an attempt.
+    expect(backoffDelay(1, opts, () => 0.1, true)).toEqual(DUPLICATE_REQUEST_WINDOW_MS);
+  });
+
+  it("still respects an explicitly lowered maxDelayMs", () => {
+    const opts = { initialDelayMs: 1000, maxDelayMs: 5000, jitter: false };
+    expect(backoffDelay(1, opts, Math.random, true)).toEqual(5000);
+  });
+
+  it("keeps the longer exponential delay once it exceeds the window", () => {
+    const opts = { initialDelayMs: 16000, maxDelayMs: 30000, jitter: false };
+    expect(backoffDelay(1, opts, Math.random, true)).toEqual(16000);
+  });
+
+  it("leaves a genuine rate limit on the ordinary backoff", () => {
+    const opts = { initialDelayMs: 1000, maxDelayMs: 30000, jitter: false };
+    expect(backoffDelay(1, opts, Math.random, false)).toEqual(1000);
   });
 });
 
