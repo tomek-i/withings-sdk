@@ -52,19 +52,5 @@ jobs:
       # Published with npm rather than pnpm: pnpm's OIDC support has known
       # regressions (pnpm/pnpm#11513). npm still honours the `files` field and
       # runs `prepublishOnly` (typecheck, lint, tests, build) before packing.
-      # Confirms GitHub actually exposed an OIDC token to this step.
-      - name: Diagnose OIDC availability
-        run: |
-          echo "npm: $(npm -v)"
-          if [ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then
-            echo "OIDC request URL: present"
-          else
-            echo "OIDC request URL: MISSING (id-token permission not applied)"
-          fi
-          echo "--- npmrc files ---"
-          echo "userconfig=${NPM_CONFIG_USERCONFIG:-<unset>}"
-          cat .npmrc 2>/dev/null || echo "no repo .npmrc"
-          cat ~/.npmrc 2>/dev/null || echo "no home .npmrc"
-
       - name: Publish
-        run: npm publish --access public --provenance --loglevel verbose
+        run: npm publish --access public --provenance
