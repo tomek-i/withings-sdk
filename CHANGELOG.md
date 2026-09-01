@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0](https://github.com/tomek-i/withings-sdk/compare/v0.1.1...v0.2.0) (2026-09-01)
+
+
+### CI
+
+* automate releases with release-please and conventional commits ([f1dcc9f](https://github.com/tomek-i/withings-sdk/commit/f1dcc9fd801100158998b9997bd054de571d84ae))
+
 ## [Unreleased]
 
 ### Added
