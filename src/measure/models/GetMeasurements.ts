@@ -10,9 +10,9 @@ export interface GetMeasurements extends PaginatedBody {
   /**
    * Server time at which the answer was generated.
    *
-   * Typed as a union deliberately: the published specification declares this a
-   * string, while observed responses have carried a unix timestamp as a number.
-   * Narrow with `Number(updatetime)` if you need to do arithmetic.
+   * Typed as a union deliberately. The published specification declares a
+   * string; the live API returns a unix timestamp as a number. The union keeps
+   * both safe. Narrow with `Number(updatetime)` before doing arithmetic.
    */
   updatetime: string | number;
   /** IANA timezone the measurements were recorded in. */

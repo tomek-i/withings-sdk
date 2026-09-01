@@ -12,10 +12,15 @@ export interface Activity {
   date?: string;
   /** IANA timezone the `date` is expressed in, e.g. `Europe/Berlin`. */
   timezone?: string;
-  /** Identifier of the device that recorded the data. */
-  deviceid?: string;
+  /**
+   * Identifier of the device that recorded the data.
+   *
+   * Nullable: observed responses return `null` where no device is attached,
+   * even though the specification does not mark it so.
+   */
+  deviceid?: string | null;
   /** Hashed device identifier, returned instead of `deviceid` for some apps. */
-  hash_deviceid?: string;
+  hash_deviceid?: string | null;
   /** Brand identifier of the recording device. */
   brand?: number;
   /** Whether the data came from a Withings activity tracker. */

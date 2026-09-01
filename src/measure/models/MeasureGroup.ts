@@ -19,21 +19,28 @@ export interface MeasureGroup {
   modified: number;
   /** Whether these are real measurements or user objectives. */
   category: number;
-  /** Identifier of the device that took the measurement. */
-  deviceid?: string;
+  /**
+   * Identifier of the device that took the measurement.
+   *
+   * Nullable: observed responses return `null` for manually entered data and
+   * for older records, even though the specification does not mark it so.
+   */
+  deviceid?: string | null;
   /** Hashed device identifier, returned instead of `deviceid` for some apps. */
-  hash_deviceid?: string;
+  hash_deviceid?: string | null;
   /** The individual measurements in this group. */
   measures: Measure[];
-  /** Name of the device model, e.g. `Body+`. */
-  model?: string;
+  /** IANA timezone this group was recorded in. */
+  timezone?: string;
+  /** Name of the device model, e.g. `Body+`. Null when no device is attached. */
+  model?: string | null;
   /**
    * Numeric identifier of the device model.
    *
-   * Note the spelling: `getmeas` returns `model_id`, while `getactivity`
-   * returns the same concept as `modelid`. That inconsistency is in the API.
+   * The specification calls this `model_id`, but responses return `modelid`.
+   * Verified against the live API; `model_id` is never present.
    */
-  model_id?: number;
+  modelid?: number | null;
   /** @deprecated The API always returns this empty. */
-  comment?: string;
+  comment?: string | null;
 }
