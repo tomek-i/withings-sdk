@@ -7,13 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0](https://github.com/tomek-i/withings-sdk/compare/v0.1.1...v0.2.0) (2026-09-01)
 
-
-### CI
-
-* automate releases with release-please and conventional commits ([f1dcc9f](https://github.com/tomek-i/withings-sdk/commit/f1dcc9fd801100158998b9997bd054de571d84ae))
-
-## [Unreleased]
-
 ### Added
 
 - The Sleep service, as `client.sleep`. `get` returns high frequency sleep
@@ -75,6 +68,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   were typed as `null` rather than as nullable values of their real types.
 - Paginated Measure responses expose `more` and `offset`.
 
+### CI
+
+* automate releases with release-please and conventional commits ([f1dcc9f](https://github.com/tomek-i/withings-sdk/commit/f1dcc9fd801100158998b9997bd054de571d84ae))
+
 ## [0.1.1] - 2026-09-01
 
 No changes to the published code. Release infrastructure only.
@@ -125,6 +122,5 @@ First publishable release.
   the test helpers.
 - Requires Node.js 18 or newer (declared via `engines`).
 
-[unreleased]: https://github.com/tomek-i/withings-sdk/compare/v0.1.1...HEAD
 [0.1.1]: https://github.com/tomek-i/withings-sdk/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/tomek-i/withings-sdk/releases/tag/v0.1.0
