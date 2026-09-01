@@ -18,7 +18,7 @@ export class WithingsClient {
   /**
    * Constructs a new instance of the WithingsClient class.
    *
-   * @param {WithingsConfig} config - The configuration object containing the clientId, clientSecret, and redirectUri.
+   * @param config The configuration object containing the clientId, clientSecret, and redirectUri.
    * @throws {Error} If any of the required properties are missing from the config object.
    */
   constructor(private readonly config: WithingsConfig) {

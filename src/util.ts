@@ -1,13 +1,23 @@
 /**
- * Sorts the parameters object by its keys in alphabetical order.
+ * Sorts a parameter object by key, alphabetically.
  *
- * @param {Object} params - An object containing key-value pairs to be sorted.
- * @return {Array<Array<string | number>>} - An array of key-value pairs sorted by keys.
+ * Withings requires signed requests to concatenate their values in this order.
+ *
+ * @param params Key-value pairs to sort.
+ * @returns The entries, ordered by key.
  */
 export const sortParams = (params: { [key: string]: string | number }) => {
   return Object.entries(params).sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
 };
 
+/**
+ * Formats a date as the `YYYYMMDD` string several Withings parameters expect.
+ *
+ * Uses the local date parts, so the result matches the caller's timezone.
+ *
+ * @param date The date to format.
+ * @returns The date as `YYYYMMDD`.
+ */
 export const formatYmd = (date: Date): string => {
   const year = date.getFullYear();
   // Adding 1 because getMonth() returns month from 0-11
@@ -35,16 +45,33 @@ export const encodeQueryParams = (params: object): string => {
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
     .join("&");
 };
-//TODO: extract to http client file
+/**
+ * Coarse grouping of the many status codes the Withings API returns.
+ *
+ * The API reports failures in the response body with HTTP 200, using a large
+ * and sparsely documented set of numeric codes. {@link ErrorCodeHandler} maps
+ * a raw code onto one of these categories.
+ *
+ * @see https://developer.withings.com/api-reference/#tag/response_status
+ */
 export enum WithingsResponseStatus {
+  /** The call succeeded. Corresponds to raw status `0`. */
   Success,
+  /** The access token is missing, expired or otherwise not accepted. */
   AuthenticationFailed,
+  /** The request was malformed, or a parameter was missing or invalid. */
   InvalidParamsError,
+  /** Authenticated, but not permitted to access this resource. */
   UnauthorizedError,
+  /** An unclassified error reported by the API. */
   Error,
+  /** The request timed out. */
   Timeout,
+  /** The resource is in a state that does not allow this operation. */
   BadState,
+  /** Rate limited. Back off before retrying. */
   TooManyRequests,
+  /** The requested operation is not implemented. */
   NotImplemented,
 }
 
@@ -52,7 +79,13 @@ const isBetween = (val: number, min: number, max: number) => {
   return val >= min && val <= max;
 };
 
-//TODO: extract to http client file
+/**
+ * Maps a raw Withings status code onto a {@link WithingsResponseStatus}.
+ *
+ * @param code The `status` field from a Withings response.
+ * @returns The matching category, or `undefined` if the code is unmapped.
+ * @see https://developer.withings.com/api-reference/#tag/response_status
+ */
 export const ErrorCodeHandler = (code: number) => {
   if (code === 0) {
     return WithingsResponseStatus.Success;

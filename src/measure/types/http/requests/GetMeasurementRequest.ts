@@ -6,6 +6,12 @@ import { GetMeasurementParams } from "../params/GetMeasurementParams";
  * @see https://developer.withings.com/api-reference/#tag/measure/operation/measure-getmeas
  */
 
+/**
+ * Full wire request for the `getmeas` action.
+ *
+ * @see https://developer.withings.com/api-reference/#tag/measure/operation/measure-getmeas
+ */
 export interface GetMeasurementRequest extends WithingsRequest, GetMeasurementParams {
+  /** Pins the action this request performs. */
   action: "getmeas";
 }

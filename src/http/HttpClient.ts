@@ -1,10 +1,26 @@
+/**
+ * The transport the SDK sends requests through.
+ *
+ * Exported so it can be substituted, most usefully with a stub in tests.
+ */
 export interface IHttpClient {
+  /** Sets the origin every relative endpoint is resolved against. */
   setBaseUrl(baseUrl: string): void;
+  /** Sends a GET request. */
   get<T>(endpoint: string, body: T, options?: RequestInit): Promise<Response>;
+  /** Sends a POST request. */
   post<T>(endpoint: string, body: T, options?: RequestInit): Promise<Response>;
+  /** Sends a request using whichever method `options` specifies. */
   send<T>(endpoint: string, body?: T, options?: RequestInit): Promise<Response>;
 }
 
+/**
+ * A thin wrapper over the global `fetch`.
+ *
+ * Deliberately knows nothing about Withings: it resolves endpoints against a
+ * base URL, serialises the body as JSON and rejects non-2xx responses.
+ * {@link WithingsHttpClient} layers authentication and retries on top.
+ */
 export class HttpClient implements IHttpClient {
   private baseUrl: string = "";
 
@@ -19,9 +35,9 @@ export class HttpClient implements IHttpClient {
   /**
    * Sends a GET request to the specified endpoint with the provided options.
    *
-   * @param {string} endpoint - The endpoint to send the request to.
-   * @param {RequestInit} [options={}] - Additional options for the request.
-   * @return {Promise<Response>} A Promise that resolves to the response of the GET request.
+   * @param endpoint The endpoint to send the request to.
+   * @param options Additional options for the request.
+   * @returns A Promise that resolves to the response of the GET request.
    */
   public async get<T>(endpoint: string, body: T, options: RequestInit = {}): Promise<Response> {
     return this.send(endpoint, body, { ...options, method: "GET" });
@@ -29,10 +45,10 @@ export class HttpClient implements IHttpClient {
   /**
    * Sends a POST request to the specified endpoint with the provided body.
    *
-   * @param {string} endpoint - The endpoint to send the request to.
-   * @param {any} body - The payload to include in the request.
-   * @param {RequestInit} [options={}] - Additional options for the request.
-   * @return {Promise<Response>} A Promise that resolves to the response of the POST request.
+   * @param endpoint The endpoint to send the request to.
+   * @param body The payload to include in the request.
+   * @param options Additional options for the request.
+   * @returns A Promise that resolves to the response of the POST request.
    */
   public async post<T>(endpoint: string, body: T, options: RequestInit = {}): Promise<Response> {
     return this.send(endpoint, body, { ...options, method: "POST" });
@@ -41,10 +57,10 @@ export class HttpClient implements IHttpClient {
   /**
    * Sends a request to the specified endpoint with the provided method, body, and options.
    *
-   * @param {string} endpoint - The endpoint to send the request to.
-   * @param {string} method - The HTTP method to use for the request.
-   * @param {RequestInit} [options={}] - Additional options for the request.
-   * @return {Promise<Response>} A Promise that resolves to the response of the request.
+   * @param endpoint The endpoint to send the request to.
+   * @param method The HTTP method to use for the request.
+   * @param options Additional options for the request.
+   * @returns A Promise that resolves to the response of the request.
    */
   public async send<T>(endpoint: string, body: T, options: RequestInit = {}): Promise<Response> {
     const fullEndpoint = `${this.baseUrl}${endpoint}`;

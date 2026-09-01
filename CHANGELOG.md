@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Response bodies for the Measure endpoints are modelled: `Activity`, `Workout`,
+  `WorkoutData` and `IntradayActivityEntry`, with field-level documentation of
+  the units the API returns.
+
 ### Fixed
 
 - `ActivityDataFields`, `IntraDayActivityDataFields` and `GetWorkoutDataFields`
@@ -24,6 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   implied.
 - `encodeQueryParams` is typed instead of taking `any`, and drops `null` as
   well as `undefined`.
+- `Measures` methods now declare the response body type. Every one of them
+  previously resolved to `WithingsResponse<unknown>`, because the generic was
+  never supplied at the call site, so none of the modelled types were reachable
+  by callers.
+- `MeasureGroup.deviceid`, `hash_deviceid`, `modelid`, `model` and `comment`
+  were typed as `null` rather than as nullable values of their real types.
+- Paginated Measure responses expose `more` and `offset`.
 
 ## [0.1.1] - 2026-09-01
 

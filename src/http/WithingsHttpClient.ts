@@ -4,9 +4,10 @@ import { IHttpClient } from "./HttpClient";
 
 /**
  * The WithingsHttpClient class provides methods for making HTTP requests to the Withings API.
- * It features basic authentication and error handling as well as retry logic.
+ * Adds Withings semantics on top of {@link HttpClient}: it attaches the bearer
+ * token, maps the status code the API returns in the body, and renews an
+ * expired access token once before giving up.
  */
-
 export class WithingsHttpClient {
   public static readonly API_BASE_URL = "https://wbsapi.withings.net";
 
@@ -26,9 +27,9 @@ export class WithingsHttpClient {
   /**
    * Sends a GET request to the specified endpoint with the provided options.
    *
-   * @param {string} endpoint - The endpoint to send the request to.
-   * @param {RequestInit} [options={}] - Additional options for the request.
-   * @return {Promise<Response>} A Promise that resolves to the response of the GET request.
+   * @param endpoint The endpoint to send the request to.
+   * @param options Additional options for the request.
+   * @returns A Promise that resolves to the response of the GET request.
    */
   public async get<T>(endpoint: string, options: RequestInit = {}): Promise<WithingsResponse<T>> {
     return this.fetchWithAuth<T>(endpoint, undefined, { ...options, method: "GET" });
@@ -37,10 +38,10 @@ export class WithingsHttpClient {
   /**
    * Sends a POST request to the specified endpoint with the provided body.
    *
-   * @param {string} endpoint - The endpoint to send the request to.
-   * @param {any} body - The payload to include in the request.
-   * @param {RequestInit} [options={}] - Additional options for the request.
-   * @return {Promise<Response>} A Promise that resolves to the response of the POST request.
+   * @param endpoint The endpoint to send the request to.
+   * @param body The payload to include in the request.
+   * @param options Additional options for the request.
+   * @returns A Promise that resolves to the response of the POST request.
    */
   public async post<T>(
     endpoint: string,
