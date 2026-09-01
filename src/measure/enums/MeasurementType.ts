@@ -27,7 +27,11 @@ export enum MeasurementType {
   SPO02 = 54,
   /** Body temperature, in Celsius. */
   BodyTemperature = 71,
-  /** Skin temperature, in Celsius. */
+  /**
+   * Skin temperature, in Celsius.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   SkinTemperature = 73,
   /** Muscle mass, in kg. */
   MuscleMass = 76,
@@ -35,41 +39,109 @@ export enum MeasurementType {
   Hydration = 77,
   /** Bone mass, in kg. */
   BoneMass = 88,
-  /** Pulse wave velocity, in m/s. */
+  /**
+   * Pulse wave velocity, in m/s.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   PulseWaveVelocity = 91,
-  /** VO2 max: ability to consume oxygen, in ml/min/kg. */
+  /**
+   * VO2 max: ability to consume oxygen, in ml/min/kg.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   VO2Max = 123,
-  /** Atrial fibrillation result. */
+  /**
+   * Atrial fibrillation result.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   AtrialFibrilation = 130,
-  /** QRS interval duration, from the ECG signal. */
+  /**
+   * QRS interval duration, from the ECG signal.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   QRSInterval = 135,
-  /** PR interval duration, from the ECG signal. */
+  /**
+   * PR interval duration, from the ECG signal.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   PRInterval = 136,
-  /** QT interval duration, from the ECG signal. */
+  /**
+   * QT interval duration, from the ECG signal.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   QTInterval = 137,
-  /** Corrected QT interval. */
+  /**
+   * Corrected QT interval.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   QTcInterval = 138,
-  /** Atrial fibrillation result, from the PPG signal. */
+  /**
+   * Atrial fibrillation result, from the PPG signal.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   AtrialFibrilationPPG = 139,
-  /** Vascular age. */
+  /**
+   * Vascular age.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   VascularAge = 155,
-  /** Nerve health score: conductance, 2 electrodes, feet. */
+  /**
+   * Nerve health score: conductance, 2 electrodes, feet.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   NerveHealthScore = 167,
-  /** Extracellular water, in kg. */
+  /**
+   * Extracellular water, in kg.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   ExtraCellularWater = 168,
-  /** Intracellular water, in kg. */
+  /**
+   * Intracellular water, in kg.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   IntraCellularWater = 169,
-  /** Visceral fat, unitless. */
+  /**
+   * Visceral fat, unitless.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   VisceralFat = 170,
-  /** Fat free mass for segments. */
+  /**
+   * Fat free mass for segments.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   FatFreeMassSegments = 173,
-  /** Fat mass for segments, in mass units. */
+  /**
+   * Fat mass for segments, in mass units.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   FatMass = 174,
-  /** Muscle mass for segments. */
+  /**
+   * Muscle mass for segments.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   MuscleMassSegments = 175,
   /** Nerve response score (NRS). */
   ElectrodermalActivity = 196,
-  /** Basal metabolic rate (BMR). */
+  /**
+   * Basal metabolic rate (BMR).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
+   */
   BasalMetabolicRate = 226,
   /** Metabolic age. */
   MetabolicAge = 227,

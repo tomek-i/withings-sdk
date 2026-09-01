@@ -60,14 +60,20 @@ export enum SleepSummaryDataFields {
   nb_rem_episodes = "nb_rem_episodes",
   /**
    * Intensity of.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   breathing_disturbances_intensity = "breathing_disturbances_intensity",
   /**
    * Medical grade AHI. Average number of hypopnea and apnea episodes per hour, that occured during sleep time.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   apnea_hypopnea_index = "apnea_hypopnea_index",
   /**
    * Withings Sleep Rx (FDA Cleared) allows to estimate gaps in breathing sounds and to generate an index. This index corresponds to the number of…
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   withings_index = "withings_index",
   /**
@@ -96,30 +102,44 @@ export enum SleepSummaryDataFields {
   hr_max = "hr_max",
   /**
    * Average respiration rate (breaths per minute).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   rr_average = "rr_average",
   /**
    * Minimal respiration rate (breaths per minute).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   rr_min = "rr_min",
   /**
    * Maximal respiration rate (breaths per minute).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   rr_max = "rr_max",
   /**
    * Intensity of.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   breathing_quality_assessment = "breathing_quality_assessment",
   /**
    * Total snoring time (seconds).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   snoring = "snoring",
   /**
    * Numbers of snoring episodes of at least one minute.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   snoringepisodecount = "snoringepisodecount",
   /**
    * Sleep score.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   sleep_score = "sleep_score",
   /**
@@ -128,50 +148,74 @@ export enum SleepSummaryDataFields {
   night_events = "night_events",
   /**
    * Track the average movement score in bed throughout the night. The score ranges from 0 to 255, representing the intensity of movement. This metric is…
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   mvt_score_avg = "mvt_score_avg",
   /**
    * Track the duration (in seconds) of movement in bed. Only available for Sleep Analyzer devices (EU) and devices under prescriptions in the US (Sleep…
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   mvt_active_duration = "mvt_active_duration",
   /**
    * Heart rate variability - Start average.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   rmssd_start_avg = "rmssd_start_avg",
   /**
    * Heart rate variability - End average.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   rmssd_end_avg = "rmssd_end_avg",
   /**
    * Average respiration rate (breaths per minute).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   chest_movement_rate_wellness_average = "chest_movement_rate_wellness_average",
   /**
    * Minimal respiration rate (breaths per minute).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   chest_movement_rate_wellness_min = "chest_movement_rate_wellness_min",
   /**
    * Maximal respiration rate (breaths per minute).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   chest_movement_rate_wellness_max = "chest_movement_rate_wellness_max",
   /**
    * Total time when breathing sounds were tracked. (seconds).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   breathing_sounds = "breathing_sounds",
   /**
    * Numbers of breathing sounds episodes of at least one minute.
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   breathing_sounds_episode_count = "breathing_sounds_episode_count",
   /**
    * Average chest movement rate (events per minute).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   chest_movement_rate_average = "chest_movement_rate_average",
   /**
    * Minimal chest movement rate (events per minute).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   chest_movement_rate_min = "chest_movement_rate_min",
   /**
    * Maximal chest movement rate (events per minute).
+   *
+   * Requires the Total Biomarker Pack, so a paid Withings API plan.
    */
   chest_movement_rate_max = "chest_movement_rate_max",
   /**

@@ -22,6 +22,15 @@ import { ErrorCodeHandler, WithingsResponseStatus } from "../util";
  * @see https://developer.withings.com/api-reference/#tag/response_status
  */
 export class WithingsApiError extends Error {
+  /**
+   * Appended to the message of an authorization failure. The API does not
+   * distinguish "your plan does not include this" from "you were not granted
+   * this", so the plausible causes are spelled out rather than guessed at.
+   */
+  private static readonly ENTITLEMENT_HINT =
+    "This usually means the data is not included in your Withings API plan, " +
+    "the user did not grant the required OAuth scope, or the device or region does not provide it.";
+
   /** The raw `status` code the API returned, e.g. `601`. */
   public readonly status: number;
 
@@ -62,8 +71,14 @@ export class WithingsApiError extends Error {
     const category = WithingsResponseStatus[type];
     const detail = response.error?.trim();
 
-    return detail
+    const message = detail
       ? `Withings API error ${response.status} (${category}): ${detail}`
       : `Withings API error ${response.status} (${category}). The API did not provide an error message.`;
+
+    // An authorization failure here is far more often an entitlement problem
+    // than a bad token, and the API never says which.
+    return type === WithingsResponseStatus.UnauthorizedError
+      ? `${message} ${WithingsApiError.ENTITLEMENT_HINT}`
+      : message;
   }
 }

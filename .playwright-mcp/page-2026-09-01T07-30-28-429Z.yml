@@ -1,0 +1,253 @@
+- generic [ref=e2]:
+  - generic [ref=e5]:
+    - text: Before you continue
+    - paragraph [ref=e6]: We use cookies to offer useful features and measure performance to improve your experience. Your preferences can be edited at any time. By clicking “Accept all & close” you agree to the use of all cookies. By clicking “Accept selected”, you agree only to the categories selected below. Find more information in our cookie policy.
+    - generic [ref=e8] [cursor=pointer]:
+      - generic [ref=e9]:
+        - generic [ref=e10]: 
+        - generic [ref=e12]: Essential cookies
+      - generic [ref=e13]: 
+    - generic [ref=e15] [cursor=pointer]:
+      - generic [ref=e16]: Analytical cookies
+      - generic [ref=e19]: 
+    - generic [ref=e20]:
+      - button "Accept selected" [ref=e21] [cursor=pointer]
+      - button "Accept all and close" [ref=e22] [cursor=pointer]
+  - region "Skip to main content":
+    - link "Skip to main content" [ref=e23] [cursor=pointer]:
+      - /url: "#__docusaurus_skipToContent_fallback"
+  - navigation "Main" [ref=e24]:
+    - generic [ref=e25]:
+      - link [ref=e27] [cursor=pointer]:
+        - /url: /
+        - img "Withings" [ref=e29]
+      - generic [ref=e30]:
+        - link [ref=e31] [cursor=pointer]:
+          - /url: https://developer.withings.com/dashboard/
+          - text: Log In to Withings Partner Hub
+          - img "(opens in new tab)" [ref=e32]
+        - generic [ref=e35]:
+          - button "expand searchbar"
+          - searchbox "Search" [ref=e36]
+  - generic [ref=e39]:
+    - complementary [ref=e40]:
+      - navigation "Docs sidebar" [ref=e43]:
+        - list [ref=e44]:
+          - listitem [ref=e45]:
+            - link "Home" [ref=e46] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e48]:
+            - button "Solutions" [ref=e50] [cursor=pointer]
+          - listitem [ref=e52]:
+            - link "Available Health Data" [ref=e53] [cursor=pointer]:
+              - /url: /developer-guide/v3/data-api/all-available-health-data
+          - listitem [ref=e55]:
+            - link "API plans" [ref=e56] [cursor=pointer]:
+              - /url: /developer-guide/v3/withings-solutions/withings-api-plans
+          - listitem [ref=e58]:
+            - button "Guides & Tutorials" [ref=e60] [cursor=pointer]
+          - listitem [ref=e62]:
+            - button "API Upgrades" [ref=e64] [cursor=pointer]
+          - listitem [ref=e66]:
+            - link "Security and compliance" [ref=e67] [cursor=pointer]:
+              - /url: /developer-guide/v3/withings-solutions/security-and-compliance
+          - listitem [ref=e69]:
+            - link "API Reference" [ref=e70] [cursor=pointer]:
+              - /url: /api-reference
+    - main [ref=e72]:
+      - generic [ref=e76]:
+        - article [ref=e77]:
+          - iframe [ref=e79]:
+            - generic [ref=f1e2]:
+              - heading "Choose the Right Plan for Your Need" [level=1] [ref=f1e3]
+              - paragraph [ref=f1e4]: Unlock the power of health data with Withings' API plans. Tailored for developers, consumer health, healthcare providers, and researchers, our solutions offer seamless integration to accelerate your innovation and AI projects. Find the perfect fit below.
+              - generic [ref=f1e5]:
+                - generic [ref=f1e6]:
+                  - heading "Start Developing for Free 🚀" [level=4] [ref=f1e7]
+                  - paragraph [ref=f1e8]:
+                    - text: Ideal for innovators & startups. Basic biomarkers availability and 1000 active users limitation
+                    - link "Learn more" [ref=f1e9] [cursor=pointer]:
+                      - /url: https://developer.withings.com/developer-guide/v3/data-api/all-available-health-data/
+                    - text: .
+                - link "Start now" [ref=f1e11] [cursor=pointer]:
+                  - /url: https://developer.withings.com/developer-guide/v3/integration-guide/public-health-data-api/public-health-data-api-overview/
+              - generic [ref=f1e12]:
+                - generic [ref=f1e13]:
+                  - generic [ref=f1e14]:
+                    - text: Enterprise
+                    - generic [ref=f1e15]: For Scalable Consumer Health
+                  - generic [ref=f1e16]: Build engaging consumer apps, corporate wellness programs, with withings devices performances and dedicated support.
+                  - link "Contact Us" [ref=f1e19] [cursor=pointer]:
+                    - /url: https://www.withings.com/us/en/health-solutions/contact-us#enterprise
+                  - list [ref=f1e20]:
+                    - listitem [ref=f1e21]:
+                      - generic [ref=f1e22]: Basic Biomarkers Show more ▼
+                    - listitem [ref=f1e24]:
+                      - strong [ref=f1e25]: Unlimited
+                      - text: users
+                    - listitem [ref=f1e26]:
+                      - strong [ref=f1e27]: 1,500+
+                      - text: requests/minute
+                    - listitem [ref=f1e28]: Faster data sync via dedicated instances
+                    - listitem [ref=f1e29]: HIPAA/HDS/GDPR compliant
+                    - listitem [ref=f1e30]:
+                      - generic [ref=f1e31]:
+                        - generic [ref=f1e32]: Support & Logistics Show more ▼
+                        - text: ✅ 💡 💡 💡
+                    - listitem [ref=f1e33]:
+                      - generic [ref=f1e34]:
+                        - generic [ref=f1e35]: Strategic Partnerships
+                        - generic [ref=f1e36]: "Reach out for opportunities to:"
+                        - generic [ref=f1e37]: 🤝 Be referenced inside Withings app
+                        - generic [ref=f1e38]: 🤝 Benefit from custom workflows
+                        - generic [ref=f1e39]: 🤝 Run emailing cross sell campaigns
+                        - link "Contact Partnerships" [ref=f1e41] [cursor=pointer]:
+                          - /url: mailto:partnerships@withings.com?subject=Strategic Partnership Inquiry
+                    - listitem
+                  - link "Contact Us" [ref=f1e42] [cursor=pointer]:
+                    - /url: https://www.withings.com/us/en/health-solutions/contact-us#enterprise
+                - generic [ref=f1e43]:
+                  - text: AI Ready
+                  - generic [ref=f1e44]:
+                    - text: Healthcare
+                    - generic [ref=f1e45]: For Clinical & Health Programs
+                  - generic [ref=f1e46]: Transform care with remote monitoring. Drive better outcomes and reduce costs with our industry-leading connected health platform and logistics services.
+                  - link "Contact Us" [ref=f1e49] [cursor=pointer]:
+                    - /url: https://www.withings.com/us/en/health-solutions/contact-us#healthcare
+                  - list [ref=f1e50]:
+                    - listitem [ref=f1e51]:
+                      - generic [ref=f1e52]:
+                        - generic [ref=f1e53]: Custom Biomarkers Show more ▼
+                        - text: 💡 💡 💡 💡 💡
+                    - listitem [ref=f1e54]:
+                      - strong [ref=f1e55]: Unlimited
+                      - text: users
+                    - listitem [ref=f1e56]:
+                      - strong [ref=f1e57]: 1,500+
+                      - text: requests/minute
+                    - listitem [ref=f1e58]:
+                      - link "Largest selection of cellular-enabled medical devices" [ref=f1e59] [cursor=pointer]:
+                        - /url: https://www.withings.com/us/en/health-solutions/solutions
+                    - listitem [ref=f1e60]: Streamlined EHR workflows
+                    - listitem [ref=f1e61]: HIPAA/HDS/GDPR compliant
+                    - listitem [ref=f1e62]:
+                      - generic [ref=f1e63]:
+                        - generic [ref=f1e64]: Support & Logistics Show more ▼
+                        - text: ✅ ✅ ✅ ✅ 💡
+                    - listitem [ref=f1e65]:
+                      - link "🖥️ Withings RPM Platform" [ref=f1e66] [cursor=pointer]:
+                        - /url: https://www.withings.com/us/en/health-solutions/remote-patient-monitoring
+                  - link "Schedule Demo" [ref=f1e67] [cursor=pointer]:
+                    - /url: https://www.withings.com/us/en/health-solutions/contact-us#healthcare
+                - generic [ref=f1e68]:
+                  - text: AI Ready
+                  - generic [ref=f1e69]:
+                    - text: Research
+                    - generic [ref=f1e70]: For Studies & AI Innovation
+                  - generic [ref=f1e71]: Accelerate health breakthroughs. Access high-fidelity and higher frequency data + expert support to train cutting-edge AI models.
+                  - link "Contact Us" [ref=f1e74] [cursor=pointer]:
+                    - /url: https://www.withings.com/us/en/health-solutions/contact-us#research
+                  - list [ref=f1e75]:
+                    - listitem [ref=f1e76]:
+                      - generic [ref=f1e77]: Advanced Biomarkers Show more ▼
+                    - listitem [ref=f1e79]:
+                      - strong [ref=f1e80]: Unlimited
+                      - text: users
+                    - listitem [ref=f1e81]:
+                      - text: Trusted by
+                      - strong [ref=f1e82]: 100+
+                      - link "research labs" [ref=f1e83] [cursor=pointer]:
+                        - /url: https://withings.com/research
+                    - listitem [ref=f1e84]:
+                      - link "Largest selection of cellular-enabled medical devices" [ref=f1e85] [cursor=pointer]:
+                        - /url: https://www.withings.com/us/en/health-solutions/solutions
+                    - listitem [ref=f1e86]: HIPAA/HDS/GDPR compliant
+                    - listitem [ref=f1e87]:
+                      - generic [ref=f1e88]:
+                        - generic [ref=f1e89]: Support & Logistics Show more ▼
+                        - text: ✅ ✅ ✅ 💡
+                    - listitem [ref=f1e90]: Data anonymization services
+                    - listitem [ref=f1e91]: Regulatory compliance assistance
+                    - listitem [ref=f1e92]:
+                      - link "🖥️ Withings RPM Platform" [ref=f1e93] [cursor=pointer]:
+                        - /url: https://www.withings.com/us/en/health-solutions/remote-patient-monitoring
+                  - link "Contact Us" [ref=f1e94] [cursor=pointer]:
+                    - /url: https://www.withings.com/us/en/health-solutions/contact-us#research
+        - navigation "Docs pages"
+  - contentinfo [ref=e80]:
+    - generic [ref=e81]:
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - generic [ref=e84]: Devices
+          - list [ref=e85]:
+            - listitem [ref=e86]:
+              - link "Body Pro" [ref=e87] [cursor=pointer]:
+                - /url: https://www.withings.com/for-professionals/body-pro
+            - listitem [ref=e88]:
+              - link "BPM Connect Pro" [ref=e89] [cursor=pointer]:
+                - /url: https://www.withings.com/for-professionals/bpm-connect-pro
+            - listitem [ref=e90]:
+              - link "Other devices" [ref=e91] [cursor=pointer]:
+                - /url: https://www.withings.com/for-professionals/devices
+        - generic [ref=e92]:
+          - generic [ref=e93]: Community
+          - list [ref=e94]:
+            - listitem [ref=e95]:
+              - link [ref=e96] [cursor=pointer]:
+                - /url: https://www.linkedin.com/showcase/withings-health-solutions/
+                - text: Linkedin
+                - img "(opens in new tab)" [ref=e97]
+            - listitem [ref=e99]:
+              - link [ref=e100] [cursor=pointer]:
+                - /url: https://www.facebook.com/withings/
+                - text: Facebook
+                - img "(opens in new tab)" [ref=e101]
+            - listitem [ref=e103]:
+              - link [ref=e104] [cursor=pointer]:
+                - /url: https://twitter.com/Withings
+                - text: Twitter
+                - img "(opens in new tab)" [ref=e105]
+        - generic [ref=e107]:
+          - generic [ref=e108]: More
+          - list [ref=e109]:
+            - listitem [ref=e110]:
+              - link [ref=e111] [cursor=pointer]:
+                - /url: https://www.withings.com/for-professionals/contact-us
+                - text: Contact us
+                - img "(opens in new tab)" [ref=e112]
+            - listitem [ref=e114]:
+              - link [ref=e115] [cursor=pointer]:
+                - /url: https://status.withings.com
+                - text: API Status
+                - img "(opens in new tab)" [ref=e116]
+            - listitem [ref=e118]:
+              - link [ref=e119] [cursor=pointer]:
+                - /url: https://www.withings.com/for-professionals
+                - text: Health Solutions
+                - img "(opens in new tab)" [ref=e120]
+        - generic [ref=e122]:
+          - generic [ref=e123]: Legal & Privacy
+          - list [ref=e124]:
+            - listitem [ref=e125]:
+              - link [ref=e126] [cursor=pointer]:
+                - /url: https://www.withings.com/fr/en/legal/privacy-policy
+                - text: Privacy policy
+                - img "(opens in new tab)" [ref=e127]
+            - listitem [ref=e129]:
+              - link [ref=e130] [cursor=pointer]:
+                - /url: https://www.withings.com/fr/en/legal/legal-notice
+                - text: Legal notice
+                - img "(opens in new tab)" [ref=e131]
+            - listitem [ref=e133]:
+              - link [ref=e134] [cursor=pointer]:
+                - /url: https://www.withings.com/fr/en/data-security
+                - text: Security
+                - img "(opens in new tab)" [ref=e135]
+            - listitem [ref=e137]:
+              - link [ref=e138] [cursor=pointer]:
+                - /url: https://www.withings.com/fr/en/legal/cookies
+                - text: Cookies policy
+                - img "(opens in new tab)" [ref=e139]
+            - listitem [ref=e141]:
+              - paragraph [ref=e142] [cursor=pointer]: Cookies management
+      - generic [ref=e143]: Copyright © 2026 Withings.
