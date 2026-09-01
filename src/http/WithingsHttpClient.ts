@@ -1,3 +1,4 @@
+import { WithingsApiError } from "../errors/WithingsApiError";
 import { WithingsResponse } from "../types";
 import { ErrorCodeHandler, WithingsResponseStatus } from "../util";
 import { IHttpClient } from "./HttpClient";
@@ -78,16 +79,13 @@ export class WithingsHttpClient {
 
     const err = ErrorCodeHandler(data.status);
     if (err !== WithingsResponseStatus.Success) {
-      if (err === WithingsResponseStatus.AuthenticationFailed) {
-        //TODO: refresh token and retry
-        if (retry) {
-          await this.refreshAccessToken();
-          return this.fetchWithAuth(endpoint, body, options, false);
-        } else {
-          //TODO: better error logging and messaging as the retry now failed
-          throw new Error(data.error);
-        }
-      } else throw new Error(data.error);
+      if (err === WithingsResponseStatus.AuthenticationFailed && retry) {
+        // The token may simply have expired: renew it and try once more.
+        await this.refreshAccessToken();
+        return this.fetchWithAuth(endpoint, body, options, false);
+      }
+
+      throw new WithingsApiError(data);
     }
 
     return data;

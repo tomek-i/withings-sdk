@@ -1,6 +1,7 @@
 export { WithingsClient } from "./client";
 
 export * from "./auth";
+export * from "./errors";
 export * from "./measure";
 export * from "./types";
 
