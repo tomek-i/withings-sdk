@@ -24,9 +24,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       # Trusted publishing needs Node >= 22.14.0 and npm >= 11.5.1.
       #
@@ -35,7 +35,7 @@ jobs:
       # authenticates with that value instead of falling back to OIDC. With no
       # NPM_TOKEN secret it sends the literal placeholder and the publish fails
       # with a confusing 404.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
