@@ -9,6 +9,8 @@ export * from "./enums/MeasurementType";
 export * from "./types/GetActivityBaseOptions";
 export * from "./types/GetActivityOptions";
 export * from "./types/GetConfirmUserOptions";
+export * from "./types/GetIntradayActivityOptions";
+export * from "./types/GetWorkoutsOptions";
 export * from "./types/GetMeasurementOptions";
 
 export * from "./models/Activity";

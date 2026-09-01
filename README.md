@@ -81,7 +81,7 @@ it with the refresh token and retries the request once, automatically.
 ### 4. Read measurements
 
 ```typescript
-import { MeasurementType } from "withings-sdk";
+import { GetWorkoutDataFields, IntraDayActivityDataFields, MeasurementType } from "withings-sdk";
 
 const measurements = await client.measures.getMeasurement({
   meastype: MeasurementType.Weight,
@@ -94,8 +94,20 @@ const activity = await client.measures.getActivity({
   endDate: new Date("2024-02-01"),
 });
 
-const workouts = await client.measures.getWorkouts();
+const workouts = await client.measures.getWorkouts({
+  lastUpdate: new Date(0), // everything Withings still holds
+  data_fields: [GetWorkoutDataFields.calories, GetWorkoutDataFields.hr_average],
+});
+
+const intraday = await client.measures.getIntradayActivity({
+  startdate: new Date("2024-01-05T00:00:00Z"),
+  enddate: new Date("2024-01-05T12:00:00Z"),
+  data_fields: [IntraDayActivityDataFields.steps, IntraDayActivityDataFields.heart_rate],
+});
 ```
+
+> **Note:** `getWorkouts` and `getIntradayActivity` return no metrics unless you
+> ask for them by name in `data_fields`.
 
 ### 5. Read sleep data
 
@@ -170,7 +182,7 @@ once before throwing.
 | `WithingsClient`                        | Entry point. Exposes `.auth`, `.measures` and `.sleep`.          |
 | `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, signatures.   |
 | `Sleep`                                 | `get`, `getSummary`, plus `getSummaryPages`.                     |
-| `Measures`                              | `getMeasurement`, `getActivity`, `getIntradayActivity`, `getWorkouts`, `confirmUser`, plus `getMeasurementPages` / `getActivityPages`. |
+| `Measures`                              | `getMeasurement`, `getActivity`, `getIntradayActivity`, `getWorkouts`, `confirmUser`, plus `getMeasurementPages` / `getActivityPages` / `getWorkoutsPages`. |
 | `WithingsResponseStatus`                | Maps a Withings `status` code onto a coarse result category.     |
 | `WithingsApiError`                      | Thrown when the API reports a failure. Carries `status`, `type` and `body`. |
 | `paginate` / `hasMorePages`             | Walk any paginated endpoint one page at a time.                  |
