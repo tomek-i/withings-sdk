@@ -1,3 +1,8 @@
+/**
+ * Wire parameters for the `getworkouts` action.
+ *
+ * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-getworkouts
+ */
 export interface GetWorkoutsParams {
   /**
    * Start date.

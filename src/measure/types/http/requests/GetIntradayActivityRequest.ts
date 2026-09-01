@@ -9,6 +9,12 @@ import { GetIntradayActivityParams } from "../params/GetIntradayActivityParams";
  * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-getintradayactivity
  */
 
+/**
+ * Full wire request for the `getintradayactivity` action.
+ *
+ * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-getintradayactivity
+ */
 export interface GetIntradayActivityRequest extends WithingsRequest, GetIntradayActivityParams {
+  /** Pins the action this request performs. */
   action: "getintradayactivity";
 }

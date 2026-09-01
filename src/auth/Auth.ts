@@ -5,6 +5,14 @@ import { WithingsConfig } from "../types";
 import { RequestTokenResponse } from "./types/http/responses/RequestTokenResponse";
 import { AuthCodeUrlParams } from "./types/http/params/AuthCodeUrlParams";
 
+/**
+ * The OAuth2 flow, reachable as `client.auth`.
+ *
+ * Builds the consent URL, exchanges the authorization code for tokens, renews
+ * them, and signs requests for the services that require a signature.
+ *
+ * @see https://developer.withings.com/api-reference/#tag/oauth2
+ */
 export class Auth {
   private access_token: string | null = null;
   private refresh_token: string | null = null;
@@ -74,8 +82,8 @@ export class Auth {
   /**
    * Retrieves an access token using the provided authorization code.
    *
-   * @param {string} code - The authorization code.
-   * @return {Promise<RequestTokenResponse>} A promise that resolves to the request token response.
+   * @param code The authorization code.
+   * @returns A promise that resolves to the request token response.
    */
   public async fetchAccessToken(code: string): Promise<RequestTokenResponse> {
     const response = await this.httpClient.post(
@@ -111,11 +119,11 @@ export class Auth {
   /**
    * Generates a signature for the given signature payload using HMAC-SHA256 algorithm.
    *
-   * @param {Object} signaturePayload - An object containing the action, client_id, and timestamp.
-   * @param {string} signaturePayload.action - The action for the signature.
-   * @param {string} signaturePayload.client_id - The client_id for the signature.
-   * @param {number} signaturePayload.timestamp - The timestamp for the signature.
-   * @return {string} The generated signature in hexadecimal format.
+   * @param signaturePayload An object containing the action, client_id, and timestamp.
+   * @param signaturePayload.action The action being signed.
+   * @param signaturePayload.client_id Your application's client ID.
+   * @param signaturePayload.timestamp Unix timestamp, in seconds.
+   * @returns The generated signature in hexadecimal format.
    */
   public generateSignature(signaturePayload: { action: string; client_id: string; timestamp: number }) {
     const sortedParams = sortParams(signaturePayload);
@@ -131,9 +139,9 @@ export class Auth {
   /**
    * Generates the authorization code URL for Withings API.
    *
-   * @param {string[]} scope - The list of scopes for the authorization code URL. Example: ["user.info", "user.metrics", "user.activity"].
-   * @param {string} state - The state parameter for the authorization code URL.
-   * @return {string} The generated authorization code URL.
+   * @param scope The list of scopes for the authorization code URL. Example: ["user.info", "user.metrics", "user.activity"].
+   * @param state The state parameter for the authorization code URL.
+   * @returns The generated authorization code URL.
    */
   public getAuthCodeUrl(scope: string[], state: string): string {
     if (!scope || !scope.length) {

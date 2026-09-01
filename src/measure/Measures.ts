@@ -15,7 +15,13 @@ import { GetActivityOptions } from "./types/GetActivityOptions";
 import { WithingsHttpClient } from "../http/WithingsHttpClient";
 import { GetConfirmUserOptions } from "./types/GetConfirmUserOptions";
 
-//TODO should inherit from an abstract http client class or pass
+/**
+ * The Withings Measure services, reachable as `client.measures`.
+ *
+ * Covers both the v1 `/measure` endpoint and the v2 `/v2/measure` endpoints.
+ *
+ * @see https://developer.withings.com/api-reference/#tag/measure
+ */
 export class Measures {
   private static API_URL = "/measure";
   private static APIv2_URL = "/v2/measure";

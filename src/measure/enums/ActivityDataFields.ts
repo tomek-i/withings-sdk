@@ -1,3 +1,10 @@
+/**
+ * Metrics that can be requested from `getactivity` via `data_fields`.
+ *
+ * Anything not listed in the request is omitted from the response.
+ *
+ * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-getactivity
+ */
 export enum ActivityDataFields {
   /**
    * number of steps
