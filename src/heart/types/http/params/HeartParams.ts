@@ -1,18 +1,14 @@
+import { PaginatedParams } from "../../../../types/PaginatedParams";
 /**
  * Wire parameters for the `/v2/heart` actions.
  *
  * @see https://developer.withings.com/api-reference/#tag/heart
  */
-export interface HeartParams {
+export interface HeartParams extends PaginatedParams {
   /** Data start date, as a unix timestamp in seconds. */
   startdate?: number;
   /** Data end date, as a unix timestamp in seconds. */
   enddate?: number;
-  /**
-   * When a first call returns `more:true` and `offset:XX`, set value `XX` in
-   * this parameter to retrieve the next available rows.
-   */
-  offset?: number;
   /** Identifier of the signal to fetch. */
   signalid?: number;
   /** Signal identifier for a signed request. */

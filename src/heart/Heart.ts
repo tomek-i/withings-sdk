@@ -1,6 +1,6 @@
 import { WithingsHttpClient } from "../http/WithingsHttpClient";
+import { WithingsService } from "../http/WithingsService";
 import { paginate } from "../pagination/paginate";
-import { encodeQueryParams } from "../util";
 import { GetHeartSignal } from "./models/GetHeartSignal";
 import { ListHeart } from "./models/ListHeart";
 import { GetHeartSignalOptions, ListHeartOptions } from "./types/HeartOptions";
@@ -16,10 +16,12 @@ import { ListHeartRequest } from "./types/http/requests/ListHeartRequest";
  *
  * @see https://developer.withings.com/api-reference/#tag/heart
  */
-export class Heart {
+export class Heart extends WithingsService {
   private static readonly API_URL = "/v2/heart";
 
-  constructor(private readonly httpClient: WithingsHttpClient) {}
+  constructor(httpClient: WithingsHttpClient) {
+    super(httpClient, Heart.API_URL);
+  }
 
   /**
    * Lists heart recordings over a period.
@@ -40,7 +42,7 @@ export class Heart {
       offset: options.offset ?? undefined,
     };
 
-    return this.send<ListHeart>(params);
+    return this.request<ListHeart>(params);
   }
 
   /**
@@ -78,13 +80,6 @@ export class Heart {
       with_intervals: options.with_intervals ?? undefined,
     };
 
-    return this.send<GetHeartSignal>(params);
-  }
-
-  private send<T>(params: object) {
-    const queryString = encodeQueryParams(params);
-    return this.httpClient.get<T>(`${Heart.API_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    return this.request<GetHeartSignal>(params);
   }
 }

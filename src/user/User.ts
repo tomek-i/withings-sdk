@@ -1,5 +1,5 @@
 import { WithingsHttpClient } from "../http/WithingsHttpClient";
-import { encodeQueryParams } from "../util";
+import { WithingsService } from "../http/WithingsService";
 import { GetDevice } from "./models/GetDevice";
 import { GetGoals } from "./models/GetGoals";
 import { GetDeviceRequest } from "./types/http/requests/GetDeviceRequest";
@@ -10,10 +10,12 @@ import { GetGoalsRequest } from "./types/http/requests/GetGoalsRequest";
  *
  * @see https://developer.withings.com/api-reference/#tag/user
  */
-export class User {
+export class User extends WithingsService {
   private static readonly API_URL = "/v2/user";
 
-  constructor(private readonly httpClient: WithingsHttpClient) {}
+  constructor(httpClient: WithingsHttpClient) {
+    super(httpClient, User.API_URL);
+  }
 
   /**
    * Lists the devices linked to the account.
@@ -28,7 +30,7 @@ export class User {
    */
   public async getDevice() {
     const params: GetDeviceRequest = { action: "getdevice" };
-    return this.send<GetDevice>(params);
+    return this.request<GetDevice>(params);
   }
 
   /**
@@ -42,13 +44,6 @@ export class User {
    */
   public async getGoals() {
     const params: GetGoalsRequest = { action: "getgoals" };
-    return this.send<GetGoals>(params);
-  }
-
-  private send<T>(params: object) {
-    const queryString = encodeQueryParams(params);
-    return this.httpClient.get<T>(`${User.API_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    return this.request<GetGoals>(params);
   }
 }

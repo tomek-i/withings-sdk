@@ -1,3 +1,4 @@
+import { PaginatedParams } from "../../../../types/PaginatedParams";
 /**
  * Wire parameters for the `getmeas` action.
  *
@@ -6,7 +7,7 @@
  *
  * @see https://developer.withings.com/api-reference/#tag/measure/operation/measure-getmeas
  */
-export interface GetMeasurementParams {
+export interface GetMeasurementParams extends PaginatedParams {
   /**
    * A single requested measure type.
    * IMPORTANT: DO NOT USE WITH FOLLOWING PARAMS: [meastypes]
@@ -30,9 +31,4 @@ export interface GetMeasurementParams {
    * IMPORTANT: DO NOT USE WITH FOLLOWING PARAMS: [startdate, enddate]
    */
   lastupdate?: number;
-  /**
-   * When a first call returns `more:1` and `offset:XX`, set value `XX` in this
-   * parameter to retrieve the next available rows.
-   */
-  offset?: number;
 }

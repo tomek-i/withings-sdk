@@ -1,5 +1,5 @@
 import { paginate } from "../pagination/paginate";
-import { encodeQueryParams, formatYmd } from "../util";
+import { formatYmd } from "../util";
 import { ConfirmUser } from "./models/ConfirmUser";
 import { GetActivity } from "./models/GetActivity";
 import { GetIntradayActivity } from "./models/GetIntradayActivity";
@@ -16,6 +16,7 @@ import { GetIntradayActivityOptions } from "./types/GetIntradayActivityOptions";
 import { GetWorkoutsOptions } from "./types/GetWorkoutsOptions";
 
 import { WithingsHttpClient } from "../http/WithingsHttpClient";
+import { WithingsService } from "../http/WithingsService";
 import { GetConfirmUserOptions } from "./types/GetConfirmUserOptions";
 
 /**
@@ -25,11 +26,13 @@ import { GetConfirmUserOptions } from "./types/GetConfirmUserOptions";
  *
  * @see https://developer.withings.com/api-reference/#tag/measure
  */
-export class Measures {
+export class Measures extends WithingsService {
   private static API_URL = "/measure";
   private static APIv2_URL = "/v2/measure";
 
-  constructor(private readonly httpClient: WithingsHttpClient) {}
+  constructor(httpClient: WithingsHttpClient) {
+    super(httpClient, Measures.APIv2_URL);
+  }
 
   /**
    * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-confirmuser
@@ -39,10 +42,7 @@ export class Measures {
       action: "confirmuser",
       ...options,
     };
-    const queryString = encodeQueryParams(params);
-    return this.httpClient.get<ConfirmUser>(`${Measures.APIv2_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    return this.request<ConfirmUser>(params);
   }
 
   /**
@@ -74,10 +74,7 @@ export class Measures {
       data_fields: options.data_fields?.join(",") ?? undefined,
     };
 
-    const queryString = encodeQueryParams(params);
-    return this.httpClient.get<GetActivity>(`${Measures.APIv2_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    return this.request<GetActivity>(params);
   }
 
   /**
@@ -113,10 +110,7 @@ export class Measures {
       offset: options.offset ?? undefined,
       data_fields: options.data_fields?.join(",") ?? undefined,
     };
-    const queryString = encodeQueryParams(params);
-    return this.httpClient.get<GetWorkouts>(`${Measures.APIv2_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    return this.request<GetWorkouts>(params);
   }
   /**
    * Returns user activity data captured at high frequency.
@@ -136,10 +130,7 @@ export class Measures {
       enddate: options.enddate !== undefined ? Math.floor(options.enddate.getTime() / 1000) : undefined,
       data_fields: options.data_fields?.join(",") ?? undefined,
     };
-    const queryString = encodeQueryParams(params);
-    return this.httpClient.get<GetIntradayActivity>(`${Measures.APIv2_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    return this.request<GetIntradayActivity>(params);
   }
 
   /**
@@ -165,11 +156,8 @@ export class Measures {
       lastupdate: lastupdateUnix,
       offset: options.offset ?? undefined,
     };
-    const queryString = encodeQueryParams(params);
-
-    return this.httpClient.get<GetMeasurements>(`${Measures.API_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    // getmeas is the one v1 endpoint, so it overrides the service path.
+    return this.request<GetMeasurements>(params, Measures.API_URL);
   }
 
   /**

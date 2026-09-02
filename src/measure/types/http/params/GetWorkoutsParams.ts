@@ -1,3 +1,4 @@
+import { PaginatedParams } from "../../../../types/PaginatedParams";
 /**
  * Wire parameters for the `getworkouts` action.
  *
@@ -7,7 +8,7 @@
  *
  * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-getworkouts
  */
-export interface GetWorkoutsParams {
+export interface GetWorkoutsParams extends PaginatedParams {
   /**
    * Start date.
    * IMPORTANT: DO NOT USE WITH FOLLOWING PARAMS: [lastupdate]
@@ -25,12 +26,6 @@ export interface GetWorkoutsParams {
    * IMPORTANT: DO NOT USE WITH FOLLOWING PARAMS: [startdateymd, enddateymd]
    */
   lastupdate?: number;
-
-  /**
-   * When a first call returns more:true and offset:XX, set value XX in this parameter to retrieve next available rows.
-   */
-  //TODO: should extract offset into something paginated interface
-  offset?: number;
 
   /**
    * List of requested data fields, separated by a comma.

@@ -59,7 +59,6 @@ export class WithingsHttpClient {
     body: RequestInit["body"],
     options: RequestInit = {}
   ): Promise<WithingsResponse<T>> {
-    //TODO: dont like the "as" convert of body
     return this.fetchWithAuth<T>(endpoint, body, { ...options, method: "POST" });
   }
 

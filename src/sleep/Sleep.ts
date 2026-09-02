@@ -1,6 +1,7 @@
 import { WithingsHttpClient } from "../http/WithingsHttpClient";
+import { WithingsService } from "../http/WithingsService";
 import { paginate } from "../pagination/paginate";
-import { encodeQueryParams, formatYmd } from "../util";
+import { formatYmd } from "../util";
 import { GetSleep } from "./models/GetSleep";
 import { GetSleepSummary } from "./models/GetSleepSummary";
 import { GetSleepOptions } from "./types/GetSleepOptions";
@@ -13,10 +14,12 @@ import { GetSleepSummaryRequest } from "./types/http/requests/GetSleepSummaryReq
  *
  * @see https://developer.withings.com/api-reference/#tag/sleep
  */
-export class Sleep {
+export class Sleep extends WithingsService {
   private static readonly API_URL = "/v2/sleep";
 
-  constructor(private readonly httpClient: WithingsHttpClient) {}
+  constructor(httpClient: WithingsHttpClient) {
+    super(httpClient, Sleep.API_URL);
+  }
 
   /**
    * Returns high frequency sleep data: the sleep states across a period, plus
@@ -37,10 +40,7 @@ export class Sleep {
       meastypes: options.meastypes?.join(",") ?? undefined,
     };
 
-    const queryString = encodeQueryParams(params);
-    return this.httpClient.get<GetSleep>(`${Sleep.API_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    return this.request<GetSleep>(params);
   }
 
   /**
@@ -75,10 +75,7 @@ export class Sleep {
       data_fields: options.data_fields?.join(",") ?? undefined,
     };
 
-    const queryString = encodeQueryParams(params);
-    return this.httpClient.get<GetSleepSummary>(`${Sleep.API_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    return this.request<GetSleepSummary>(params);
   }
 
   /**
