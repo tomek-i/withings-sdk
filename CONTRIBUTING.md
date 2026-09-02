@@ -41,9 +41,14 @@ the next version number, so the wrong type produces the wrong release.
 ```
 feat: add the sleep service          -> minor bump
 fix: send ymd dates with dashes      -> patch bump
-docs: document the error type        -> no release
-feat!: rename the client options     -> minor bump while pre-1.0
+refactor: share the request building -> patch bump
+docs: fix a typo in the README       -> no release at all
+feat!: rename the client options     -> major bump
 ```
+
+Documentation, chore, CI, test, style and build commits deliberately do not cut
+a release. A README correction should not publish a new version; it reaches npm
+with the next real change.
 
 A `commit-msg` hook checks this locally as soon as you have run `pnpm install`,
 and CI checks every commit in a pull request.

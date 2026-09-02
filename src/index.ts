@@ -18,4 +18,8 @@ export { WithingsResponseStatus } from "./util";
 export type { IHttpClient } from "./http/HttpClient";
 export { HttpClient } from "./http/HttpClient";
 export { WithingsHttpClient } from "./http/WithingsHttpClient";
-export * from "./http/retry";
+// Only the pieces a consumer configures or receives. The backoff maths, the
+// sleep helper and the duplicate-request detection are implementation details:
+// exporting them would commit the package to keeping them stable.
+export type { RetryAttempt, WithingsRetryOptions } from "./http/retry";
+export { DEFAULT_RETRY_OPTIONS } from "./http/retry";

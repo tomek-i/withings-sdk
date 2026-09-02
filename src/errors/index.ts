@@ -1,3 +1,3 @@
 export * from "./WithingsApiError";
-export * from "./WithingsHttpError";
+export { WithingsHttpError } from "./WithingsHttpError";
 export * from "./WithingsInvalidResponseError";

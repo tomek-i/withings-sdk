@@ -1,4 +1,5 @@
-import { isRetryableHttpStatus, parseRetryAfter, WithingsApiError, WithingsClient, WithingsHttpError } from "../../src";
+import { WithingsApiError, WithingsClient, WithingsHttpError } from "../../src";
+import { isRetryableHttpStatus, parseRetryAfter } from "../../src/errors/WithingsHttpError";
 import type { WithingsConfig } from "../../src";
 import { httpFailureResponse, withingsResponse } from "../helpers/response";
 
