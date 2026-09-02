@@ -35,6 +35,8 @@ pnpm is the package manager, pinned via `packageManager`. Use `corepack enable` 
 
 Write the body as prose explaining *why*, not a restatement of the diff.
 
+**The README stays short.** It is the 100 foot view: what this is, how to install it, one working example, and links. Anything longer belongs in `docs/`, one page per topic, linked from `docs/README.md`. A reader deciding whether to use the package should not have to scroll past a rate limiting guide.
+
 **Every exported declaration and field carries JSDoc.** Always include the unit. The API mixes meters, seconds, kcal, bpm and percentages, and the field names give no hint. Do not use `@param {type}`. TypeScript already carries the type, and letting the two disagree is a maintenance trap. These docs ship in `dist/index.d.ts`, so they are what consumers see in their editor.
 
 **Verify against the OpenAPI specification, not against other clients.** Withings publishes one. Earlier work in this repo modelled fields from third-party clients and got several wrong: a field that does not exist, a misspelled key, and missing fields. The spec is not committed, because it is Withings' documentation rather than ours to redistribute. Download it when you need it and keep it gitignored as `openapi.json`.
