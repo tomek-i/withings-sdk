@@ -53,7 +53,6 @@ export class Auth {
 
     const response = await this.httpClient.post(
       "/v2/oauth2",
-      //TODO: extract to type / interface, this is the body/payload of the request
       {
         action: "requesttoken",
         client_id: this.config.clientId,
@@ -63,12 +62,6 @@ export class Auth {
       },
       { headers: { "Content-Type": "application/json" } }
     );
-
-    if (!response.ok) {
-      //TODO: better error messaging
-      //TODO: add logging
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
 
     const data = (await response.json()) as RequestTokenResponse;
 
@@ -95,7 +88,6 @@ export class Auth {
   public async fetchAccessToken(code: string): Promise<RequestTokenResponse> {
     const response = await this.httpClient.post(
       "/v2/oauth2",
-      //TODO: extract to type / interface, this is the body/payload of the request not params
       {
         action: "requesttoken",
         client_id: this.config.clientId,
@@ -106,12 +98,6 @@ export class Auth {
       },
       { headers: { "Content-Type": "application/json" } }
     );
-
-    if (!response.ok) {
-      //TODO: better error messaging
-      //TODO: add logging
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
 
     const data = (await response.json()) as RequestTokenResponse;
 
@@ -156,10 +142,6 @@ export class Auth {
       { ...payload, signature: this.generateSignature(payload) },
       { headers: { "Content-Type": "application/json" } }
     );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
 
     const data = (await response.json()) as NonceResponse;
 
@@ -232,7 +214,6 @@ export class Auth {
       throw new Error("scope is required");
     }
 
-    //TODO: extract to type / interface
     const params: AuthCodeUrlParams = {
       response_type: "code",
       client_id: this.config.clientId,
@@ -245,7 +226,6 @@ export class Auth {
       .map(([key, value]) => `${encodeURIComponent(key)}=${key === "scope" ? value : encodeURIComponent(value)}`)
       .join("&");
 
-    //TODO: make constant
     return `${Auth.AUTHORIZATION_URL}?${queryString}`;
   }
 }

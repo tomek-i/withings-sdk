@@ -158,8 +158,8 @@ First publishable release.
 - The token refresh callback was passed unbound, so an expired access token
   crashed with `Cannot read properties of undefined (reading 'refreshAccessToken')`
   instead of being renewed.
-- The access token was captured when the client was constructed — before any
-  token existed — so tokens obtained later were never sent. It is now read on
+- The access token was captured when the client was constructed, before any
+  token existed, so tokens obtained later were never sent. It is now read on
   every request.
 - Both `fetchAccessToken` and `refreshAccessToken` stored the *access* token in
   place of the refresh token, which permanently broke renewal.

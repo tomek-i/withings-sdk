@@ -1,3 +1,4 @@
+import { PaginatedParams } from "../../../../types/PaginatedParams";
 /**
  * Wire parameters for the sleep `getsummary` action.
  *
@@ -6,7 +7,7 @@
  *
  * @see https://developer.withings.com/api-reference/#tag/sleep/operation/sleepv2-getsummary
  */
-export interface GetSleepSummaryParams {
+export interface GetSleepSummaryParams extends PaginatedParams {
   /**
    * Start date, as `YYYY-MM-DD`.
    * IMPORTANT: DO NOT USE WITH FOLLOWING PARAMS: [lastupdate]
@@ -25,9 +26,4 @@ export interface GetSleepSummaryParams {
   lastupdate?: number;
   /** Requested data fields, separated by a comma. */
   data_fields?: string;
-  /**
-   * When a first call returns `more` and `offset:XX`, set value `XX` in this
-   * parameter to retrieve the next available rows.
-   */
-  offset?: number;
 }

@@ -45,7 +45,7 @@ export const hasMorePages = (body: PaginatedBody | undefined): boolean => {
  * ```
  *
  * Iteration stops when the API reports no further rows, or when the offset it
- * returns fails to advance — a stalled offset would otherwise loop forever.
+ * returns fails to advance. A stalled offset would otherwise loop forever.
  *
  * @param fetchPage Requests one page at the given offset. The first call
  *   receives `undefined`, meaning start from the beginning.

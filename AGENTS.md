@@ -4,7 +4,7 @@ Working notes for this repository. Applies to coding agents and humans alike.
 
 ## What this is
 
-`withings-sdk` — an unofficial TypeScript SDK for the [Withings API](https://developer.withings.com/api-reference), published to npm as a public package. Node 18+, zero runtime dependencies, dual ESM/CJS build.
+`withings-sdk` is an unofficial TypeScript SDK for the [Withings API](https://developer.withings.com/api-reference), published to npm as a public package. It needs Node 18+, has zero runtime dependencies, and ships dual ESM and CJS builds.
 
 Keeping it dependency-free is deliberate. Do not add a runtime dependency without a strong reason; `fetch` and `node:crypto` cover what the SDK needs.
 
@@ -35,9 +35,9 @@ pnpm is the package manager, pinned via `packageManager`. Use `corepack enable` 
 
 Write the body as prose explaining *why*, not a restatement of the diff.
 
-**Every exported declaration and field carries JSDoc.** Include the unit — the API mixes meters, seconds, kcal, bpm and percentages with no hint in the field names. Do not use `@param {type}`; TypeScript already carries the type, and the two disagreeing is a maintenance trap. The docs ship in `dist/index.d.ts`, so they are the SDK's IntelliSense.
+**Every exported declaration and field carries JSDoc.** Always include the unit. The API mixes meters, seconds, kcal, bpm and percentages, and the field names give no hint. Do not use `@param {type}`. TypeScript already carries the type, and letting the two disagree is a maintenance trap. These docs ship in `dist/index.d.ts`, so they are what consumers see in their editor.
 
-**Verify against the OpenAPI specification, not against other clients.** Withings publishes one; earlier work in this repo modelled fields from third-party clients and got several wrong (a field that does not exist, a misspelled key, missing fields). The spec is not committed — it is Withings' documentation, not ours to redistribute — so download it when you need it and keep it gitignored as `openapi.json`.
+**Verify against the OpenAPI specification, not against other clients.** Withings publishes one. Earlier work in this repo modelled fields from third-party clients and got several wrong: a field that does not exist, a misspelled key, and missing fields. The spec is not committed, because it is Withings' documentation rather than ours to redistribute. Download it when you need it and keep it gitignored as `openapi.json`.
 
 The spec is not infallible, and **every disagreement found so far has been a real bug in the models**. Run `pnpm run probe` before trusting a field you have not seen in a response. Where the spec and reality differ, model reality and say so in a comment.
 
@@ -53,7 +53,7 @@ Confirmed against the live API:
 
 `test/e2e/contract.test.ts` pins all of this against the live API. It fails when
 a field has an unexpected type, and when the API returns a field the SDK does
-not model — the latter is how API drift gets noticed. A missing field never
+not model. The second case is how API drift gets noticed. A missing field never
 fails, because absence means plan, device or `data_fields`, not a change.
 
 **Mirror the existing module layout** when adding a service:
@@ -74,7 +74,7 @@ Then export the barrel from `src/index.ts` and add the service to `WithingsClien
 
 **`data_fields` enums must have explicit string values.** A value-less enum is numeric, which silently serialises as `data_fields=0,7` instead of field names. This shipped as a real bug once.
 
-**Reuse `paginate()`** for any endpoint returning `more`/`offset` rather than writing another loop. Note the API is inconsistent — `getmeas` returns `more` as a number, `getactivity` as a boolean — which `hasMorePages` absorbs.
+**Reuse `paginate()`** for any endpoint returning `more` and `offset`, rather than writing another loop. The API is inconsistent here: `getmeas` returns `more` as a number and `getactivity` returns a boolean. `hasMorePages` absorbs that.
 
 ## Testing
 
@@ -92,7 +92,7 @@ Releases are automated and should not be cut by hand.
 2. release-please maintains a Release PR that bumps `package.json` and updates `CHANGELOG.md`.
 3. Merging the Release PR tags the commit and publishes to npm.
 
-Do not run `pnpm version`, edit the `version` field, or hand-write `CHANGELOG.md` entries for released versions — release-please owns all three.
+Do not run `pnpm version`, edit the `version` field, or hand-write `CHANGELOG.md` entries for released versions. release-please owns all three.
 
 **`.github/workflows/release.yml` is load-bearing.** npm trusted publishing is pinned to this repository *and* that exact filename. Renaming the file, or moving the publish step into another workflow, breaks publishing until the trusted publisher on npmjs.com is updated. There is no npm token: authentication is OIDC.
 
@@ -103,5 +103,5 @@ Do not run `pnpm version`, edit the `version` field, or hand-write `CHANGELOG.md
 - npm surfaces trusted-publishing misconfiguration as `ENEEDAUTH` or `404`, never as a useful message. `--loglevel verbose` shows the real OIDC exchange error.
 - The `*ymd` parameters take a dashed `YYYY-MM-DD` date, not `YYYYMMDD`.
 - pnpm 10 blocks dependency build scripts by default; `esbuild` is allowlisted in `pnpm.onlyBuiltDependencies` because tsup needs it.
-- Withings rejects a repeated request with identical arguments inside 10 seconds, reporting it as `601` — the same code as a genuine rate limit. Two e2e tests firing the same call back to back will trip it.
+- Withings rejects a repeated request with identical arguments inside 10 seconds, reporting it as `601`. That is the same code as a genuine rate limit. Two e2e tests firing the same call back to back will trip it.
 - Refresh tokens rotate on every renewal, so a stale `.env` fails as `503 invalid refresh_token` and then cascades into misleading `601`s. `pnpm run authorize` is the fix.

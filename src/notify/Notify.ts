@@ -1,5 +1,5 @@
 import { WithingsHttpClient } from "../http/WithingsHttpClient";
-import { encodeQueryParams } from "../util";
+import { WithingsService } from "../http/WithingsService";
 import { EmptyBody } from "./models/EmptyBody";
 import { GetNotification } from "./models/GetNotification";
 import { ListNotifications } from "./models/ListNotifications";
@@ -20,7 +20,7 @@ import { UpdateNotificationRequest } from "./types/http/requests/UpdateNotificat
  * The Withings notification service, reachable as `client.notify`.
  *
  * Withings posts to a callback URL when new data is available, which is the
- * supported alternative to polling — and the one Withings recommends for
+ * supported alternative to polling, and the one Withings recommends for
  * staying inside the rate limit.
  *
  * A notification says *that* something changed and over which range; it never
@@ -29,10 +29,12 @@ import { UpdateNotificationRequest } from "./types/http/requests/UpdateNotificat
  *
  * @see https://developer.withings.com/api-reference/#tag/notify
  */
-export class Notify {
+export class Notify extends WithingsService {
   private static readonly API_URL = "/notify";
 
-  constructor(private readonly httpClient: WithingsHttpClient) {}
+  constructor(httpClient: WithingsHttpClient) {
+    super(httpClient, Notify.API_URL);
+  }
 
   /**
    * Registers a callback URL to be notified about a category.
@@ -55,7 +57,7 @@ export class Notify {
       client_id: options.client_id ?? undefined,
     };
 
-    return this.send<EmptyBody>(params);
+    return this.request<EmptyBody>(params);
   }
 
   /**
@@ -72,7 +74,7 @@ export class Notify {
       appli: options.appli ?? undefined,
     };
 
-    return this.send<GetNotification>(params);
+    return this.request<GetNotification>(params);
   }
 
   /**
@@ -88,7 +90,7 @@ export class Notify {
       appli: options.appli ?? undefined,
     };
 
-    return this.send<ListNotifications>(params);
+    return this.request<ListNotifications>(params);
   }
 
   /**
@@ -111,7 +113,7 @@ export class Notify {
       comment: options.comment ?? undefined,
     };
 
-    return this.send<EmptyBody>(params);
+    return this.request<EmptyBody>(params);
   }
 
   /**
@@ -128,13 +130,6 @@ export class Notify {
       appli: options.appli ?? undefined,
     };
 
-    return this.send<EmptyBody>(params);
-  }
-
-  private send<T>(params: object) {
-    const queryString = encodeQueryParams(params);
-    return this.httpClient.get<T>(`${Notify.API_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    return this.request<EmptyBody>(params);
   }
 }

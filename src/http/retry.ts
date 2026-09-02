@@ -1,4 +1,5 @@
 import { WithingsApiError } from "../errors/WithingsApiError";
+import { WithingsHttpError } from "../errors/WithingsHttpError";
 
 /**
  * How the client should behave when the API rate limits a request.
@@ -40,8 +41,8 @@ export interface WithingsRetryOptions {
    */
   jitter?: boolean;
   /**
-   * Called before each wait, for logging or metrics. Purely observational —
-   * throwing from it will abort the request.
+   * Called before each wait, for logging or metrics. It is purely
+   * observational, but throwing from it will abort the request.
    */
   onRetry?: (attempt: RetryAttempt) => void;
 }
@@ -52,8 +53,8 @@ export interface RetryAttempt {
   attempt: number;
   /** How long the client is about to wait, in milliseconds. */
   delayMs: number;
-  /** The rate limit error that triggered the retry. */
-  error: WithingsApiError;
+  /** The failure that triggered the retry. */
+  error: WithingsApiError | WithingsHttpError;
 }
 
 /**

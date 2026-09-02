@@ -1,7 +1,7 @@
 /**
  * A single measurement.
  *
- * The real figure is `value * 10 ** unit` — `value` is an integer and `unit` is
+ * The real figure is `value * 10 ** unit`. `value` is an integer and `unit` is
  * the power of ten to apply, so 74250 with unit -3 is 74.25 kg.
  *
  * @see https://developer.withings.com/api-reference/#tag/measure/operation/measure-getmeas

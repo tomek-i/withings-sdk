@@ -1,6 +1,6 @@
 import { WithingsHttpClient } from "../http/WithingsHttpClient";
+import { WithingsService } from "../http/WithingsService";
 import { paginate } from "../pagination/paginate";
-import { encodeQueryParams } from "../util";
 import { GetHeartSignal } from "./models/GetHeartSignal";
 import { ListHeart } from "./models/ListHeart";
 import { GetHeartSignalOptions, ListHeartOptions } from "./types/HeartOptions";
@@ -16,17 +16,19 @@ import { ListHeartRequest } from "./types/http/requests/ListHeartRequest";
  *
  * @see https://developer.withings.com/api-reference/#tag/heart
  */
-export class Heart {
+export class Heart extends WithingsService {
   private static readonly API_URL = "/v2/heart";
 
-  constructor(private readonly httpClient: WithingsHttpClient) {}
+  constructor(httpClient: WithingsHttpClient) {
+    super(httpClient, Heart.API_URL);
+  }
 
   /**
    * Lists heart recordings over a period.
    *
    * Each entry says what was recorded and carries the `signalid` needed to
    * fetch the signal itself with {@link get}. The signal is never included
-   * here — it is thousands of samples per recording.
+   * here, because it is thousands of samples per recording.
    *
    * @param options The period to read, and an offset when paging by hand.
    * @returns The recordings, most recent first.
@@ -40,7 +42,7 @@ export class Heart {
       offset: options.offset ?? undefined,
     };
 
-    return this.send<ListHeart>(params);
+    return this.request<ListHeart>(params);
   }
 
   /**
@@ -59,8 +61,8 @@ export class Heart {
    * Fetches a recorded signal.
    *
    * Identify it either by `signalid`, using the access token this client
-   * already sends, or by `signal_token` with a signed request — spread
-   * `auth.signedParams("get")` in for that.
+   * already sends, or by `signal_token` with a signed request. For the second
+   * form, spread `auth.signedParams("get")` in.
    *
    * @param options Which signal to fetch, and how to identify it.
    * @returns The signal in microvolts, with its sampling frequency.
@@ -78,13 +80,6 @@ export class Heart {
       with_intervals: options.with_intervals ?? undefined,
     };
 
-    return this.send<GetHeartSignal>(params);
-  }
-
-  private send<T>(params: object) {
-    const queryString = encodeQueryParams(params);
-    return this.httpClient.get<T>(`${Heart.API_URL}?${queryString}`, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
+    return this.request<GetHeartSignal>(params);
   }
 }

@@ -24,7 +24,7 @@ Node.js 18 or newer is required.
 | `pnpm run format`    | Formats with Biome.                                                |
 | `pnpm run format:check` | Verifies formatting (used by CI).                               |
 | `pnpm run build`     | Produces the ESM + CJS bundles and type declarations in `dist/`.   |
-| `pnpm run test:e2e`  | Live API contract tests. Unattended. Requires credentials — see below. |
+| `pnpm run test:e2e`  | Live API contract tests. Unattended. Requires credentials, see below. |
 | `pnpm run test:e2e:consent` | The OAuth consent flow. Opens a browser and needs a human. |
 | `pnpm run probe`     | Prints the shape of live responses, to check models against reality. |
 | `pnpm run commitlint` | Checks your commit messages against the convention.               |
@@ -56,8 +56,8 @@ browser and a human is the consent flow, which lives in `test/e2e/interactive/`
 and runs separately via `pnpm run test:e2e:consent`.
 
 The contract suite checks the **shape** of every response against the types the
-SDK claims, never the values — those are the account holder's health data, and
-they differ per account. It fails in two directions:
+SDK claims, never the values. The values are the account holder's health data,
+and they differ per account. It fails in two directions:
 
 - a field of an unexpected type, meaning our types are wrong
 - a field the SDK does not model at all, meaning the API grew something
@@ -110,5 +110,5 @@ footer to a commit.
 Authentication uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers)
 over OIDC, so there is no publish token to store or rotate. The trusted
 publisher registered on npmjs.com is pinned to this repository *and* to the
-workflow filename `release.yml` — if you rename that file, update the trusted
-publisher to match or releases will start failing with a 404.
+workflow filename `release.yml`. If you rename that file, update the trusted
+publisher to match, or releases will start failing with a 404.

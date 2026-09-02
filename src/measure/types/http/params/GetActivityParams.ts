@@ -1,9 +1,10 @@
+import { PaginatedParams } from "../../../../types/PaginatedParams";
 /**
  * `startdateymd` + `enddateymd` and `lastupdate` are mutually exclusive, so all
  * three are optional here. The caller-facing `GetActivityOptions` union is what
  * enforces that exactly one of the two forms is supplied.
  */
-export interface GetActivityParams {
+export interface GetActivityParams extends PaginatedParams {
   /**
    * Start date.
    * IMPORTANT: DO NOT USE WITH FOLLOWING PARAMS: [lastupdate]
@@ -21,12 +22,6 @@ export interface GetActivityParams {
    * IMPORTANT: DO NOT USE WITH FOLLOWING PARAMS: [startdateymd, enddateymd]
    */
   lastupdate?: number;
-
-  /**
-   * When a first call returns more:true and offset:XX, set value XX in this parameter to retrieve next available rows.
-   */
-  //TODO: should extract offset into something paginated interface
-  offset?: number;
 
   /**
    * List of requested data fields, separated by a comma.
