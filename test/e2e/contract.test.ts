@@ -223,6 +223,24 @@ describe("live API contract", () => {
     });
   });
 
+  describe("notify.list", () => {
+    // Only `list` is exercised. subscribe, update and revoke change what
+    // Withings sends to a callback URL, and a test suite has no business
+    // altering the account holder's subscriptions.
+    it("matches the modelled shape", async () => {
+      const response = await client.notify.list();
+
+      expect(response.status).toEqual(0);
+      expectContract("notify.list body", response.body, { profiles: ["array"] });
+      expectContract("notify.list profiles[]", response.body.profiles?.[0], {
+        appli: ["number"],
+        callbackurl: ["string"],
+        comment: ["string", "null"],
+        expires: ["number", "null"],
+      });
+    });
+  });
+
   describe("sleep.get", () => {
     const seriesEntry: Contract = {
       startdate: ["number"],
