@@ -9,6 +9,7 @@ export * from "./pagination";
 export * from "./plans";
 export * from "./sleep";
 export * from "./types";
+export * from "./user";
 
 // Useful for interpreting the `status` field the Withings API returns.
 export { WithingsResponseStatus } from "./util";
