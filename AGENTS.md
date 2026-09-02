@@ -20,6 +20,7 @@ Keeping it dependency-free is deliberate. Do not add a runtime dependency withou
 | `pnpm run test:e2e` | Live API tests. Needs real credentials in `.env`; excluded from CI. |
 | `pnpm run authorize` | Opens the Withings consent screen and writes fresh tokens into `.env`. |
 | `pnpm run probe` | Prints the shape of live API responses, to check the models against reality. |
+| `pnpm run test:e2e:consent` | The OAuth consent flow. Opens a browser and needs a human. |
 
 pnpm is the package manager, pinned via `packageManager`. Use `corepack enable` to get the right version.
 
@@ -48,7 +49,12 @@ Confirmed against the live API:
 - `measuregrps` entries carry a `timezone` the spec omits.
 - `userid` is a string from the authorization_code exchange and a number from a refresh. Same field, same endpoint.
 
-Still unverified: the sleep `get` series, declared an object but modelled as an array.
+- the sleep `get` series is declared an object and returns an **array**.
+
+`test/e2e/contract.test.ts` pins all of this against the live API. It fails when
+a field has an unexpected type, and when the API returns a field the SDK does
+not model — the latter is how API drift gets noticed. A missing field never
+fails, because absence means plan, device or `data_fields`, not a change.
 
 **Mirror the existing module layout** when adding a service:
 
