@@ -5,6 +5,22 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0](https://github.com/tomek-i/withings-sdk/compare/v0.3.0...v0.4.0) (2026-09-02)
+
+
+### Added
+
+* back off and retry when the API rate limits a request ([b198b2f](https://github.com/tomek-i/withings-sdk/commit/b198b2f0523e4cfe72d3708f05c59a6df7f146c7))
+* back off and retry when the API rate limits a request ([110849a](https://github.com/tomek-i/withings-sdk/commit/110849af6defa7b1ebcb9d48d981c183fce44a3b))
+* explain metrics that a Withings API plan does not include ([2f76c17](https://github.com/tomek-i/withings-sdk/commit/2f76c1771f0697531fb7c9ecf4a6a661e56beebd))
+* explain metrics that a Withings API plan does not include ([365f2dc](https://github.com/tomek-i/withings-sdk/commit/365f2dc282c7a25b5002c4bb3fadf27af760251a))
+
+
+### Fixed
+
+* correct the measure models against live API responses ([#22](https://github.com/tomek-i/withings-sdk/issues/22)) ([8f90acd](https://github.com/tomek-i/withings-sdk/commit/8f90acd159935c35a74cd514d05332bec9785481))
+* wait out the duplicate-request window before retrying ([23d980c](https://github.com/tomek-i/withings-sdk/commit/23d980cadb71372e8bf0351fdbf88233d2da1fce))
+
 ## [0.3.0](https://github.com/tomek-i/withings-sdk/compare/v0.2.0...v0.3.0) (2026-09-01)
 
 
