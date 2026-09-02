@@ -1,3 +1,5 @@
+import { WithingsHttpError } from "../errors/WithingsHttpError";
+
 /**
  * The transport the SDK sends requests through.
  *
@@ -64,13 +66,9 @@ export class HttpClient implements IHttpClient {
    */
   public async send<T>(endpoint: string, body: T, options: RequestInit = {}): Promise<Response> {
     const fullEndpoint = `${this.baseUrl}${endpoint}`;
-    //TODO: probably can be removed or just be done with = { ... options }
     const requestOptions: RequestInit = {
       ...options,
-      // method: options.method,
-      headers: {
-        ...options.headers,
-      },
+      headers: { ...options.headers },
     };
 
     if (body) {
@@ -80,9 +78,7 @@ export class HttpClient implements IHttpClient {
     const response = await fetch(fullEndpoint, requestOptions);
 
     if (!response.ok) {
-      //TODO: better error messaging
-      //TODO: add logging
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new WithingsHttpError(response, fullEndpoint);
     }
 
     return response;

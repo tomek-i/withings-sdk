@@ -1,4 +1,5 @@
 import { WithingsApiError } from "../errors/WithingsApiError";
+import { WithingsHttpError } from "../errors/WithingsHttpError";
 
 /**
  * How the client should behave when the API rate limits a request.
@@ -52,8 +53,8 @@ export interface RetryAttempt {
   attempt: number;
   /** How long the client is about to wait, in milliseconds. */
   delayMs: number;
-  /** The rate limit error that triggered the retry. */
-  error: WithingsApiError;
+  /** The failure that triggered the retry. */
+  error: WithingsApiError | WithingsHttpError;
 }
 
 /**

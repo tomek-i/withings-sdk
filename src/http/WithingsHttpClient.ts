@@ -1,4 +1,5 @@
 import { WithingsApiError } from "../errors/WithingsApiError";
+import { isRetryableHttpStatus, WithingsHttpError } from "../errors/WithingsHttpError";
 import { WithingsResponse } from "../types";
 import { ErrorCodeHandler, WithingsResponseStatus } from "../util";
 import { IHttpClient } from "./HttpClient";
@@ -83,13 +84,32 @@ export class WithingsHttpClient {
       );
     }
 
-    const response = await this.httpClient.send(endpoint, body, {
-      ...options,
-      headers: {
-        ...options?.headers,
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    let response: Response;
+    try {
+      response = await this.httpClient.send(endpoint, body, {
+        ...options,
+        headers: {
+          ...options?.headers,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    } catch (error) {
+      // A transient HTTP failure is worth another go. The API reports its own
+      // problems with a 200 and a status in the body, so reaching here means
+      // the request did not get that far.
+      if (
+        error instanceof WithingsHttpError &&
+        isRetryableHttpStatus(error.status) &&
+        attempt < this.retry.maxAttempts
+      ) {
+        const delayMs = this.waitFor(attempt, error);
+        this.retry.onRetry?.({ attempt, delayMs, error });
+        await delay(delayMs);
+        return this.fetchWithAuth(endpoint, body, options, mayRefresh, attempt + 1);
+      }
+
+      throw error;
+    }
 
     const data = (await response.json()) as WithingsResponse<T>;
 
@@ -116,5 +136,20 @@ export class WithingsHttpClient {
     }
 
     return data;
+  }
+
+  /**
+   * How long to wait before retrying a transport failure.
+   *
+   * A `Retry-After` header is the server saying how long it needs, so it wins
+   * over the computed backoff. It is still capped by `maxDelayMs` so a very
+   * long header value cannot hang the caller indefinitely.
+   */
+  private waitFor(attempt: number, error: WithingsHttpError): number {
+    const backoff = backoffDelay(attempt, this.retry);
+    if (error.retryAfterMs === undefined) return backoff;
+
+    const maxDelayMs = this.retry.maxDelayMs;
+    return Math.min(Math.max(error.retryAfterMs, backoff), maxDelayMs);
   }
 }

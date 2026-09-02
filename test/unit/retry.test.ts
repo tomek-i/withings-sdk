@@ -1,4 +1,4 @@
-import { WithingsApiError, WithingsClient, WithingsResponseStatus } from "../../src";
+import { WithingsApiError, WithingsClient, WithingsHttpError, WithingsResponseStatus } from "../../src";
 import type { WithingsConfig } from "../../src";
 import {
   backoffDelay,
@@ -169,11 +169,11 @@ describe("rate limit retrying", () => {
   it("passes the rate limit error to onRetry", async () => {
     fetchMock.mockResolvedValueOnce(rateLimited()).mockResolvedValueOnce(ok());
 
-    let reported: WithingsApiError | undefined;
+    let reported: WithingsApiError | WithingsHttpError | undefined;
     await client({ initialDelayMs: 0, onRetry: ({ error }) => void (reported = error) }).measures.getMeasurement();
 
     expect(reported).toBeInstanceOf(WithingsApiError);
-    expect(reported?.type).toEqual(WithingsResponseStatus.TooManyRequests);
+    expect((reported as WithingsApiError).type).toEqual(WithingsResponseStatus.TooManyRequests);
   });
 
   it("keeps the token refresh budget separate from the retry budget", async () => {
