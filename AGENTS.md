@@ -104,6 +104,11 @@ Releases are automated and should not be cut by hand.
 
 Do not run `pnpm version`, edit the `version` field, or hand-write `CHANGELOG.md` entries for released versions. release-please owns all three.
 
+**A forced release has an empty changelog.** `Release-As` sets the version, but
+the entry is still generated from the commits in the window. If those are all
+hidden types, the release ships with nothing in it. Write the entry by hand on
+the Release PR before merging, or accept that the release says nothing.
+
 **`Release-As:` must be the last thing in the commit message.** release-please
 reads it as a footer. This repository squash merges, so a pull request with two
 commits produces one message with both bodies concatenated, and a footer in the

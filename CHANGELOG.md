@@ -8,9 +8,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0](https://github.com/tomek-i/withings-sdk/compare/v0.11.1...v1.0.0) (2026-09-02)
 
 
-### Chores
+The first stable release. The package now follows semantic versioning, so a
+breaking change to any documented export means a major version.
 
-* release 1.0.0 ([#44](https://github.com/tomek-i/withings-sdk/issues/44)) ([cd58dcb](https://github.com/tomek-i/withings-sdk/commit/cd58dcbed4a0c8d2e32895efcf44a4738c792443))
+Nothing in the library changed between 0.11.1 and this release. The version
+marks the point at which the API is committed to, and the entry below describes
+what that API is rather than what moved in the last commit.
+
+### Coverage
+
+Every Withings service carrying general health data is complete:
+
+- **measure**: weight and body composition, daily activity, workouts, intraday
+  data, and measure confirmation
+- **sleep**: sleep states and nightly summaries
+- **heart**: ECG signals, atrial fibrillation, blood pressure, stethoscope
+- **user**: devices, goals, profile, device linking, account activation
+- **notify**: webhook subscriptions, with a parser for the posted payload
+- **oauth2** and **signature**: the consent flow, token refresh, nonce based
+  signing, and the partner services including revoke
+
+The remaining Withings services are partner and RPM offerings and are out of
+scope: `stetho`, `rawdata`, `device`, `survey`, `nudge`, `dropshipment` and
+`order`.
+
+### What the client handles
+
+- Renews an expired access token and retries the request once
+- Backs off and retries a rate limited request, honouring `Retry-After`, and
+  waits out the ten second duplicate request window when the API reports it
+- Walks paginated endpoints lazily, so breaking out early stops the requests
+- Distinguishes three kinds of failure: `WithingsApiError` when the API refuses
+  a request, `WithingsHttpError` when the request fails at the HTTP layer, and
+  `WithingsInvalidResponseError` when something other than the API answers
+
+### Guarantees
+
+- No runtime dependencies
+- ESM and CommonJS, with bundled type declarations
+- Published from CI with provenance, and no long lived credential in the
+  repository
+- 206 unit tests, plus a contract suite that checks every response shape
+  against the live API so a change on Withings' side is caught here
 
 ## [0.11.1](https://github.com/tomek-i/withings-sdk/compare/v0.11.0...v0.11.1) (2026-09-02)
 
