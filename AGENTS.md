@@ -31,11 +31,13 @@ pnpm is the package manager, pinned via `packageManager`. Use `corepack enable` 
 - `feat:` → minor bump
 - `fix:` → patch bump
 - `docs:`, `chore:`, `ci:`, `test:`, `refactor:`, `style:`, `build:` → no release on their own
-- `feat!:` or a `BREAKING CHANGE:` footer → minor bump while pre-1.0 (`bump-minor-pre-major`)
+- `feat!:` or a `BREAKING CHANGE:` footer → **major** bump, now that the package is 1.x
 
 Write the body as prose explaining *why*, not a restatement of the diff.
 
 **The README stays short.** It is the 100 foot view: what this is, how to install it, one working example, and links. Anything longer belongs in `docs/`, one page per topic, linked from `docs/README.md`. A reader deciding whether to use the package should not have to scroll past a rate limiting guide.
+
+**The public API is stable.** Removing or renaming an export is a breaking change, so keep implementation details out of `src/index.ts` in the first place. Adding an export later costs nothing; taking one away costs a major version.
 
 **Every exported declaration and field carries JSDoc.** Always include the unit. The API mixes meters, seconds, kcal, bpm and percentages, and the field names give no hint. Do not use `@param {type}`. TypeScript already carries the type, and letting the two disagree is a maintenance trap. These docs ship in `dist/index.d.ts`, so they are what consumers see in their editor.
 
