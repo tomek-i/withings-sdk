@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0](https://github.com/tomek-i/withings-sdk/compare/v0.9.1...v0.10.0) (2026-09-02)
+
+
+### Added
+
+* complete the oauth2 service ([#37](https://github.com/tomek-i/withings-sdk/issues/37)) ([3b80615](https://github.com/tomek-i/withings-sdk/commit/3b8061541b88d8eb2fce98b47f098c32c9ac1843))
+* complete the user service ([#36](https://github.com/tomek-i/withings-sdk/issues/36)) ([2b17b58](https://github.com/tomek-i/withings-sdk/commit/2b17b58a1bc587632e4fb4f969d88baa5ed48a58))
+
 ## [0.9.1](https://github.com/tomek-i/withings-sdk/compare/v0.9.0...v0.9.1) (2026-09-02)
 
 
