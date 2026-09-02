@@ -1,6 +1,6 @@
 {
   "name": "withings-sdk",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Unofficial TypeScript SDK for the Withings API",
   "author": "tomek-i",
   "license": "MIT",
