@@ -193,6 +193,21 @@ for (const record of recordings.body.series) {
 > **Note:** ECG, atrial fibrillation and blood pressure are Total Biomarker
 > Pack metrics, so a free plan returns an empty series.
 
+### 8. Devices and goals
+
+```typescript
+const { devices } = (await client.user.getDevice()).body;
+
+for (const device of devices) {
+  // A device that stopped syncing looks identical to "no new data" from the
+  // measure endpoints alone, so check when it last connected.
+  console.log(device.type, device.battery, device.last_session_date);
+}
+
+const { goals } = (await client.user.getGoals()).body;
+// goals.weight is scaled: value * 10 ** unit kilograms
+```
+
 ## Signature authentication
 
 A few Withings services authenticate with a **signed request** rather than a
@@ -347,11 +362,12 @@ once before throwing.
 
 | Export                                  | Description                                                     |
 | --------------------------------------- | --------------------------------------------------------------- |
-| `WithingsClient`                        | Entry point. Exposes `.auth`, `.measures`, `.sleep`, `.heart` and `.notify`. |
+| `WithingsClient`                        | Entry point. Exposes `.auth`, `.measures`, `.sleep`, `.heart`, `.user` and `.notify`. |
 | `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, plus `getNonce` / `signedParams` for signed requests. |
 | `Sleep`                                 | `get`, `getSummary`, plus `getSummaryPages`.                     |
 | `Notify`                                | `subscribe`, `get`, `list`, `update`, `revoke`.                  |
 | `Heart`                                 | `list`, `get`, plus `listPages`. ECG, blood pressure, stethoscope. |
+| `User`                                  | `getDevice`, `getGoals`.                                         |
 | `parseNotificationPayload`              | Turns a posted webhook body into a typed payload.                |
 | `Measures`                              | `getMeasurement`, `getActivity`, `getIntradayActivity`, `getWorkouts`, `confirmUser`, plus `getMeasurementPages` / `getActivityPages` / `getWorkoutsPages`. |
 | `WithingsResponseStatus`                | Maps a Withings `status` code onto a coarse result category.     |
@@ -360,16 +376,17 @@ once before throwing.
 | `requiredPack` / `requiresPaidPlan` / `missingDataFields` / `BiomarkerPack` | Explain metrics your API plan does not include. |
 | `WithingsRetryOptions`                  | Tunes the automatic backoff for rate limited requests.           |
 | `HttpClient` / `WithingsHttpClient`     | The transport, exported so you can substitute or mock it.        |
-| `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields`, `SleepDataFields`, `SleepSummaryDataFields`, `SleepState`, `NotificationCategory`, `AfibClassification`, `HeartDeviceModel`, `WearPosition` | Enums for request parameters. |
+| `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields`, `SleepDataFields`, `SleepSummaryDataFields`, `SleepState`, `NotificationCategory`, `AfibClassification`, `HeartDeviceModel`, `WearPosition`, `DeviceType`, `BatteryLevel` | Enums for request parameters. |
 
 Request/response and option types (`WithingsConfig`, `WithingsResponse<T>`,
 `GetMeasurementOptions`, `GetActivityOptions`, …) are exported as well.
 
 ## Status
 
-Early and incomplete — the `measure`, `sleep`, `heart`, `notify`, `signature`
-and `oauth2` endpoints are covered; the other Withings services are not
-implemented yet. The public API may still change
+The `measure`, `sleep`, `heart`, `user`, `notify`, `signature` and `oauth2`
+services are covered. The remaining Withings services — `stetho`, `rawdata`,
+`device`, `survey`, `nudge`, `dropshipment` and `order` — are partner or RPM
+offerings and are not implemented. The public API may still change
 before 1.0. Issues and pull requests are welcome.
 
 ## Contributing

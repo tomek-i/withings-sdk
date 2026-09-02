@@ -243,6 +243,50 @@ describe("live API contract", () => {
     });
   });
 
+  describe("user.getDevice", () => {
+    it("matches the modelled shape", async () => {
+      const response = await client.user.getDevice();
+
+      expect(response.status).toEqual(0);
+      expectContract("user.getdevice body", response.body, { devices: ["array"] });
+
+      expectContract("user.getdevice devices[]", response.body.devices?.[0], {
+        type: ["string"],
+        model: ["string", "null"],
+        model_id: ["number", "null"],
+        battery: ["string"],
+        deviceid: ["string", "null"],
+        hash_deviceid: ["string", "null"],
+        timezone: ["string"],
+        first_session_date: ["number", "null"],
+        last_session_date: ["number", "null"],
+        mac_address: ["string", "null"],
+        fw: ["string", "null"],
+        network: ["string", "null"],
+        last_used_network: ["string", "null"],
+        sim_status: ["string", "null"],
+      });
+    });
+  });
+
+  describe("user.getGoals", () => {
+    it("matches the modelled shape", async () => {
+      const response = await client.user.getGoals();
+
+      expect(response.status).toEqual(0);
+      expectContract("user.getgoals body", response.body, { goals: ["object"] });
+      expectContract("user.getgoals goals", response.body.goals, {
+        steps: ["number"],
+        sleep: ["number"],
+        weight: ["object"],
+      });
+      expectContract("user.getgoals goals.weight", response.body.goals?.weight, {
+        value: ["number"],
+        unit: ["number"],
+      });
+    });
+  });
+
   describe("heart.list", () => {
     // ECG and blood pressure are Total Biomarker Pack metrics, so a Basic plan
     // or an account without a BPM Core / Move ECG returns an empty series.

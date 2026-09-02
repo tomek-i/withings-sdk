@@ -5,6 +5,7 @@ import { Measures } from "./measure/Measures";
 import { Heart } from "./heart/Heart";
 import { Notify } from "./notify/Notify";
 import { Sleep } from "./sleep/Sleep";
+import { User } from "./user/User";
 import { WithingsConfig } from "./types";
 
 /**
@@ -20,6 +21,7 @@ export class WithingsClient {
   public readonly sleep: Sleep;
   public readonly notify: Notify;
   public readonly heart: Heart;
+  public readonly user: User;
 
   /**
    * Constructs a new instance of the WithingsClient class.
@@ -58,5 +60,6 @@ export class WithingsClient {
     this.sleep = new Sleep(this.httpClient);
     this.notify = new Notify(this.httpClient);
     this.heart = new Heart(this.httpClient);
+    this.user = new User(this.httpClient);
   }
 }
