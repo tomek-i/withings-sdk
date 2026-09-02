@@ -11,6 +11,18 @@ export const sortParams = (params: { [key: string]: string | number }) => {
 };
 
 /**
+ * Converts a date to the unix timestamp in seconds that the API expects.
+ *
+ * Seconds, not milliseconds: passing `Date.now()` directly is the single
+ * easiest mistake to make against this API, and it fails silently by asking
+ * for a range fifty thousand years away.
+ *
+ * @param date The date to convert.
+ * @returns Whole seconds since the epoch.
+ */
+export const toUnixSeconds = (date: Date): number => Math.floor(date.getTime() / 1000);
+
+/**
  * Formats a date as the `YYYY-MM-DD` string the `*ymd` Withings parameters
  * expect, e.g. `startdateymd`.
  *
@@ -158,4 +170,29 @@ export const ErrorCodeHandler = (code: number): WithingsResponseStatus => {
   // Never fall through to undefined: an unmapped code is still a failure, and
   // callers switching on the result must be able to rely on getting a value.
   return WithingsResponseStatus.Unknown;
+};
+
+/**
+ * Resolves a date range or a watermark into the wire parameters.
+ *
+ * Three endpoints offer the same choice: name an explicit range, or give a
+ * point after which anything changed should be returned. They are mutually
+ * exclusive, and the caller-facing option unions are what enforce that, so by
+ * the time a request reaches here exactly one form is populated.
+ *
+ * @param options The caller's date selection.
+ * @returns The `*ymd` pair, or the `lastupdate` timestamp. Whichever form was
+ *   not used comes back undefined, and undefined parameters are never sent.
+ */
+export const resolveDateSelection = (options: {
+  startDate?: Date;
+  endDate?: Date;
+  lastUpdate?: Date;
+}): { startdateymd?: string; enddateymd?: string; lastupdate?: number } => {
+  if (options.startDate !== undefined && options.endDate !== undefined) {
+    return { startdateymd: formatYmd(options.startDate), enddateymd: formatYmd(options.endDate) };
+  }
+
+  // new Date(0) is meaningful here: it asks for everything Withings still holds.
+  return { lastupdate: options.lastUpdate !== undefined ? toUnixSeconds(options.lastUpdate) : undefined };
 };
