@@ -47,6 +47,25 @@ export class WithingsHttpClient {
   }
 
   /**
+   * Sends a GET request without a bearer token.
+   *
+   * Some Withings services authorize the request by signature instead, using
+   * the client ID and secret. Those work before any user has consented, and
+   * attaching an access token to them is wrong rather than merely unnecessary.
+   * The signature parameters go in the query string, built by
+   * `auth.signedParams()`.
+   *
+   * Status mapping and retrying behave exactly as for an authenticated call.
+   *
+   * @param endpoint The endpoint to send the request to.
+   * @param options Additional options for the request.
+   * @returns The decoded response body.
+   */
+  public async getSigned<T>(endpoint: string, options: RequestInit = {}): Promise<WithingsResponse<T>> {
+    return this.fetchWithAuth<T>(endpoint, undefined, { ...options, method: "GET" }, true, 1, false);
+  }
+
+  /**
    * Sends a POST request to the specified endpoint with the provided body.
    *
    * @param endpoint The endpoint to send the request to.
@@ -67,17 +86,20 @@ export class WithingsHttpClient {
    *   trigger a token refresh. Cleared once one has been attempted.
    * @param attempt Which attempt this is, counting the first as 1. Used for
    *   the rate limit backoff.
+   * @param authenticated Whether to require and attach a bearer token. False
+   *   for the services that authorize by signature instead.
    */
   private async fetchWithAuth<T>(
     endpoint: string,
     body?: RequestInit["body"],
     options?: RequestInit,
     mayRefresh: boolean = true,
-    attempt: number = 1
+    attempt: number = 1,
+    authenticated: boolean = true
   ): Promise<WithingsResponse<T>> {
-    const accessToken = this.getAccessToken();
+    const accessToken = authenticated ? this.getAccessToken() : null;
 
-    if (!accessToken) {
+    if (authenticated && !accessToken) {
       throw new Error(
         "Access token is not set. Call auth.fetchAccessToken(code) first, or pass accessToken in the client config."
       );
@@ -89,7 +111,7 @@ export class WithingsHttpClient {
         ...options,
         headers: {
           ...options?.headers,
-          Authorization: `Bearer ${accessToken}`,
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
       });
     } catch (error) {
@@ -104,7 +126,7 @@ export class WithingsHttpClient {
         const delayMs = this.waitFor(attempt, error);
         this.retry.onRetry?.({ attempt, delayMs, error });
         await delay(delayMs);
-        return this.fetchWithAuth(endpoint, body, options, mayRefresh, attempt + 1);
+        return this.fetchWithAuth(endpoint, body, options, mayRefresh, attempt + 1, authenticated);
       }
 
       throw error;
@@ -119,7 +141,7 @@ export class WithingsHttpClient {
         // attempt counter is not advanced: this is a different failure from
         // being rate limited, and the two budgets are independent.
         await this.refreshAccessToken();
-        return this.fetchWithAuth(endpoint, body, options, false, attempt);
+        return this.fetchWithAuth(endpoint, body, options, false, attempt, authenticated);
       }
 
       const error = new WithingsApiError(data);
@@ -128,7 +150,7 @@ export class WithingsHttpClient {
         const delayMs = backoffDelay(attempt, this.retry, Math.random, isDuplicateRequest(error));
         this.retry.onRetry?.({ attempt, delayMs, error });
         await delay(delayMs);
-        return this.fetchWithAuth(endpoint, body, options, mayRefresh, attempt + 1);
+        return this.fetchWithAuth(endpoint, body, options, mayRefresh, attempt + 1, authenticated);
       }
 
       throw error;

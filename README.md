@@ -206,7 +206,16 @@ for (const device of devices) {
 
 const { goals } = (await client.user.getGoals()).body;
 // goals.weight is scaled: value * 10 ** unit kilograms
+
+// Link or unlink devices by MAC address
+await client.user.link({ mac_addresses: ["00:11:22:33:44:55"] });
+await client.user.unlink({ mac_address: "00:11:22:33:44:55" });
 ```
+
+`user.get`, `user.activate` and `user.addToRpm` are partner services. They
+authorize by signature rather than by the user's access token, so pass
+`auth.signedParams()` in. `user.get` looks a user up by email or id, so it is
+not a way to read the profile of whoever authorized your client.
 
 ## Signature authentication
 
@@ -400,7 +409,7 @@ the same way.
 | `Sleep`                                 | `get`, `getSummary`, plus `getSummaryPages`.                     |
 | `Notify`                                | `subscribe`, `get`, `list`, `update`, `revoke`.                  |
 | `Heart`                                 | `list`, `get`, plus `listPages`. ECG, blood pressure, stethoscope. |
-| `User`                                  | `getDevice`, `getGoals`.                                         |
+| `User`                                  | `getDevice`, `getGoals`, `link`, `unlink`, plus the partner services `get`, `activate` and `addToRpm`. |
 | `parseNotificationPayload`              | Turns a posted webhook body into a typed payload.                |
 | `Measures`                              | `getMeasurement`, `getActivity`, `getIntradayActivity`, `getWorkouts`, `confirmUser`, plus `getMeasurementPages` / `getActivityPages` / `getWorkoutsPages`. |
 | `WithingsResponseStatus`                | Maps a Withings `status` code onto a coarse result category.     |

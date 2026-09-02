@@ -35,4 +35,22 @@ export abstract class WithingsService {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
   }
+
+  /**
+   * Sends a request that authorizes by signature rather than a bearer token.
+   *
+   * The signature parameters belong in `params`, produced by
+   * `auth.signedParams()`. No access token is required or attached.
+   *
+   * @param params The request parameters, including the signature set.
+   * @param path Overrides the service path.
+   * @returns The decoded response body.
+   */
+  protected requestSigned<T>(params: object, path: string = this.basePath) {
+    const queryString = encodeQueryParams(params);
+
+    return this.httpClient.getSigned<T>(`${path}?${queryString}`, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+  }
 }
