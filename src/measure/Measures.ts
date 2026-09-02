@@ -1,5 +1,5 @@
 import { paginate } from "../pagination/paginate";
-import { formatYmd } from "../util";
+import { resolveDateSelection, toUnixSeconds } from "../util";
 import { ConfirmUser } from "./models/ConfirmUser";
 import { GetActivity } from "./models/GetActivity";
 import { GetIntradayActivity } from "./models/GetIntradayActivity";
@@ -50,26 +50,9 @@ export class Measures extends WithingsService {
    * @see https://developer.withings.com/api-reference/#tag/measure/operation/measure-getmeas
    */
   public async getActivity(options: GetActivityOptions) {
-    // The GetActivityOptions union makes the two forms mutually exclusive, so
-    // only one of these pairs is ever populated.
-    let startdateymd: string | undefined;
-    let enddateymd: string | undefined;
-    let lastupdate: number | undefined;
-
-    if (options.startDate !== undefined && options.endDate !== undefined) {
-      // The API expects these as YYYYMMDD rather than a timestamp.
-      startdateymd = formatYmd(options.startDate);
-      enddateymd = formatYmd(options.endDate);
-    } else {
-      // new Date(0) is meaningful: it asks for everything Withings still holds.
-      lastupdate = Math.floor(options.lastUpdate.getTime() / 1000);
-    }
-
     const params: GetActivityRequest = {
       action: "getactivity",
-      startdateymd,
-      enddateymd,
-      lastupdate,
+      ...resolveDateSelection(options),
       offset: options.offset ?? undefined,
       data_fields: options.data_fields?.join(",") ?? undefined,
     };
@@ -87,26 +70,11 @@ export class Measures extends WithingsService {
    * @see https://developer.withings.com/api-reference/#tag/measure/operation/measurev2-getworkouts
    */
   public async getWorkouts(options: GetWorkoutsOptions) {
-    // The GetWorkoutsOptions union makes the two forms mutually exclusive, so
-    // only one of these pairs is ever populated. Sending both, as this method
-    // used to, produces a request the API documents as invalid.
-    let startdateymd: string | undefined;
-    let enddateymd: string | undefined;
-    let lastupdate: number | undefined;
-
-    if (options.startDate !== undefined && options.endDate !== undefined) {
-      startdateymd = formatYmd(options.startDate);
-      enddateymd = formatYmd(options.endDate);
-    } else {
-      // new Date(0) is meaningful: it asks for everything Withings still holds.
-      lastupdate = Math.floor(options.lastUpdate.getTime() / 1000);
-    }
-
+    // Sending a range and a watermark together, as this method once did,
+    // produces a request the API documents as invalid.
     const params: GetWorkoutsRequest = {
       action: "getworkouts",
-      startdateymd,
-      enddateymd,
-      lastupdate,
+      ...resolveDateSelection(options),
       offset: options.offset ?? undefined,
       data_fields: options.data_fields?.join(",") ?? undefined,
     };
@@ -126,8 +94,8 @@ export class Measures extends WithingsService {
   public async getIntradayActivity(options: GetIntradayActivityOptions = {}) {
     const params: GetIntradayActivityRequest = {
       action: "getintradayactivity",
-      startdate: options.startdate !== undefined ? Math.floor(options.startdate.getTime() / 1000) : undefined,
-      enddate: options.enddate !== undefined ? Math.floor(options.enddate.getTime() / 1000) : undefined,
+      startdate: options.startdate !== undefined ? toUnixSeconds(options.startdate) : undefined,
+      enddate: options.enddate !== undefined ? toUnixSeconds(options.enddate) : undefined,
       data_fields: options.data_fields?.join(",") ?? undefined,
     };
     return this.request<GetIntradayActivity>(params);
@@ -141,10 +109,9 @@ export class Measures extends WithingsService {
    * @returns
    */
   public async getMeasurement(options: GetMeasurementOptions = {} as GetMeasurementOptions) {
-    const startdateUnix = options.startdate !== undefined ? Math.floor(options.startdate.getTime() / 1000) : undefined;
-    const enddateUnix = options.enddate !== undefined ? Math.floor(options.enddate.getTime() / 1000) : undefined;
-    const lastupdateUnix =
-      options.lastupdate !== undefined ? Math.floor(options.lastupdate.getTime() / 1000) : undefined;
+    const startdateUnix = options.startdate !== undefined ? toUnixSeconds(options.startdate) : undefined;
+    const enddateUnix = options.enddate !== undefined ? toUnixSeconds(options.enddate) : undefined;
+    const lastupdateUnix = options.lastupdate !== undefined ? toUnixSeconds(options.lastupdate) : undefined;
 
     const params: GetMeasurementRequest = {
       action: "getmeas",

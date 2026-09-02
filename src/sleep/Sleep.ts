@@ -1,7 +1,7 @@
 import { WithingsHttpClient } from "../http/WithingsHttpClient";
 import { WithingsService } from "../http/WithingsService";
 import { paginate } from "../pagination/paginate";
-import { formatYmd } from "../util";
+import { resolveDateSelection, toUnixSeconds } from "../util";
 import { GetSleep } from "./models/GetSleep";
 import { GetSleepSummary } from "./models/GetSleepSummary";
 import { GetSleepOptions } from "./types/GetSleepOptions";
@@ -34,8 +34,8 @@ export class Sleep extends WithingsService {
   public async get(options: GetSleepOptions) {
     const params: GetSleepRequest = {
       action: "get",
-      startdate: Math.floor(options.startdate.getTime() / 1000),
-      enddate: Math.floor(options.enddate.getTime() / 1000),
+      startdate: toUnixSeconds(options.startdate),
+      enddate: toUnixSeconds(options.enddate),
       data_fields: options.data_fields?.join(",") ?? undefined,
       meastypes: options.meastypes?.join(",") ?? undefined,
     };
@@ -52,25 +52,9 @@ export class Sleep extends WithingsService {
    * @see https://developer.withings.com/api-reference/#tag/sleep/operation/sleepv2-getsummary
    */
   public async getSummary(options: GetSleepSummaryOptions) {
-    // The union makes the two forms mutually exclusive, so only one of these
-    // is ever populated.
-    let startdateymd: string | undefined;
-    let enddateymd: string | undefined;
-    let lastupdate: number | undefined;
-
-    if (options.startDate !== undefined && options.endDate !== undefined) {
-      startdateymd = formatYmd(options.startDate);
-      enddateymd = formatYmd(options.endDate);
-    } else {
-      // new Date(0) is meaningful: it asks for everything Withings still holds.
-      lastupdate = Math.floor(options.lastUpdate.getTime() / 1000);
-    }
-
     const params: GetSleepSummaryRequest = {
       action: "getsummary",
-      startdateymd,
-      enddateymd,
-      lastupdate,
+      ...resolveDateSelection(options),
       offset: options.offset ?? undefined,
       data_fields: options.data_fields?.join(",") ?? undefined,
     };

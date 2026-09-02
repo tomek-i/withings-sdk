@@ -1,5 +1,6 @@
 import { WithingsHttpClient } from "../http/WithingsHttpClient";
 import { WithingsService } from "../http/WithingsService";
+import { toUnixSeconds } from "../util";
 import { paginate } from "../pagination/paginate";
 import { GetHeartSignal } from "./models/GetHeartSignal";
 import { ListHeart } from "./models/ListHeart";
@@ -37,8 +38,8 @@ export class Heart extends WithingsService {
   public async list(options: ListHeartOptions = {}) {
     const params: ListHeartRequest = {
       action: "list",
-      startdate: options.startdate !== undefined ? Math.floor(options.startdate.getTime() / 1000) : undefined,
-      enddate: options.enddate !== undefined ? Math.floor(options.enddate.getTime() / 1000) : undefined,
+      startdate: options.startdate !== undefined ? toUnixSeconds(options.startdate) : undefined,
+      enddate: options.enddate !== undefined ? toUnixSeconds(options.enddate) : undefined,
       offset: options.offset ?? undefined,
     };
 

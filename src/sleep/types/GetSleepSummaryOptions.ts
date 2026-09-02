@@ -1,39 +1,15 @@
+import { DateSelection, WithDateRange, WithWatermark } from "../../types/DateSelection";
 import { SleepSummaryDataFields } from "../enums/SleepSummaryDataFields";
 
 /**
  * Options for {@link Sleep.getSummary}.
  *
- * A union, because the two ways of selecting a period are mutually exclusive:
- * either a `startDate`/`endDate` range, or a `lastUpdate` watermark.
+ * Either a `startDate`/`endDate` range or a `lastUpdate` watermark, never
+ * both. See {@link DateSelection}.
  *
  * @see https://developer.withings.com/api-reference/#tag/sleep/operation/sleepv2-getsummary
  */
-export type GetSleepSummaryOptions =
-  | (GetSleepSummaryBaseOptions & WithSleepStartEndDate)
-  | (GetSleepSummaryBaseOptions & WithSleepLastUpdate);
-
-/** Select nights within an explicit date range. */
-export interface WithSleepStartEndDate {
-  /** First day to return, inclusive. */
-  startDate: Date;
-  /** Last day to return, inclusive. */
-  endDate: Date;
-  /** Not valid in this form; use the `lastUpdate` variant instead. */
-  lastUpdate?: never;
-}
-
-/** Select nights changed since a watermark, for incremental syncing. */
-export interface WithSleepLastUpdate {
-  /**
-   * Return nights created or updated after this moment. `new Date(0)` asks for
-   * everything Withings still holds.
-   */
-  lastUpdate: Date;
-  /** Not valid in this form; use the date-range variant instead. */
-  startDate?: never;
-  /** Not valid in this form; use the date-range variant instead. */
-  endDate?: never;
-}
+export type GetSleepSummaryOptions = GetSleepSummaryBaseOptions & DateSelection;
 
 /** Options common to both forms of {@link GetSleepSummaryOptions}. */
 export interface GetSleepSummaryBaseOptions {
@@ -48,3 +24,9 @@ export interface GetSleepSummaryBaseOptions {
    */
   offset?: number;
 }
+
+/** Select nights within an explicit date range. */
+export type WithSleepStartEndDate = WithDateRange;
+
+/** Select nights changed since a watermark, for incremental syncing. */
+export type WithSleepLastUpdate = WithWatermark;
