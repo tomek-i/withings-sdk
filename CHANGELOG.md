@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0](https://github.com/tomek-i/withings-sdk/compare/v0.4.0...v0.5.0) (2026-09-02)
+
+
+### Added
+
+* add the Notify service for webhooks ([#24](https://github.com/tomek-i/withings-sdk/issues/24)) ([678bb4e](https://github.com/tomek-i/withings-sdk/commit/678bb4e844a2cc7e81c2d01f1ecadd9c858056e3))
+
 ## [0.4.0](https://github.com/tomek-i/withings-sdk/compare/v0.3.0...v0.4.0) (2026-09-02)
 
 
