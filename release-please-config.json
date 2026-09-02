@@ -14,7 +14,7 @@
     { "type": "fix", "section": "Fixed" },
     { "type": "perf", "section": "Changed" },
     { "type": "refactor", "section": "Changed" },
-    { "type": "docs", "section": "Documentation" },
+    { "type": "docs", "section": "Documentation", "hidden": true },
     { "type": "build", "section": "Build", "hidden": true },
     { "type": "ci", "section": "CI", "hidden": true },
     { "type": "chore", "section": "Chores", "hidden": true },

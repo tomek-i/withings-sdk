@@ -30,7 +30,13 @@ pnpm is the package manager, pinned via `packageManager`. Use `corepack enable` 
 
 - `feat:` → minor bump
 - `fix:` → patch bump
-- `docs:`, `chore:`, `ci:`, `test:`, `refactor:`, `style:`, `build:` → no release on their own
+- `refactor:` and `perf:` → patch bump, because the shipped code changes
+- `docs:`, `chore:`, `ci:`, `test:`, `style:`, `build:` → **no release**
+
+That last line is deliberate. A README correction should not publish a new
+version to npm, so those types are marked hidden in `release-please-config.json`,
+which stops them triggering a release as well as keeping them out of the
+changelog. A documentation change reaches npm with the next real release.
 - `feat!:` or a `BREAKING CHANGE:` footer → **major** bump, now that the package is 1.x
 
 Write the body as prose explaining *why*, not a restatement of the diff.
