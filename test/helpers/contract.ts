@@ -2,7 +2,7 @@
  * Contract assertions for the live API.
  *
  * These check the *shape* of a response against what the SDK's types claim,
- * never the values — the values are the account holder's health data, and they
+ * never the values. The values are the account holder's health data and they
  * differ per account, so asserting on them would be both invasive and flaky.
  *
  * The asymmetry below is deliberate:

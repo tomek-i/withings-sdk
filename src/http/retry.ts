@@ -41,8 +41,8 @@ export interface WithingsRetryOptions {
    */
   jitter?: boolean;
   /**
-   * Called before each wait, for logging or metrics. Purely observational —
-   * throwing from it will abort the request.
+   * Called before each wait, for logging or metrics. It is purely
+   * observational, but throwing from it will abort the request.
    */
   onRetry?: (attempt: RetryAttempt) => void;
 }

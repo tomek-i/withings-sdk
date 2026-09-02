@@ -28,7 +28,7 @@ export class Heart extends WithingsService {
    *
    * Each entry says what was recorded and carries the `signalid` needed to
    * fetch the signal itself with {@link get}. The signal is never included
-   * here — it is thousands of samples per recording.
+   * here, because it is thousands of samples per recording.
    *
    * @param options The period to read, and an offset when paging by hand.
    * @returns The recordings, most recent first.
@@ -61,8 +61,8 @@ export class Heart extends WithingsService {
    * Fetches a recorded signal.
    *
    * Identify it either by `signalid`, using the access token this client
-   * already sends, or by `signal_token` with a signed request — spread
-   * `auth.signedParams("get")` in for that.
+   * already sends, or by `signal_token` with a signed request. For the second
+   * form, spread `auth.signedParams("get")` in.
    *
    * @param options Which signal to fetch, and how to identify it.
    * @returns The signal in microvolts, with its sampling frequency.

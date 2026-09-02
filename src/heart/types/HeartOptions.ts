@@ -51,8 +51,8 @@ export interface WithSignalId {
  * Identify the signal by a signal token, authorized by a signed request.
  *
  * Spread the result of `auth.signedParams("get")` in. The `action` it carries
- * is accepted and ignored — this method sets it — and is part of what the
- * signature covers, so it must not be changed.
+ * is accepted and ignored, because this method sets it. It is also part of
+ * what the signature covers, so it must not be changed.
  */
 export interface WithSignalToken {
   /** The signal identifier issued for a signed request. */

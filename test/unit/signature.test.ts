@@ -17,8 +17,8 @@ describe("generateSignature", () => {
   /**
    * Known vectors, computed independently from the documented algorithm:
    * sort the parameters by key, join the values with commas, then HMAC-SHA256
-   * with the client secret. Hard-coded on purpose — deriving them the same way
-   * the implementation does would assert nothing.
+   * with the client secret. They are hard-coded on purpose: deriving them the
+   * same way the implementation does would assert nothing.
    */
   it("matches a known vector for the getnonce payload", () => {
     const signature = client().auth.generateSignature({

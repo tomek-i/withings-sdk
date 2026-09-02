@@ -17,7 +17,7 @@ import { persistTokens } from "../helpers/persistTokens";
  * Every endpoint the SDK implements is called with the widest request it
  * accepts, and the response is checked against the types the SDK claims. A
  * field of an unexpected type fails, and so does a field the SDK does not
- * model at all — that is the signal that the API has changed under us.
+ * model at all. That second case is the signal that the API has changed.
  *
  * Deliberately absent: `confirmUser`. It writes to the account holder's data,
  * confirming or rejecting a measure group, and a test suite has no business

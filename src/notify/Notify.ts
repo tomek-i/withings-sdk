@@ -20,7 +20,7 @@ import { UpdateNotificationRequest } from "./types/http/requests/UpdateNotificat
  * The Withings notification service, reachable as `client.notify`.
  *
  * Withings posts to a callback URL when new data is available, which is the
- * supported alternative to polling — and the one Withings recommends for
+ * supported alternative to polling, and the one Withings recommends for
  * staying inside the rate limit.
  *
  * A notification says *that* something changed and over which range; it never

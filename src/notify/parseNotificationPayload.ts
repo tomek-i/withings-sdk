@@ -41,7 +41,7 @@ const toNumber = (value: string | undefined): number | undefined => {
  *
  * @param source The posted fields.
  * @returns The parsed payload, or `undefined` when the required `userid` and
- *   `appli` are missing or unparseable — which is how a stray request to your
+ *   `appli` are missing or unparseable. That is how a stray request to your
  *   callback URL is distinguished from a real notification.
  */
 export const parseNotificationPayload = (

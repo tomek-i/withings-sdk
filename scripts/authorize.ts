@@ -2,10 +2,10 @@
  * Mints a fresh Withings token pair for local development.
  *
  * Withings access tokens last about three hours, and the refresh token is
- * rotated on every renewal — so a `.env` that sat unused goes stale, and the
- * failure it produces ("invalid refresh_token", then a cascade of "Same
- * arguments in less than 10 seconds") does not obviously mean "re-authorize".
- * This script is the way back.
+ * rotated on every renewal, so a `.env` that sat unused goes stale. The failure
+ * it produces is not obvious: "invalid refresh_token", then a cascade of "Same
+ * arguments in less than 10 seconds". Neither says "re-authorize". This script
+ * is the way back.
  *
  * It serves the redirect URI locally, opens the consent screen, exchanges the
  * code, and writes the resulting tokens into `.env`.

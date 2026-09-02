@@ -92,7 +92,7 @@ export interface WithingsResponse<T> {
  * The parameter set a signature-authenticated Withings service expects.
  *
  * Produced by `auth.signedParams()`. Spread it into the request rather than
- * assembling the pieces by hand — the signature covers these exact values, so
+ * assembling the pieces by hand. The signature covers these exact values, so
  * changing one after signing invalidates it.
  */
 export interface SignedParams {
