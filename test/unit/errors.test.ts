@@ -1,8 +1,8 @@
 import { WithingsApiError, WithingsClient, WithingsResponseStatus } from "../../src";
 import { ErrorCodeHandler } from "../../src/util";
+import { rawResponse } from "../helpers/response";
 
-const jsonResponse = (payload: unknown) =>
-  ({ ok: true, status: 200, json: async () => payload }) as unknown as Response;
+const jsonResponse = (payload: unknown) => rawResponse(payload);
 
 // Retrying is off here: this suite is about how failures surface, and the
 // backoff would otherwise swallow the single mocked rate limit response.

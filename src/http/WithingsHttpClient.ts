@@ -3,6 +3,7 @@ import { isRetryableHttpStatus, WithingsHttpError } from "../errors/WithingsHttp
 import { WithingsResponse } from "../types";
 import { ErrorCodeHandler, WithingsResponseStatus } from "../util";
 import { IHttpClient } from "./HttpClient";
+import { readWithingsResponse } from "./readResponse";
 import { backoffDelay, delay, isDuplicateRequest, resolveRetryOptions, WithingsRetryOptions } from "./retry";
 
 /**
@@ -132,7 +133,7 @@ export class WithingsHttpClient {
       throw error;
     }
 
-    const data = (await response.json()) as WithingsResponse<T>;
+    const data = await readWithingsResponse<T>(response, endpoint);
 
     const err = ErrorCodeHandler(data.status);
     if (err !== WithingsResponseStatus.Success) {

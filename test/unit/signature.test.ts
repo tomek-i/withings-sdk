@@ -1,4 +1,5 @@
 import { WithingsApiError, WithingsClient, WithingsResponseStatus } from "../../src";
+import { withingsResponse } from "../helpers/response";
 
 const CLIENT_ID = "test-client-id";
 const CLIENT_SECRET = "test-client-secret";
@@ -10,8 +11,7 @@ const client = () =>
     redirectUri: "https://example.com/cb",
   });
 
-const respond = (body: unknown, status = 0) =>
-  ({ ok: true, status: 200, json: async () => ({ status, body }) }) as unknown as Response;
+const respond = (body: unknown, status = 0) => withingsResponse(body, status);
 
 describe("generateSignature", () => {
   /**
@@ -55,7 +55,7 @@ describe("getNonce", () => {
   let fetchMock: jest.Mock;
 
   beforeEach(() => {
-    fetchMock = jest.fn().mockResolvedValue(respond({ nonce: "server-nonce" }));
+    fetchMock = jest.fn().mockImplementation(async () => respond({ nonce: "server-nonce" }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
   });
 
@@ -115,7 +115,7 @@ describe("signedParams", () => {
   let fetchMock: jest.Mock;
 
   beforeEach(() => {
-    fetchMock = jest.fn().mockResolvedValue(respond({ nonce: "server-nonce" }));
+    fetchMock = jest.fn().mockImplementation(async () => respond({ nonce: "server-nonce" }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
   });
 
@@ -165,7 +165,7 @@ describe("oauth2 administration", () => {
   let fetchMock: jest.Mock;
 
   beforeEach(() => {
-    fetchMock = jest.fn().mockResolvedValue(respond({ nonce: "server-nonce" }));
+    fetchMock = jest.fn().mockImplementation(async () => respond({ nonce: "server-nonce" }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
   });
 

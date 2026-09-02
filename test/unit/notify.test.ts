@@ -1,5 +1,6 @@
 import { NotificationCategory, parseNotificationPayload, WithingsClient } from "../../src";
 import type { ListNotifications } from "../../src";
+import { withingsResponse } from "../helpers/response";
 
 const client = () =>
   new WithingsClient({
@@ -9,8 +10,7 @@ const client = () =>
     accessToken: "token",
   });
 
-const respond = (body: unknown) =>
-  ({ ok: true, status: 200, json: async () => ({ status: 0, body }) }) as unknown as Response;
+const respond = (body: unknown) => withingsResponse(body);
 
 describe("Notify", () => {
   let fetchMock: jest.Mock;

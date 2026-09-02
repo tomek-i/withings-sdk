@@ -5,9 +5,9 @@ import {
   MeasurementType,
   WithingsClient,
 } from "../../src";
+import { withingsResponse } from "../helpers/response";
 
-const jsonResponse = () =>
-  ({ ok: true, status: 200, json: async () => ({ status: 0, body: {} }) }) as unknown as Response;
+const jsonResponse = () => withingsResponse({});
 
 const client = () =>
   new WithingsClient({

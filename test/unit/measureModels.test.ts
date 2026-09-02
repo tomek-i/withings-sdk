@@ -1,4 +1,5 @@
 import { WithingsClient } from "../../src";
+import { withingsResponse } from "../helpers/response";
 import type {
   Activity,
   GetActivity,
@@ -20,11 +21,7 @@ import type {
  */
 
 const respondWith = (body: unknown) => {
-  const fetchMock = jest.fn().mockResolvedValue({
-    ok: true,
-    status: 200,
-    json: async () => ({ status: 0, body }),
-  } as unknown as Response);
+  const fetchMock = jest.fn().mockImplementation(async () => withingsResponse(body));
   globalThis.fetch = fetchMock as unknown as typeof fetch;
   return fetchMock;
 };

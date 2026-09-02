@@ -389,6 +389,12 @@ separate types:
 | --- | --- | --- |
 | `WithingsApiError` | The API ran your request and refused it | `status`, `type`, `body` |
 | `WithingsHttpError` | The request failed at the HTTP layer | `status`, `statusText`, `url`, `retryAfterMs` |
+| `WithingsInvalidResponseError` | Something answered, but not the API | `url`, `httpStatus`, `snippet` |
+
+The third one covers a proxy error page, a captive portal, or any body that is
+not the JSON envelope every Withings response carries. Without it those escape
+as a bare `SyntaxError` from `JSON.parse`, which names no URL and reads like a
+bug in your own code.
 
 Both extend `Error`, so catching `Error` still catches everything. Check the
 type when you want to tell them apart:
@@ -427,6 +433,7 @@ the same way.
 | `WithingsResponseStatus`                | Maps a Withings `status` code onto a coarse result category.     |
 | `WithingsApiError`                      | Thrown when the API reports a failure. Carries `status`, `type` and `body`. |
 | `WithingsHttpError`                     | Thrown when the request fails at the HTTP layer. Carries `status` and `retryAfterMs`. |
+| `WithingsInvalidResponseError`          | Thrown when the response is not a Withings response at all. Carries `url` and `snippet`. |
 | `paginate` / `hasMorePages`             | Walk any paginated endpoint one page at a time.                  |
 | `requiredPack` / `requiresPaidPlan` / `missingDataFields` / `BiomarkerPack` | Explain metrics your API plan does not include. |
 | `WithingsRetryOptions`                  | Tunes the automatic backoff for rate limited requests.           |

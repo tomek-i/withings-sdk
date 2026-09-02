@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { WithingsApiError } from "../errors/WithingsApiError";
 import { ErrorCodeHandler, WithingsResponseStatus, sortParams } from "../util";
 import { IHttpClient } from "../http";
+import { readWithingsResponse } from "../http/readResponse";
 import { NonceResponse, SignedParams, WithingsConfig, WithingsResponse } from "../types";
 import { CreatedClient, DemoAccess, ListUsers, RecoveredAuthorizationCode } from "./models/OAuthAdmin";
 import {
@@ -22,6 +23,8 @@ import { AuthCodeUrlParams } from "./types/http/params/AuthCodeUrlParams";
  *
  * @see https://developer.withings.com/api-reference/#tag/oauth2
  */
+const OAUTH2_PATH = "/v2/oauth2";
+
 export class Auth {
   private access_token: string | null = null;
   private refresh_token: string | null = null;
@@ -60,7 +63,7 @@ export class Auth {
     }
 
     const response = await this.httpClient.post(
-      "/v2/oauth2",
+      OAUTH2_PATH,
       {
         action: "requesttoken",
         client_id: this.config.clientId,
@@ -71,7 +74,10 @@ export class Auth {
       { headers: { "Content-Type": "application/json" } }
     );
 
-    const data = (await response.json()) as RequestTokenResponse;
+    const data = (await readWithingsResponse<RequestTokenResponse["body"]>(
+      response,
+      OAUTH2_PATH
+    )) as RequestTokenResponse;
 
     // The API reports failures in the body with HTTP 200. Without this guard an
     // error response reaches the line below and fails as a TypeError on the
@@ -95,7 +101,7 @@ export class Auth {
    */
   public async fetchAccessToken(code: string): Promise<RequestTokenResponse> {
     const response = await this.httpClient.post(
-      "/v2/oauth2",
+      OAUTH2_PATH,
       {
         action: "requesttoken",
         client_id: this.config.clientId,
@@ -107,7 +113,10 @@ export class Auth {
       { headers: { "Content-Type": "application/json" } }
     );
 
-    const data = (await response.json()) as RequestTokenResponse;
+    const data = (await readWithingsResponse<RequestTokenResponse["body"]>(
+      response,
+      OAUTH2_PATH
+    )) as RequestTokenResponse;
 
     // The API reports failures in the body with HTTP 200. Without this guard an
     // error response reaches the line below and fails as a TypeError on the
@@ -162,7 +171,7 @@ export class Auth {
       headers: { "Content-Type": "application/json" },
     });
 
-    const data = (await response.json()) as WithingsResponse<T>;
+    const data = await readWithingsResponse<T>(response, path);
 
     if (ErrorCodeHandler(data.status) !== WithingsResponseStatus.Success) {
       throw new WithingsApiError(data);
@@ -264,7 +273,7 @@ export class Auth {
    * @see https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-revoke
    */
   public async revoke(options: RevokeUserOptions) {
-    return this.postSigned<Record<string, never>>("/v2/oauth2", {
+    return this.postSigned<Record<string, never>>(OAUTH2_PATH, {
       action: "revoke",
       client_id: options.client_id,
       nonce: options.nonce,
@@ -281,7 +290,7 @@ export class Auth {
    * @see https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-listusers
    */
   public async listUsers(options: ListUsersOptions) {
-    return this.postSigned<ListUsers>("/v2/oauth2", {
+    return this.postSigned<ListUsers>(OAUTH2_PATH, {
       action: "listusers",
       client_id: options.client_id,
       nonce: options.nonce,
@@ -301,7 +310,7 @@ export class Auth {
    * @see https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-recoverauthorizationcode
    */
   public async recoverAuthorizationCode(options: RecoverAuthorizationCodeOptions) {
-    return this.postSigned<RecoveredAuthorizationCode>("/v2/oauth2", {
+    return this.postSigned<RecoveredAuthorizationCode>(OAUTH2_PATH, {
       action: "recoverauthorizationcode",
       client_id: options.client_id,
       nonce: options.nonce,
@@ -321,7 +330,7 @@ export class Auth {
    * @see https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-getdemoaccess
    */
   public async getDemoAccess(options: DemoAccessOptions) {
-    return this.postSigned<DemoAccess>("/v2/oauth2", {
+    return this.postSigned<DemoAccess>(OAUTH2_PATH, {
       action: "getdemoaccess",
       client_id: options.client_id,
       nonce: options.nonce,
@@ -338,7 +347,7 @@ export class Auth {
    * @see https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-createclient
    */
   public async createClient(options: CreateClientOptions) {
-    return this.postSigned<CreatedClient>("/v2/oauth2", {
+    return this.postSigned<CreatedClient>(OAUTH2_PATH, {
       action: "createclient",
       client_id: options.client_id,
       nonce: options.nonce,
