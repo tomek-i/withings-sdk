@@ -226,6 +226,18 @@ await client.notify.subscribe({
 });
 ```
 
+The same applies to the partner services on `client.auth`:
+
+```typescript
+// Stop sending data for a user who disconnected
+const signed = await client.auth.signedParams("revoke");
+await client.auth.revoke({ ...signed, userid });
+```
+
+`listUsers`, `recoverAuthorizationCode`, `getDemoAccess` and `createClient`
+work the same way. None of them needs a user access token, because the client
+secret is what authorizes them.
+
 The nonce is valid for 30 minutes and **single use**, so call `signedParams`
 once per request rather than reusing the result. `auth.getNonce()` is available
 if you need the nonce alone, and `auth.generateSignature()` signs an arbitrary
@@ -396,7 +408,7 @@ the same way.
 | Export                                  | Description                                                     |
 | --------------------------------------- | --------------------------------------------------------------- |
 | `WithingsClient`                        | Entry point. Exposes `.auth`, `.measures`, `.sleep`, `.heart`, `.user` and `.notify`. |
-| `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, plus `getNonce` / `signedParams` for signed requests. |
+| `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, `getNonce` / `signedParams`, plus `revoke`, `listUsers`, `recoverAuthorizationCode`, `getDemoAccess` and `createClient`. |
 | `Sleep`                                 | `get`, `getSummary`, plus `getSummaryPages`.                     |
 | `Notify`                                | `subscribe`, `get`, `list`, `update`, `revoke`.                  |
 | `Heart`                                 | `list`, `get`, plus `listPages`. ECG, blood pressure, stethoscope. |

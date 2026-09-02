@@ -325,6 +325,28 @@ describe("live API contract", () => {
     });
   });
 
+  describe("auth.listUsers", () => {
+    // Authorized by the client secret, so it needs no user token. Read only.
+    it("matches the modelled shape", async () => {
+      const signed = await client.auth.signedParams("listusers");
+      const response = await client.auth.listUsers(signed);
+
+      expect(response.status).toEqual(0);
+      expectContract("listusers body", response.body, {
+        users: ["array"],
+        more: ["boolean", "number"],
+        // The live API returns null here on the last page.
+        offset: ["number", "null"],
+      });
+      expectContract("listusers users[]", response.body.users?.[0], {
+        userid: ["number"],
+        hash_userid: ["string"],
+        email: ["string"],
+        fully_owned: ["boolean"],
+      });
+    });
+  });
+
   describe("notify.list", () => {
     // Only `list` is exercised. subscribe, update and revoke change what
     // Withings sends to a callback URL, and a test suite has no business
