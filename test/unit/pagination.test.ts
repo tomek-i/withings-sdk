@@ -176,3 +176,21 @@ describe("getWorkoutsPages", () => {
     expect(new URL(fetchMock.mock.calls[1][0] as string).searchParams.get("offset")).toEqual("30");
   });
 });
+
+describe("a null offset", () => {
+  // Observed on the live API: listusers returns offset: null on the last page,
+  // where the other endpoints simply omit the field.
+  it("ends iteration, exactly as a missing offset does", async () => {
+    const fetchPage = jest.fn().mockResolvedValue(page({ rows: ["x"], more: true, offset: null }));
+
+    const result = await collect(paginate(fetchPage));
+
+    expect(result).toHaveLength(1);
+    expect(fetchPage).toHaveBeenCalledTimes(1);
+  });
+
+  it("is not treated as offset zero", async () => {
+    // Number(null) is 0, so a loose comparison here would restart the walk.
+    expect(hasMorePages({ more: true, offset: null })).toBe(true);
+  });
+});

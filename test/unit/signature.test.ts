@@ -160,3 +160,64 @@ describe("signedParams", () => {
     expect(params.get("client_id")).toEqual(CLIENT_ID);
   });
 });
+
+describe("oauth2 administration", () => {
+  let fetchMock: jest.Mock;
+
+  beforeEach(() => {
+    fetchMock = jest.fn().mockResolvedValue(respond({ nonce: "server-nonce" }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+  });
+
+  const lastBody = () =>
+    JSON.parse((fetchMock.mock.calls[fetchMock.mock.calls.length - 1][1] as RequestInit).body as string);
+  const lastHeaders = () =>
+    (fetchMock.mock.calls[fetchMock.mock.calls.length - 1][1] as RequestInit).headers as Record<string, string>;
+
+  it("revokes a user's authorization without needing their token", async () => {
+    const c = client();
+    const signed = await c.auth.signedParams("revoke");
+
+    fetchMock.mockResolvedValueOnce(respond({}));
+    await c.auth.revoke({ ...signed, userid: "12345" });
+
+    expect(lastBody().action).toEqual("revoke");
+    expect(lastBody().userid).toEqual("12345");
+    // Revoking is authorized by the client secret, not by the user.
+    expect(lastHeaders().Authorization).toBeUndefined();
+  });
+
+  it("lists the users who authorized the application", async () => {
+    const c = client();
+    const signed = await c.auth.signedParams("listusers");
+
+    fetchMock.mockResolvedValueOnce(
+      respond({ users: [{ userid: 1, email: "a@example.com" }], more: false, offset: null })
+    );
+    const response = await c.auth.listUsers({ ...signed, offset: 20 });
+
+    expect(lastBody().action).toEqual("listusers");
+    expect(lastBody().offset).toEqual(20);
+    expect(response.body.users[0].email).toEqual("a@example.com");
+    // The live API returns null here on the last page.
+    expect(response.body.offset).toBeNull();
+  });
+
+  it("recovers an authorization code for an existing user", async () => {
+    const c = client();
+    const signed = await c.auth.signedParams("recoverauthorizationcode");
+
+    fetchMock.mockResolvedValueOnce(respond({ user: { code: "recovered" } }));
+    const response = await c.auth.recoverAuthorizationCode({ ...signed, userid: "12345" });
+
+    expect(response.body.user.code).toEqual("recovered");
+  });
+
+  it("throws WithingsApiError when a signed action is refused", async () => {
+    const c = client();
+    const signed = await c.auth.signedParams("revoke");
+
+    fetchMock.mockResolvedValueOnce(respond({}, 401));
+    await expect(c.auth.revoke({ ...signed, userid: "12345" })).rejects.toBeInstanceOf(WithingsApiError);
+  });
+});

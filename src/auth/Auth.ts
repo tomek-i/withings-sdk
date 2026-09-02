@@ -2,7 +2,15 @@ import crypto from "node:crypto";
 import { WithingsApiError } from "../errors/WithingsApiError";
 import { ErrorCodeHandler, WithingsResponseStatus, sortParams } from "../util";
 import { IHttpClient } from "../http";
-import { NonceResponse, SignedParams, WithingsConfig } from "../types";
+import { NonceResponse, SignedParams, WithingsConfig, WithingsResponse } from "../types";
+import { CreatedClient, DemoAccess, ListUsers, RecoveredAuthorizationCode } from "./models/OAuthAdmin";
+import {
+  CreateClientOptions,
+  DemoAccessOptions,
+  ListUsersOptions,
+  RecoverAuthorizationCodeOptions,
+  RevokeUserOptions,
+} from "./types/OAuthAdminOptions";
 import { RequestTokenResponse } from "./types/http/responses/RequestTokenResponse";
 import { AuthCodeUrlParams } from "./types/http/params/AuthCodeUrlParams";
 
@@ -137,13 +145,24 @@ export class Auth {
       timestamp,
     };
 
-    const response = await this.httpClient.post(
-      "/v2/signature",
-      { ...payload, signature: this.generateSignature(payload) },
-      { headers: { "Content-Type": "application/json" } }
-    );
+    return this.postSigned<NonceResponse["body"]>("/v2/signature", {
+      ...payload,
+      signature: this.generateSignature(payload),
+    }) as Promise<NonceResponse>;
+  }
 
-    const data = (await response.json()) as NonceResponse;
+  /**
+   * Sends a signature-authorized request and maps a failure onto an error.
+   *
+   * No bearer token is attached: these services are authorized by the client
+   * ID and secret, so they work before any user has consented.
+   */
+  private async postSigned<T>(path: string, params: object): Promise<WithingsResponse<T>> {
+    const response = await this.httpClient.post(path, params, {
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = (await response.json()) as WithingsResponse<T>;
 
     if (ErrorCodeHandler(data.status) !== WithingsResponseStatus.Success) {
       throw new WithingsApiError(data);
@@ -227,5 +246,108 @@ export class Auth {
       .join("&");
 
     return `${Auth.AUTHORIZATION_URL}?${queryString}`;
+  }
+
+  /**
+   * Revokes a user's authorization of your application.
+   *
+   * This is what to call when a user disconnects. It stops Withings sending
+   * further data and invalidates the tokens you hold for them.
+   *
+   * ```typescript
+   * const signed = await client.auth.signedParams("revoke");
+   * await client.auth.revoke({ ...signed, userid });
+   * ```
+   *
+   * @param options The user to revoke, and the signature parameters.
+   * @returns An empty body; the outcome is in the response status.
+   * @see https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-revoke
+   */
+  public async revoke(options: RevokeUserOptions) {
+    return this.postSigned<Record<string, never>>("/v2/oauth2", {
+      action: "revoke",
+      client_id: options.client_id,
+      nonce: options.nonce,
+      signature: options.signature,
+      userid: options.userid,
+    });
+  }
+
+  /**
+   * Lists the users who have authorized your application.
+   *
+   * @param options The signature parameters, and an offset when paging.
+   * @returns The linked users.
+   * @see https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-listusers
+   */
+  public async listUsers(options: ListUsersOptions) {
+    return this.postSigned<ListUsers>("/v2/oauth2", {
+      action: "listusers",
+      client_id: options.client_id,
+      nonce: options.nonce,
+      signature: options.signature,
+      offset: options.offset ?? undefined,
+    });
+  }
+
+  /**
+   * Recovers the authorization code for a user who already authorized you.
+   *
+   * Useful when the code was lost before it could be exchanged, without
+   * sending the user through consent again.
+   *
+   * @param options The user, and the signature parameters.
+   * @returns The recovered authorization code.
+   * @see https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-recoverauthorizationcode
+   */
+  public async recoverAuthorizationCode(options: RecoverAuthorizationCodeOptions) {
+    return this.postSigned<RecoveredAuthorizationCode>("/v2/oauth2", {
+      action: "recoverauthorizationcode",
+      client_id: options.client_id,
+      nonce: options.nonce,
+      signature: options.signature,
+      userid: options.userid,
+    });
+  }
+
+  /**
+   * Obtains tokens for the Withings demo user.
+   *
+   * The demo account carries sample data, which makes it a way to develop
+   * against real response shapes without owning a device.
+   *
+   * @param options The scopes to grant, and the signature parameters.
+   * @returns Tokens for the demo user.
+   * @see https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-getdemoaccess
+   */
+  public async getDemoAccess(options: DemoAccessOptions) {
+    return this.postSigned<DemoAccess>("/v2/oauth2", {
+      action: "getdemoaccess",
+      client_id: options.client_id,
+      nonce: options.nonce,
+      signature: options.signature,
+      scope_oauth2: options.scope_oauth2,
+    });
+  }
+
+  /**
+   * Creates a new partner application.
+   *
+   * @param options The application to create, and the signature parameters.
+   * @returns The new application, including its client secret.
+   * @see https://developer.withings.com/api-reference/#tag/oauth2/operation/oauth2-createclient
+   */
+  public async createClient(options: CreateClientOptions) {
+    return this.postSigned<CreatedClient>("/v2/oauth2", {
+      action: "createclient",
+      client_id: options.client_id,
+      nonce: options.nonce,
+      signature: options.signature,
+      name: options.name,
+      description: options.description,
+      intended_environment: options.intended_environment,
+      intended_integrations: options.intended_integrations,
+      redirect_uris: options.redirect_uris,
+    });
   }
 }

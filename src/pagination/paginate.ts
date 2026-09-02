@@ -10,8 +10,13 @@ import { WithingsResponse } from "../types";
 export interface PaginatedBody {
   /** Whether further rows are available. */
   more?: boolean | number;
-  /** The offset to pass on the next call to continue reading. */
-  offset?: number;
+  /**
+   * The offset to pass on the next call to continue reading.
+   *
+   * Nullable: `listusers` returns `null` here on the last page, where other
+   * endpoints omit the field. Both mean the same thing.
+   */
+  offset?: number | null;
 }
 
 /**
@@ -67,8 +72,9 @@ export async function* paginate<T extends PaginatedBody>(
     const next = body.offset;
 
     // Defend against a page that claims more rows but cannot say where to
-    // resume, or that hands back an offset which does not move forward.
-    if (next === undefined || (offset !== undefined && next <= offset)) return;
+    // resume, or that hands back an offset which does not move forward. Null
+    // and undefined both mean "no offset": the API uses each in places.
+    if (next === undefined || next === null || (offset !== undefined && next <= offset)) return;
 
     offset = next;
   }
