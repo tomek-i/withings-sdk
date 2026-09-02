@@ -129,6 +129,49 @@ const detail = await client.sleep.get({
 });
 ```
 
+### 6. Get notified instead of polling
+
+Withings posts to a callback URL when new data is available. This is the
+supported alternative to polling, and what Withings recommends for staying
+inside the rate limit.
+
+```typescript
+import { NotificationCategory, parseNotificationPayload } from "withings-sdk";
+
+await client.notify.subscribe({
+  callbackurl: "https://example.com/withings/callback",
+  appli: NotificationCategory.Weight,
+});
+```
+
+Withings verifies the URL by posting to it during `subscribe`, so it has to be
+reachable and answering `200` before you call.
+
+The notification tells you *that* something changed and over which range — it
+never carries the measurements, so fetch those yourself:
+
+```typescript
+app.post("/withings/callback", express.urlencoded({ extended: false }), async (req, res) => {
+  const event = parseNotificationPayload(req.body);
+  res.sendStatus(200); // acknowledge first: Withings retries on a slow reply
+
+  if (event?.appli === NotificationCategory.Weight && event.startdate && event.enddate) {
+    const measures = await client.measures.getMeasurement({
+      startdate: new Date(event.startdate * 1000),
+      enddate: new Date(event.enddate * 1000),
+    });
+  }
+});
+```
+
+`parseNotificationPayload` returns `undefined` for anything that is not a
+notification, which is how a stray request to a public callback URL is told
+apart from a real one. It also converts the form-encoded strings, so `appli`
+compares equal to `NotificationCategory`.
+
+Manage subscriptions with `client.notify.list()`, `.get()`, `.update()` and
+`.revoke()`.
+
 ## Pagination
 
 List endpoints cap how many rows one call returns, reporting `more` and an
@@ -257,9 +300,11 @@ once before throwing.
 
 | Export                                  | Description                                                     |
 | --------------------------------------- | --------------------------------------------------------------- |
-| `WithingsClient`                        | Entry point. Exposes `.auth`, `.measures` and `.sleep`.          |
+| `WithingsClient`                        | Entry point. Exposes `.auth`, `.measures`, `.sleep` and `.notify`. |
 | `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, signatures.   |
 | `Sleep`                                 | `get`, `getSummary`, plus `getSummaryPages`.                     |
+| `Notify`                                | `subscribe`, `get`, `list`, `update`, `revoke`.                  |
+| `parseNotificationPayload`              | Turns a posted webhook body into a typed payload.                |
 | `Measures`                              | `getMeasurement`, `getActivity`, `getIntradayActivity`, `getWorkouts`, `confirmUser`, plus `getMeasurementPages` / `getActivityPages` / `getWorkoutsPages`. |
 | `WithingsResponseStatus`                | Maps a Withings `status` code onto a coarse result category.     |
 | `WithingsApiError`                      | Thrown when the API reports a failure. Carries `status`, `type` and `body`. |
@@ -267,15 +312,15 @@ once before throwing.
 | `requiredPack` / `requiresPaidPlan` / `missingDataFields` / `BiomarkerPack` | Explain metrics your API plan does not include. |
 | `WithingsRetryOptions`                  | Tunes the automatic backoff for rate limited requests.           |
 | `HttpClient` / `WithingsHttpClient`     | The transport, exported so you can substitute or mock it.        |
-| `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields`, `SleepDataFields`, `SleepSummaryDataFields`, `SleepState` | Enums for request parameters. |
+| `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields`, `SleepDataFields`, `SleepSummaryDataFields`, `SleepState`, `NotificationCategory` | Enums for request parameters. |
 
 Request/response and option types (`WithingsConfig`, `WithingsResponse<T>`,
 `GetMeasurementOptions`, `GetActivityOptions`, …) are exported as well.
 
 ## Status
 
-Early and incomplete — the `measure`, `sleep` and `oauth2` endpoints are
-covered; the other Withings services are not implemented yet. The public API may still change
+Early and incomplete — the `measure`, `sleep`, `notify` and `oauth2` endpoints
+are covered; the other Withings services are not implemented yet. The public API may still change
 before 1.0. Issues and pull requests are welcome.
 
 ## Contributing

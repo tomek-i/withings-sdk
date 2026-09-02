@@ -2,6 +2,7 @@ import { Auth } from "./auth/Auth";
 import { HttpClient } from "./http";
 import { WithingsHttpClient } from "./http/WithingsHttpClient";
 import { Measures } from "./measure/Measures";
+import { Notify } from "./notify/Notify";
 import { Sleep } from "./sleep/Sleep";
 import { WithingsConfig } from "./types";
 
@@ -16,6 +17,7 @@ export class WithingsClient {
   public readonly auth: Auth;
   public readonly measures: Measures;
   public readonly sleep: Sleep;
+  public readonly notify: Notify;
 
   /**
    * Constructs a new instance of the WithingsClient class.
@@ -52,5 +54,6 @@ export class WithingsClient {
 
     this.measures = new Measures(this.httpClient);
     this.sleep = new Sleep(this.httpClient);
+    this.notify = new Notify(this.httpClient);
   }
 }

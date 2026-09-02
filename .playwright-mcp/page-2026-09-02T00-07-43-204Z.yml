@@ -1,0 +1,287 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - generic:
+        - text: Before you continue
+        - paragraph: We use cookies to offer useful features and measure performance to improve your experience. Your preferences can be edited at any time. By clicking “Accept all & close” you agree to the use of all cookies. By clicking “Accept selected”, you agree only to the categories selected below. Find more information in our cookie policy.
+        - generic:
+          - generic:
+            - generic:
+              - generic: 
+              - generic: Essential cookies
+            - generic: 
+        - generic:
+          - generic:
+            - generic:
+              - generic: 
+              - generic: Analytical cookies
+            - generic: 
+        - generic:
+          - button "Accept selected"
+          - button "Accept all and close"
+  - region "Skip to main content":
+    - link "Skip to main content" [ref=e3] [cursor=pointer]:
+      - /url: "#__docusaurus_skipToContent_fallback"
+  - navigation "Main" [ref=e4]:
+    - generic [ref=e5]:
+      - link [ref=e7] [cursor=pointer]:
+        - /url: /
+        - img "Withings" [ref=e9]
+      - generic [ref=e10]:
+        - link [ref=e11] [cursor=pointer]:
+          - /url: https://developer.withings.com/dashboard/
+          - text: Log In to Withings Partner Hub
+          - img "(opens in new tab)" [ref=e12]
+        - generic [ref=e15]:
+          - button "expand searchbar"
+          - searchbox "Search" [ref=e16]
+  - generic [ref=e19]:
+    - complementary [ref=e20]:
+      - navigation "Docs sidebar" [ref=e23]:
+        - list [ref=e24]:
+          - listitem [ref=e25]:
+            - link "⬅ Back to Developer Portal" [ref=e26] [cursor=pointer]:
+              - /url: /developer-guide/v3/withings-solutions/integration-guides
+          - listitem [ref=e28]:
+            - link "Overview" [ref=e29] [cursor=pointer]:
+              - /url: /developer-guide/v3/data-api/notifications/notification-overview
+          - listitem [ref=e31]:
+            - link "Subscribe" [ref=e32] [cursor=pointer]:
+              - /url: /developer-guide/v3/data-api/notifications/notification-subscribe
+          - listitem [ref=e34]:
+            - link "Payload and Categories" [ref=e35] [cursor=pointer]:
+              - /url: /developer-guide/v3/data-api/notifications/notification-content
+          - listitem [ref=e37]:
+            - link "API Reference" [ref=e38] [cursor=pointer]:
+              - /url: /api-reference
+    - main [ref=e40]:
+      - generic [ref=e44]:
+        - article [ref=e45]:
+          - navigation "Breadcrumbs" [ref=e46]:
+            - list [ref=e47]:
+              - listitem [ref=e48]:
+                - link "Home page" [ref=e49] [cursor=pointer]:
+                  - /url: /
+              - listitem [ref=e52]:
+                - generic [ref=e53]: Payload and Categories
+          - generic [ref=e54]:
+            - heading "Notification categories" [level=1] [ref=e56]
+            - paragraph [ref=e57]:
+              - text: Each notification category is identified by an integer called
+              - strong [ref=e58]:
+                - code [ref=e59]: appli
+              - text: .
+            - paragraph [ref=e60]:
+              - text: When new data matches a category your app is subscribed to, Withings sends an
+              - code [ref=e61]: application/x-www-form-urlencoded
+              - text: POST request to your callback URL.
+            - paragraph [ref=e62]: "Subscribe to the categories your app needs:"
+            - generic [ref=e63]:
+              - group [ref=e64]:
+                - generic "What every notification contains ▸" [ref=e65] [cursor=pointer]
+              - generic [ref=e66]:
+                - heading "Body & Weight" [level=3] [ref=e67]
+                - group [ref=e68]:
+                  - generic "1 user.metrics Weight & body composition ▸" [ref=e69] [cursor=pointer]:
+                    - generic [ref=e70]: "1"
+                    - generic [ref=e71]: user.metrics
+                    - generic [ref=e72]: Weight & body composition
+                    - text: ▸
+                - group [ref=e73]:
+                  - generic "2 user.metrics Temperature ▸" [ref=e74] [cursor=pointer]:
+                    - generic [ref=e75]: "2"
+                    - generic [ref=e76]: user.metrics
+                    - generic [ref=e77]: Temperature
+                    - text: ▸
+                - group [ref=e78]:
+                  - generic "4 user.metrics Blood pressure & heart rate ▸" [ref=e79] [cursor=pointer]:
+                    - generic [ref=e80]: "4"
+                    - generic [ref=e81]: user.metrics
+                    - generic [ref=e82]: Blood pressure & heart rate
+                    - text: ▸
+                - group [ref=e83]:
+                  - generic "58 user.metrics Glucose ▸" [ref=e84] [cursor=pointer]:
+                    - generic [ref=e85]: "58"
+                    - generic [ref=e86]: user.metrics
+                    - generic [ref=e87]: Glucose
+                    - text: ▸
+              - generic [ref=e88]:
+                - heading "Cardio" [level=3] [ref=e89]
+                - group [ref=e90]:
+                  - generic "61 user.metrics Stethoscope ▸" [ref=e91] [cursor=pointer]:
+                    - generic [ref=e92]: "61"
+                    - generic [ref=e93]: user.metrics
+                    - generic [ref=e94]: Stethoscope
+                    - text: ▸
+                - group [ref=e95]:
+                  - generic "62 user.metrics Heart Rate Variability (HRV) ▸" [ref=e96] [cursor=pointer]:
+                    - generic [ref=e97]: "62"
+                    - generic [ref=e98]: user.metrics
+                    - generic [ref=e99]: Heart Rate Variability (HRV)
+                    - text: ▸
+                - group [ref=e100]:
+                  - generic "54 user.metrics ECG measurement ▸" [ref=e101] [cursor=pointer]:
+                    - generic [ref=e102]: "54"
+                    - generic [ref=e103]: user.metrics
+                    - generic [ref=e104]: ECG measurement
+                    - text: ▸
+                - group [ref=e105]:
+                  - generic "55 user.metrics ECG measurement failed ▸" [ref=e106] [cursor=pointer]:
+                    - generic [ref=e107]: "55"
+                    - generic [ref=e108]: user.metrics
+                    - generic [ref=e109]: ECG measurement failed
+                    - text: ▸
+              - generic [ref=e110]:
+                - heading "Activity" [level=3] [ref=e111]
+                - group [ref=e112]:
+                  - generic "16 users.activity Activity (steps, distance, workouts) ▸" [ref=e113] [cursor=pointer]:
+                    - generic [ref=e114]: "16"
+                    - generic [ref=e115]: users.activity
+                    - generic [ref=e116]: Activity (steps, distance, workouts)
+                    - text: ▸
+              - generic [ref=e117]:
+                - heading "Sleep & bed presence events" [level=3] [ref=e118]
+                - group [ref=e119]:
+                  - generic "44 users.activity Sleep summary ▸" [ref=e120] [cursor=pointer]:
+                    - generic [ref=e121]: "44"
+                    - generic [ref=e122]: users.activity
+                    - generic [ref=e123]: Sleep summary
+                    - text: ▸
+                - group [ref=e124]:
+                  - generic "50 user.sleepevents Bed in ▸" [ref=e125] [cursor=pointer]:
+                    - generic [ref=e126]: "50"
+                    - generic [ref=e127]: user.sleepevents
+                    - generic [ref=e128]: Bed in
+                    - text: ▸
+                - group [ref=e129]:
+                  - generic "51 user.sleepevents Bed out ▸" [ref=e130] [cursor=pointer]:
+                    - generic [ref=e131]: "51"
+                    - generic [ref=e132]: user.sleepevents
+                    - generic [ref=e133]: Bed out
+                    - text: ▸
+                - group [ref=e134]:
+                  - generic "52 user.sleepevents Sleep sensor inflated ▸" [ref=e135] [cursor=pointer]:
+                    - generic [ref=e136]: "52"
+                    - generic [ref=e137]: user.sleepevents
+                    - generic [ref=e138]: Sleep sensor inflated
+                    - text: ▸
+                - group [ref=e139]:
+                  - generic "98 user.sleepevents Bed occupied (10-min poll) ▸" [ref=e140] [cursor=pointer]:
+                    - generic [ref=e141]: "98"
+                    - generic [ref=e142]: user.sleepevents
+                    - generic [ref=e143]: Bed occupied (10-min poll)
+                    - text: ▸
+                - group [ref=e144]:
+                  - generic "99 user.sleepevents Bed empty (10-min poll) ▸" [ref=e145] [cursor=pointer]:
+                    - generic [ref=e146]: "99"
+                    - generic [ref=e147]: user.sleepevents
+                    - generic [ref=e148]: Bed empty (10-min poll)
+                    - text: ▸
+                - group [ref=e149]:
+                  - generic "100 user.sleepevents Bed in/out (10-min poll) ▸" [ref=e150] [cursor=pointer]:
+                    - generic [ref=e151]: "100"
+                    - generic [ref=e152]: user.sleepevents
+                    - generic [ref=e153]: Bed in/out (10-min poll)
+                    - text: ▸
+              - generic [ref=e154]:
+                - heading "Account & device events" [level=3] [ref=e155]
+                - group [ref=e156]:
+                  - generic "46 user.info User profile change ▸" [ref=e157] [cursor=pointer]:
+                    - generic [ref=e158]: "46"
+                    - generic [ref=e159]: user.info
+                    - generic [ref=e160]: User profile change
+                    - text: ▸
+                - group [ref=e161]:
+                  - generic "53 — Unassociated device setup ▸" [ref=e162] [cursor=pointer]:
+                    - generic [ref=e163]: "53"
+                    - generic [ref=e164]: —
+                    - generic [ref=e165]: Unassociated device setup
+                    - text: ▸
+                - group [ref=e166]:
+                  - generic "60 user.data Survey answered ▸" [ref=e167] [cursor=pointer]:
+                    - generic [ref=e168]: "60"
+                    - generic [ref=e169]: user.data
+                    - generic [ref=e170]: Survey answered
+                    - text: ▸
+        - navigation "Docs pages" [ref=e171]:
+          - link "Previous « Subscribe" [ref=e172] [cursor=pointer]:
+            - /url: /developer-guide/v3/data-api/notifications/notification-subscribe
+            - generic [ref=e173]: Previous
+            - generic [ref=e174]: « Subscribe
+  - contentinfo [ref=e175]:
+    - generic [ref=e176]:
+      - generic [ref=e177]:
+        - generic [ref=e178]:
+          - generic [ref=e179]: Devices
+          - list [ref=e180]:
+            - listitem [ref=e181]:
+              - link "Body Pro" [ref=e182] [cursor=pointer]:
+                - /url: https://www.withings.com/for-professionals/body-pro
+            - listitem [ref=e183]:
+              - link "BPM Connect Pro" [ref=e184] [cursor=pointer]:
+                - /url: https://www.withings.com/for-professionals/bpm-connect-pro
+            - listitem [ref=e185]:
+              - link "Other devices" [ref=e186] [cursor=pointer]:
+                - /url: https://www.withings.com/for-professionals/devices
+        - generic [ref=e187]:
+          - generic [ref=e188]: Community
+          - list [ref=e189]:
+            - listitem [ref=e190]:
+              - link [ref=e191] [cursor=pointer]:
+                - /url: https://www.linkedin.com/showcase/withings-health-solutions/
+                - text: Linkedin
+                - img "(opens in new tab)" [ref=e192]
+            - listitem [ref=e194]:
+              - link [ref=e195] [cursor=pointer]:
+                - /url: https://www.facebook.com/withings/
+                - text: Facebook
+                - img "(opens in new tab)" [ref=e196]
+            - listitem [ref=e198]:
+              - link [ref=e199] [cursor=pointer]:
+                - /url: https://twitter.com/Withings
+                - text: Twitter
+                - img "(opens in new tab)" [ref=e200]
+        - generic [ref=e202]:
+          - generic [ref=e203]: More
+          - list [ref=e204]:
+            - listitem [ref=e205]:
+              - link [ref=e206] [cursor=pointer]:
+                - /url: https://www.withings.com/for-professionals/contact-us
+                - text: Contact us
+                - img "(opens in new tab)" [ref=e207]
+            - listitem [ref=e209]:
+              - link [ref=e210] [cursor=pointer]:
+                - /url: https://status.withings.com
+                - text: API Status
+                - img "(opens in new tab)" [ref=e211]
+            - listitem [ref=e213]:
+              - link [ref=e214] [cursor=pointer]:
+                - /url: https://www.withings.com/for-professionals
+                - text: Health Solutions
+                - img "(opens in new tab)" [ref=e215]
+        - generic [ref=e217]:
+          - generic [ref=e218]: Legal & Privacy
+          - list [ref=e219]:
+            - listitem [ref=e220]:
+              - link [ref=e221] [cursor=pointer]:
+                - /url: https://www.withings.com/fr/en/legal/privacy-policy
+                - text: Privacy policy
+                - img "(opens in new tab)" [ref=e222]
+            - listitem [ref=e224]:
+              - link [ref=e225] [cursor=pointer]:
+                - /url: https://www.withings.com/fr/en/legal/legal-notice
+                - text: Legal notice
+                - img "(opens in new tab)" [ref=e226]
+            - listitem [ref=e228]:
+              - link [ref=e229] [cursor=pointer]:
+                - /url: https://www.withings.com/fr/en/data-security
+                - text: Security
+                - img "(opens in new tab)" [ref=e230]
+            - listitem [ref=e232]:
+              - link [ref=e233] [cursor=pointer]:
+                - /url: https://www.withings.com/fr/en/legal/cookies
+                - text: Cookies policy
+                - img "(opens in new tab)" [ref=e234]
+            - listitem [ref=e236]:
+              - paragraph [ref=e237] [cursor=pointer]: Cookies management
+      - generic [ref=e238]: Copyright © 2026 Withings.
