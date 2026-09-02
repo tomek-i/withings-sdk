@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { WithingsApiError } from "../errors/WithingsApiError";
 import { ErrorCodeHandler, WithingsResponseStatus, sortParams } from "../util";
 import { IHttpClient } from "../http";
-import { WithingsConfig } from "../types";
+import { NonceResponse, SignedParams, WithingsConfig } from "../types";
 import { RequestTokenResponse } from "./types/http/responses/RequestTokenResponse";
 import { AuthCodeUrlParams } from "./types/http/params/AuthCodeUrlParams";
 
@@ -130,15 +130,86 @@ export class Auth {
   }
 
   /**
+   * Obtains a nonce for the services that authenticate with a signature.
+   *
+   * This call is itself signed rather than bearer authenticated: Withings
+   * verifies it with your client ID and secret, so it works without a user
+   * having authorized anything.
+   *
+   * The nonce is valid for 30 minutes and single use. Prefer
+   * {@link signedParams}, which fetches one and signs the request in a step.
+   *
+   * @returns The nonce.
+   * @throws {WithingsApiError} If the API rejects the request.
+   * @see https://developer.withings.com/api-reference/#tag/signature/operation/signaturev2-getnonce
+   */
+  public async getNonce(): Promise<NonceResponse> {
+    const timestamp = Math.floor(Date.now() / 1000);
+    const payload = {
+      action: "getnonce",
+      client_id: this.config.clientId,
+      timestamp,
+    };
+
+    const response = await this.httpClient.post(
+      "/v2/signature",
+      { ...payload, signature: this.generateSignature(payload) },
+      { headers: { "Content-Type": "application/json" } }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = (await response.json()) as NonceResponse;
+
+    if (ErrorCodeHandler(data.status) !== WithingsResponseStatus.Success) {
+      throw new WithingsApiError(data);
+    }
+
+    return data;
+  }
+
+  /**
+   * Fetches a nonce and signs an action with it, ready to send.
+   *
+   * ```typescript
+   * const signed = await client.auth.signedParams("subscribe");
+   * await client.notify.subscribe({ ...signed, callbackurl, appli });
+   * ```
+   *
+   * The nonce is single use, so call this once per request rather than reusing
+   * the result.
+   *
+   * @param action The service action the parameters will authorize.
+   * @returns The action, client ID, nonce and signature to send.
+   * @throws {WithingsApiError} If the nonce request is rejected.
+   */
+  public async signedParams(action: string): Promise<SignedParams> {
+    const { body } = await this.getNonce();
+
+    const payload = {
+      action,
+      client_id: this.config.clientId,
+      nonce: body.nonce,
+    };
+
+    return { ...payload, signature: this.generateSignature(payload) };
+  }
+
+  /**
    * Generates a signature for the given signature payload using HMAC-SHA256 algorithm.
    *
    * @param signaturePayload An object containing the action, client_id, and timestamp.
-   * @param signaturePayload.action The action being signed.
-   * @param signaturePayload.client_id Your application's client ID.
-   * @param signaturePayload.timestamp Unix timestamp, in seconds.
+   * The payload is deliberately open: `getnonce` signs action, client_id and
+   * timestamp, while the services that consume a nonce sign action, client_id
+   * and nonce. Both go through here.
+   *
+   * @param signaturePayload The parameters to sign. Values are sorted by key,
+   *   joined with commas, and hashed with the client secret.
    * @returns The generated signature in hexadecimal format.
    */
-  public generateSignature(signaturePayload: { action: string; client_id: string; timestamp: number }) {
+  public generateSignature(signaturePayload: Record<string, string | number>) {
     const sortedParams = sortParams(signaturePayload);
 
     const concatenatedValues = sortedParams.map(([, value]) => value).join(",");

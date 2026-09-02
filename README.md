@@ -172,6 +172,32 @@ compares equal to `NotificationCategory`.
 Manage subscriptions with `client.notify.list()`, `.get()`, `.update()` and
 `.revoke()`.
 
+## Signature authentication
+
+A few Withings services authenticate with a **signed request** rather than a
+user's access token. They are authorized by your client ID and secret, so they
+work without anyone having gone through consent.
+
+`signedParams` fetches a nonce and signs the action in one step:
+
+```typescript
+const signed = await client.auth.signedParams("subscribe");
+
+await client.notify.subscribe({
+  ...signed,
+  callbackurl: "https://example.com/withings/callback",
+  appli: NotificationCategory.Weight,
+});
+```
+
+The nonce is valid for 30 minutes and **single use**, so call `signedParams`
+once per request rather than reusing the result. `auth.getNonce()` is available
+if you need the nonce alone, and `auth.generateSignature()` signs an arbitrary
+parameter set.
+
+Because the signature covers the exact values sent, changing any of them after
+signing invalidates it — which is why these arrive as one object to spread.
+
 ## Pagination
 
 List endpoints cap how many rows one call returns, reporting `more` and an
@@ -301,7 +327,7 @@ once before throwing.
 | Export                                  | Description                                                     |
 | --------------------------------------- | --------------------------------------------------------------- |
 | `WithingsClient`                        | Entry point. Exposes `.auth`, `.measures`, `.sleep` and `.notify`. |
-| `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, signatures.   |
+| `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, plus `getNonce` / `signedParams` for signed requests. |
 | `Sleep`                                 | `get`, `getSummary`, plus `getSummaryPages`.                     |
 | `Notify`                                | `subscribe`, `get`, `list`, `update`, `revoke`.                  |
 | `parseNotificationPayload`              | Turns a posted webhook body into a typed payload.                |

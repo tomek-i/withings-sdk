@@ -223,6 +223,26 @@ describe("live API contract", () => {
     });
   });
 
+  describe("auth.getNonce", () => {
+    // Authorized by client credentials rather than a user token, and a nonce
+    // is short lived and single use, so calling it costs the account nothing.
+    it("returns a nonce, and the signature is accepted", async () => {
+      const response = await client.auth.getNonce();
+
+      expect(response.status).toEqual(0);
+      expectContract("getnonce body", response.body, { nonce: ["string"] });
+      expect(response.body.nonce.length).toBeGreaterThan(0);
+    });
+
+    it("signs an action with a server-issued nonce", async () => {
+      const signed = await client.auth.signedParams("subscribe");
+
+      expect(signed.action).toEqual("subscribe");
+      expect(signed.signature).toMatch(/^[0-9a-f]{64}$/);
+      expect(signed.nonce.length).toBeGreaterThan(0);
+    });
+  });
+
   describe("notify.list", () => {
     // Only `list` is exercised. subscribe, update and revoke change what
     // Withings sends to a callback URL, and a test suite has no business

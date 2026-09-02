@@ -88,5 +88,23 @@ export interface WithingsResponse<T> {
   error?: string;
 }
 
+/**
+ * The parameter set a signature-authenticated Withings service expects.
+ *
+ * Produced by `auth.signedParams()`. Spread it into the request rather than
+ * assembling the pieces by hand — the signature covers these exact values, so
+ * changing one after signing invalidates it.
+ */
+export interface SignedParams {
+  /** The action being authorized. The signature is specific to it. */
+  action: string;
+  /** Your application's client ID. */
+  client_id: string;
+  /** Single-use nonce, valid for 30 minutes. */
+  nonce: string;
+  /** HMAC-SHA256 over the sorted values, hex encoded. */
+  signature: string;
+}
+
 /** Response to the `getnonce` action. */
 export interface NonceResponse extends WithingsResponse<NonceBody> {}
