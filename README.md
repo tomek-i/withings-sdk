@@ -172,6 +172,27 @@ compares equal to `NotificationCategory`.
 Manage subscriptions with `client.notify.list()`, `.get()`, `.update()` and
 `.revoke()`.
 
+### 7. Read ECG and blood pressure
+
+```typescript
+import { AfibClassification } from "withings-sdk";
+
+const recordings = await client.heart.list({ startdate: new Date("2024-01-01") });
+
+for (const record of recordings.body.series) {
+  if (record.ecg?.afib === AfibClassification.Positive) {
+    // Fetch the signal itself: thousands of samples, so list never includes it
+    const signal = await client.heart.get({ signalid: record.ecg.signalid! });
+    // signal.body.signal is in microvolts, sampled at sampling_frequency Hz
+  }
+}
+```
+
+`list` is paginated; use `client.heart.listPages()` to walk it.
+
+> **Note:** ECG, atrial fibrillation and blood pressure are Total Biomarker
+> Pack metrics, so a free plan returns an empty series.
+
 ## Signature authentication
 
 A few Withings services authenticate with a **signed request** rather than a
@@ -326,10 +347,11 @@ once before throwing.
 
 | Export                                  | Description                                                     |
 | --------------------------------------- | --------------------------------------------------------------- |
-| `WithingsClient`                        | Entry point. Exposes `.auth`, `.measures`, `.sleep` and `.notify`. |
+| `WithingsClient`                        | Entry point. Exposes `.auth`, `.measures`, `.sleep`, `.heart` and `.notify`. |
 | `Auth`                                  | OAuth2 flow: consent URL, token exchange, refresh, plus `getNonce` / `signedParams` for signed requests. |
 | `Sleep`                                 | `get`, `getSummary`, plus `getSummaryPages`.                     |
 | `Notify`                                | `subscribe`, `get`, `list`, `update`, `revoke`.                  |
+| `Heart`                                 | `list`, `get`, plus `listPages`. ECG, blood pressure, stethoscope. |
 | `parseNotificationPayload`              | Turns a posted webhook body into a typed payload.                |
 | `Measures`                              | `getMeasurement`, `getActivity`, `getIntradayActivity`, `getWorkouts`, `confirmUser`, plus `getMeasurementPages` / `getActivityPages` / `getWorkoutsPages`. |
 | `WithingsResponseStatus`                | Maps a Withings `status` code onto a coarse result category.     |
@@ -338,15 +360,16 @@ once before throwing.
 | `requiredPack` / `requiresPaidPlan` / `missingDataFields` / `BiomarkerPack` | Explain metrics your API plan does not include. |
 | `WithingsRetryOptions`                  | Tunes the automatic backoff for rate limited requests.           |
 | `HttpClient` / `WithingsHttpClient`     | The transport, exported so you can substitute or mock it.        |
-| `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields`, `SleepDataFields`, `SleepSummaryDataFields`, `SleepState`, `NotificationCategory` | Enums for request parameters. |
+| `MeasurementType`, `MeasurementCategoryType`, `ActivityDataFields`, `IntraDayActivityDataFields`, `GetWorkoutDataFields`, `SleepDataFields`, `SleepSummaryDataFields`, `SleepState`, `NotificationCategory`, `AfibClassification`, `HeartDeviceModel`, `WearPosition` | Enums for request parameters. |
 
 Request/response and option types (`WithingsConfig`, `WithingsResponse<T>`,
 `GetMeasurementOptions`, `GetActivityOptions`, …) are exported as well.
 
 ## Status
 
-Early and incomplete — the `measure`, `sleep`, `notify` and `oauth2` endpoints
-are covered; the other Withings services are not implemented yet. The public API may still change
+Early and incomplete — the `measure`, `sleep`, `heart`, `notify`, `signature`
+and `oauth2` endpoints are covered; the other Withings services are not
+implemented yet. The public API may still change
 before 1.0. Issues and pull requests are welcome.
 
 ## Contributing

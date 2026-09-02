@@ -243,6 +243,44 @@ describe("live API contract", () => {
     });
   });
 
+  describe("heart.list", () => {
+    // ECG and blood pressure are Total Biomarker Pack metrics, so a Basic plan
+    // or an account without a BPM Core / Move ECG returns an empty series.
+    // That is not a failure: the shape is still checked when data is present.
+    it("matches the modelled shape", async () => {
+      const response = await client.heart.list();
+
+      expect(response.status).toEqual(0);
+      expectContract("heart.list body", response.body, {
+        series: ["array"],
+        more: ["boolean", "number"],
+        offset: ["number"],
+      });
+
+      const record = response.body.series?.[0];
+      if (!record) {
+        console.log("  [heart.list] no recordings on this account; shape not exercised");
+        return;
+      }
+
+      expectContract("heart.list series[]", record, {
+        deviceid: ["string", "null"],
+        model: ["number"],
+        ecg: ["object"],
+        bloodpressure: ["object"],
+        stetho: ["object"],
+        heart_rate: ["number"],
+        modified: ["number"],
+        timestamp: ["number"],
+      });
+      expectContract("heart.list ecg", record.ecg, { signalid: ["number"], afib: ["number"] });
+      expectContract("heart.list bloodpressure", record.bloodpressure, {
+        diastole: ["number"],
+        systole: ["number"],
+      });
+    });
+  });
+
   describe("notify.list", () => {
     // Only `list` is exercised. subscribe, update and revoke change what
     // Withings sends to a callback URL, and a test suite has no business
