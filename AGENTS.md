@@ -104,6 +104,12 @@ Releases are automated and should not be cut by hand.
 
 Do not run `pnpm version`, edit the `version` field, or hand-write `CHANGELOG.md` entries for released versions. release-please owns all three.
 
+**`Release-As:` must be the last thing in the commit message.** release-please
+reads it as a footer. This repository squash merges, so a pull request with two
+commits produces one message with both bodies concatenated, and a footer in the
+first commit ends up in the middle where it is ignored. If you need to force a
+version, put it in a pull request with a single commit.
+
 **`.github/workflows/release.yml` is load-bearing.** npm trusted publishing is pinned to this repository *and* that exact filename. Renaming the file, or moving the publish step into another workflow, breaks publishing until the trusted publisher on npmjs.com is updated. There is no npm token: authentication is OIDC.
 
 ## Gotchas worth knowing
