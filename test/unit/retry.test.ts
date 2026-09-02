@@ -1,5 +1,6 @@
 import { WithingsApiError, WithingsClient, WithingsHttpError, WithingsResponseStatus } from "../../src";
 import type { WithingsConfig } from "../../src";
+import { rawResponse, withingsResponse } from "../helpers/response";
 import {
   backoffDelay,
   DEFAULT_RETRY_OPTIONS,
@@ -8,11 +9,9 @@ import {
   resolveRetryOptions,
 } from "../../src/http/retry";
 
-const rateLimited = () =>
-  ({ ok: true, status: 200, json: async () => ({ status: 601, error: "too many requests" }) }) as unknown as Response;
+const rateLimited = () => rawResponse({ status: 601, error: "too many requests" });
 
-const ok = () =>
-  ({ ok: true, status: 200, json: async () => ({ status: 0, body: { measuregrps: [] } }) }) as unknown as Response;
+const ok = () => withingsResponse({ measuregrps: [] });
 
 /** Retries run with no delay, so the tests exercise the loop rather than the clock. */
 const client = (retry: WithingsConfig["retry"] = { initialDelayMs: 0, jitter: false }) =>
@@ -124,7 +123,7 @@ describe("rate limit retrying", () => {
   });
 
   it("gives up after maxAttempts and throws the rate limit error", async () => {
-    fetchMock.mockResolvedValue(rateLimited());
+    fetchMock.mockImplementation(async () => rateLimited());
 
     await expect(client({ initialDelayMs: 0, maxAttempts: 3 }).measures.getMeasurement()).rejects.toMatchObject({
       name: "WithingsApiError",
@@ -136,18 +135,14 @@ describe("rate limit retrying", () => {
   });
 
   it("does not retry when retrying is disabled", async () => {
-    fetchMock.mockResolvedValue(rateLimited());
+    fetchMock.mockImplementation(async () => rateLimited());
 
     await expect(client(false).measures.getMeasurement()).rejects.toBeInstanceOf(WithingsApiError);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("does not retry failures that are not rate limits", async () => {
-    fetchMock.mockResolvedValue({
-      ok: true,
-      status: 200,
-      json: async () => ({ status: 247, error: "bad parameter" }),
-    } as unknown as Response);
+    fetchMock.mockImplementation(async () => rawResponse({ status: 247, error: "bad parameter" }));
 
     await expect(client().measures.getMeasurement()).rejects.toMatchObject({ status: 247 });
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -180,12 +175,8 @@ describe("rate limit retrying", () => {
     // An expired token followed by rate limiting must not consume the same
     // allowance: they are different failures.
     fetchMock
-      .mockResolvedValueOnce({ ok: true, status: 200, json: async () => ({ status: 401, error: "expired" }) })
-      .mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => ({ status: 0, body: { access_token: "new", refresh_token: "new-r" } }),
-      })
+      .mockResolvedValueOnce(rawResponse({ status: 401, error: "expired" }))
+      .mockResolvedValueOnce(withingsResponse({ access_token: "new", refresh_token: "new-r" }))
       .mockResolvedValueOnce(rateLimited())
       .mockResolvedValueOnce(ok());
 

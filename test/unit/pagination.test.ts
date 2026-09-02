@@ -1,5 +1,6 @@
 import { hasMorePages, paginate, WithingsClient } from "../../src";
 import type { WithingsResponse } from "../../src";
+import { withingsResponse } from "../helpers/response";
 
 const client = () =>
   new WithingsClient({
@@ -115,8 +116,7 @@ describe("Measures page walkers", () => {
     globalThis.fetch = fetchMock as unknown as typeof fetch;
   });
 
-  const respond = (body: unknown) =>
-    ({ ok: true, status: 200, json: async () => ({ status: 0, body }) }) as unknown as Response;
+  const respond = (body: unknown) => withingsResponse(body);
 
   it("walks getMeasurement across pages, sending the offset each time", async () => {
     fetchMock
@@ -162,8 +162,7 @@ describe("getWorkoutsPages", () => {
     globalThis.fetch = fetchMock as unknown as typeof fetch;
   });
 
-  const respond = (body: unknown) =>
-    ({ ok: true, status: 200, json: async () => ({ status: 0, body }) }) as unknown as Response;
+  const respond = (body: unknown) => withingsResponse(body);
 
   it("walks workouts across pages, following the offset", async () => {
     fetchMock

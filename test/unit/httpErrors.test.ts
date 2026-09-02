@@ -1,5 +1,6 @@
 import { isRetryableHttpStatus, parseRetryAfter, WithingsApiError, WithingsClient, WithingsHttpError } from "../../src";
 import type { WithingsConfig } from "../../src";
+import { httpFailureResponse, withingsResponse } from "../helpers/response";
 
 const client = (retry: WithingsConfig["retry"] = { initialDelayMs: 0, jitter: false }) =>
   new WithingsClient({
@@ -11,17 +12,9 @@ const client = (retry: WithingsConfig["retry"] = { initialDelayMs: 0, jitter: fa
     retry,
   });
 
-const httpFailure = (status: number, headers: Record<string, string> = {}) =>
-  ({
-    ok: false,
-    status,
-    statusText: "Service Unavailable",
-    headers: { get: (k: string) => headers[k.toLowerCase()] ?? null },
-    json: async () => ({}),
-  }) as unknown as Response;
+const httpFailure = (status: number, headers: Record<string, string> = {}) => httpFailureResponse(status, headers);
 
-const ok = () =>
-  ({ ok: true, status: 200, json: async () => ({ status: 0, body: { measuregrps: [] } }) }) as unknown as Response;
+const ok = () => withingsResponse({ measuregrps: [] });
 
 describe("parseRetryAfter", () => {
   it("reads the seconds form", () => {
@@ -67,7 +60,7 @@ describe("WithingsHttpError", () => {
   });
 
   it("is thrown for a non-2xx response, carrying the status", async () => {
-    fetchMock.mockResolvedValue(httpFailure(404));
+    fetchMock.mockImplementation(async () => httpFailure(404));
 
     await expect(client().measures.getMeasurement()).rejects.toMatchObject({
       name: "WithingsHttpError",
@@ -76,13 +69,13 @@ describe("WithingsHttpError", () => {
   });
 
   it("is an Error, so a caller who only cares that it failed still catches it", async () => {
-    fetchMock.mockResolvedValue(httpFailure(404));
+    fetchMock.mockImplementation(async () => httpFailure(404));
 
     await expect(client().measures.getMeasurement()).rejects.toBeInstanceOf(Error);
   });
 
   it("is distinct from WithingsApiError, since the causes are different", async () => {
-    fetchMock.mockResolvedValue(httpFailure(404));
+    fetchMock.mockImplementation(async () => httpFailure(404));
 
     let caught: unknown;
     try {
@@ -97,7 +90,7 @@ describe("WithingsHttpError", () => {
   });
 
   it("names the status and URL in the message", async () => {
-    fetchMock.mockResolvedValue(httpFailure(503));
+    fetchMock.mockImplementation(async () => httpFailure(503));
 
     await expect(client().measures.getMeasurement()).rejects.toThrow(/503/);
     await expect(client().measures.getMeasurement()).rejects.toThrow(/wbsapi\.withings\.net/);
@@ -130,14 +123,14 @@ describe("retrying transport failures", () => {
   });
 
   it("does not retry a 404", async () => {
-    fetchMock.mockResolvedValue(httpFailure(404));
+    fetchMock.mockImplementation(async () => httpFailure(404));
 
     await expect(client().measures.getMeasurement()).rejects.toBeInstanceOf(WithingsHttpError);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("gives up after maxAttempts and throws the transport error", async () => {
-    fetchMock.mockResolvedValue(httpFailure(503));
+    fetchMock.mockImplementation(async () => httpFailure(503));
 
     await expect(client({ initialDelayMs: 0, maxAttempts: 3 }).measures.getMeasurement()).rejects.toMatchObject({
       name: "WithingsHttpError",

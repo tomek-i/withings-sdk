@@ -1,9 +1,9 @@
 import { WithingsClient } from "../../src";
+import { rawResponse } from "../helpers/response";
 
 type WithingsBody = { status: number; body?: unknown; error?: string };
 
-const jsonResponse = (payload: WithingsBody) =>
-  ({ ok: true, status: 200, json: async () => payload }) as unknown as Response;
+const jsonResponse = (payload: WithingsBody) => rawResponse(payload);
 
 const baseConfig = {
   clientId: "id",
