@@ -5,6 +5,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0](https://github.com/tomek-i/withings-sdk/compare/v0.10.0...v0.11.0) (2026-09-02)
+
+
+### Added
+
+* fail clearly when a response is not a Withings response ([#39](https://github.com/tomek-i/withings-sdk/issues/39)) ([cad11c5](https://github.com/tomek-i/withings-sdk/commit/cad11c5823dea9f3e291971a94e0e90a469ea7d2))
+
 ## [0.10.0](https://github.com/tomek-i/withings-sdk/compare/v0.9.1...v0.10.0) (2026-09-02)
 
 
