@@ -106,7 +106,11 @@ Releases are automated. Do not bump the version or edit the changelog by hand.
    maintains a **Release PR** that bumps `package.json` and writes
    `CHANGELOG.md` from the commits since the last release.
 3. Merging that Release PR is the release decision. It tags the commit, creates
-   the GitHub release, and publishes to npm with provenance.
+   the GitHub release, and stages the package on npm with provenance.
+4. A maintainer approves the staged version with 2FA, on npmjs.com or with
+   `npm stage approve <stage-id>` (ids from `npm stage list`). Only then does
+   it become installable. This step is deliberately manual, so a compromised
+   workflow cannot ship a release on its own.
 
 To hold a release back, simply leave the Release PR open; it keeps updating as
 more commits land. To force a particular version, add a `Release-As: 1.2.3`
@@ -116,4 +120,7 @@ Authentication uses [npm trusted publishing](https://docs.npmjs.com/trusted-publ
 over OIDC, so there is no publish token to store or rotate. The trusted
 publisher registered on npmjs.com is pinned to this repository *and* to the
 workflow filename `release.yml`. If you rename that file, update the trusted
-publisher to match, or releases will start failing with a 404.
+publisher to match, or releases will start failing with a 404. The trusted
+publisher allows only `npm stage publish`, not `npm publish`, and the package
+is set to require 2FA and disallow tokens, so nothing reaches npm without a
+maintainer's approval.
