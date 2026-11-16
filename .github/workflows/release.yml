@@ -5,7 +5,15 @@ name: Release
 # On every push to main, release-please opens or updates a Release PR that
 # bumps the version in package.json and writes CHANGELOG.md. Merging that PR is
 # the release decision: release-please then tags the commit, creates the GitHub
-# release, and the publish job below pushes the package to npm.
+# release, and the publish job below stages the package on npm.
+#
+# Staged, not published. The trusted publisher on npmjs.com only allows
+# `npm stage publish`, so a version uploaded from CI is not installable until a
+# maintainer approves it with 2FA on npmjs.com or via `npm stage approve <id>`.
+# A compromised workflow or leaked OIDC token can therefore queue a version but
+# not ship one, provided the package also requires 2FA and disallows tokens,
+# so no other publish path exists. Approval cannot happen here: short-lived
+# tokens cannot run the `npm stage` subcommands.
 #
 # The publish step lives in THIS file on purpose. npm trusted publishing is
 # pinned to a repository AND a workflow filename, so renaming this file, or
@@ -41,7 +49,7 @@ jobs:
           manifest-file: .release-please-manifest.json
 
   publish:
-    name: Publish to npm
+    name: Stage on npm
     needs: release-please
     if: needs.release-please.outputs.released == 'true'
     runs-on: ubuntu-latest
@@ -57,7 +65,8 @@ jobs:
 
       - uses: pnpm/action-setup@v6
 
-      # Trusted publishing needs Node >= 22.14.0 and npm >= 11.5.1.
+      # Trusted publishing needs Node >= 22.14.0 and npm >= 11.5.1; staged
+      # publishing needs npm >= 11.15.0.
       #
       # Deliberately no `registry-url` here. That input makes setup-node write
       # an .npmrc containing `_authToken=${NODE_AUTH_TOKEN}`, and npm then
@@ -69,7 +78,7 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      # Node 22 still bundles npm 10, which predates OIDC publishing.
+      # Node 22 still bundles npm 10, which predates OIDC and staged publishing.
       - name: Upgrade npm
         run: |
           npm install -g npm@latest
@@ -78,8 +87,9 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      # Published with npm rather than pnpm: pnpm's OIDC support has known
-      # regressions (pnpm/pnpm#11513). npm still honours the `files` field and
-      # runs `prepublishOnly` (typecheck, lint, tests, build) before packing.
-      - name: Publish
-        run: npm publish --access public --provenance
+      # Staged with npm rather than pnpm: pnpm's OIDC support has known
+      # regressions (pnpm/pnpm#11513), and pnpm has no staged publishing. Like
+      # `npm publish`, `npm stage publish` honours the `files` field and runs
+      # `prepublishOnly` (typecheck, lint, tests, build) before packing.
+      - name: Stage for publishing
+        run: npm stage publish --access public --provenance

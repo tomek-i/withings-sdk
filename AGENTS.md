@@ -100,7 +100,10 @@ Releases are automated and should not be cut by hand.
 
 1. Merge PRs to `main` with conventional commits.
 2. release-please maintains a Release PR that bumps `package.json` and updates `CHANGELOG.md`.
-3. Merging the Release PR tags the commit and publishes to npm.
+3. Merging the Release PR tags the commit and **stages** the version on npm.
+4. A maintainer approves the staged version with 2FA, on npmjs.com or with `npm stage approve <stage-id>` (ids from `npm stage list`). Until then it is not installable.
+
+Step 4 is deliberate. The trusted publisher only allows `npm stage publish`, and the package requires 2FA and disallows tokens, so a compromised workflow can queue a version but not ship one. That only holds if the approver looks at what was staged (`npm stage download <stage-id>`) rather than approving blindly. It cannot be automated: short-lived OIDC tokens cannot run the `npm stage` subcommands.
 
 Do not run `pnpm version`, edit the `version` field, or hand-write `CHANGELOG.md` entries for released versions. release-please owns all three.
 
